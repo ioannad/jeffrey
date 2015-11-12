@@ -13,7 +13,6 @@
     (:c :f t)
     (:Form0 :f nil)))
 
-
 (defun test-read ()
   (set-difference *simple-test-data*
 		  (graph-to-implications
@@ -33,7 +32,6 @@
   (setq *nodes*
 	(add-top-bottom (implications-to-graph *simple-test-data*))))
 
-
 (defun test-predicates ()
   (setup-test)
   (assert (not (implies-not-p (call :Form1) (call :a))))
@@ -51,5 +49,15 @@
   (assert (implies-not-p (call :g) (call :c)))
   (assert (not (implies-not-p (call :e) (call :a))))
   (assert (implies-not-p (call :d) (call :b)))
-  (assert (implies-not-p (call :Form0) (call :f)))
-)  
+  (assert (implies-not-p (call :Form0) (call :f))))  
+
+(defun test-read ()
+  (assert (null (set-difference *simple-test-data* 
+				(graph-to-implications 
+				 (implications-to-graph *simple-test-data*))
+				:test 'equal)))
+  (assert (null (set-difference (graph-to-implications 
+				 (implications-to-graph *simple-test-data*))
+				*simple-test-data*
+				:test 'equal))))
+  
