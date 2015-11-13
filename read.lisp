@@ -52,8 +52,13 @@ relation T. NODE must be a node."
     (loop for node in (implication-nodes implications) do
 	 (setf (gethash node nodes) (make-node)))
     ;; Add edges and parents
-    (loop for (from to relation) in implications do
-     ;; Some verbocity to trace what is being added in case of an error
+    (loop for (from to relation) in implications 
+       ;; some attributes of the forms are stored in implications
+       ;; of the form (A A "(1)" references), but for now they 
+       ;; are just dropped.
+       when (not (equal from to)) 
+       do
+       ;; Some verbocity to trace what is being added in case of an error
 	 (format t "Adding ~a -edge from ~a to ~a.~%"
 		 relation from to)
        ;; Add edge
@@ -117,9 +122,8 @@ should be added later."
      for code   = (getf implication :code)
      for form-1 = (getf implication :form-1)
      for form-2 = (getf implication :form-2)
-     when (and (or (equal code "(1)")
-		   (equal code "(3)"))
-	       (not (equal form-1 form-2)))
+     when (or (equal code "(1)")
+	      (equal code "(3)"))
      collect (list (intern (string-upcase form-1) :keyword)
 		   (intern (string-upcase form-2) :keyword)
 		   (if (equal code "(1)")
@@ -132,18 +136,3 @@ should be added later."
 
 
 
-
-;; To test the graph reading facilities, evaluate the following
-;; after having loaded "test.lisp":
-#|
-
-(assert (null (set-difference *simple-test-data* 
-			      (graph-to-implications 
-			       (implications-to-graph *simple-test-data*))
-			      :test 'equal)))
-(assert (null (set-difference (graph-to-implications 
-			       (implications-to-graph *simple-test-data*))
-			      *simple-test-data*
-			      :test 'equal)))
-
-|#
