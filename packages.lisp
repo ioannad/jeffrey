@@ -14,7 +14,8 @@
 
 (defpackage jeffrey.read
   (:use :common-lisp
-	:jeffrey.graph)
+	:jeffrey.graph
+	:mpc :mpc.characters :mpc.numerals)
   (:export :implication-nodes
 	   :implications-to-graph
 	   :graph-to-implications
