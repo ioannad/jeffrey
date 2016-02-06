@@ -70,13 +70,16 @@ relation T. NODE must be a node."
     ;; Return table of nodes
     nodes))
 
+(defun node-names (nodes)    ;; Make  reverse mapping
+  (let ((nodes-names (make-hash-table)))
+    (maphash (lambda (name node) (setf (gethash node nodes-names) name))
+	     nodes)
+  nodes-names))
+
 (defun graph-to-implications (nodes)
   "Returns a list of all implications resulting from the graph stored 
 in NODES."
   (let ((node-names (make-hash-table)))
-    ;; Make temporary reverse mapping
-    (maphash (lambda (name node) (setf (gethash node node-names) name))
-	     nodes)
     ;; Compile implications
     (loop for name being the hash-keys of nodes
        for node = (gethash name nodes)
@@ -129,8 +132,19 @@ should be added later."
 		   (if (equal code "(1)")
 		       T
 		       NIL)
-		   (list :references (getf implication :references))))
-  )
+		   (list :references (getf implication :references)))))
+
+
+;;; --------------------------------- Some helper functions, possibly
+;;;---------------------------------- to be moved elsewhere: 
+
+(defun number-to-node-name (k)
+  (intern (concatenate 'string "FORM" (write-to-string k))
+	  "KEYWORD"))
+
+(defun node-name-to-number (node-name)
+  (parse-integer (subseq (symbol-name node-name) 4)))
+
 
 
 
