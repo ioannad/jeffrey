@@ -3,11 +3,13 @@
 
 (defun ancestors (node) ;; => list
   "Returns the list of strict ancestors of NODE."
-  (remove-duplicates (apply #'append (node-parents node)
-			    (map 'list 
-				 #'ancestors 
-				 (node-parents node))))
-  )
+  ;; somehow it stopped working for :FORM1??
+  (if (node-parents node) 
+      (remove-duplicates (apply #'append (node-parents node)
+				(map 'list 
+				     #'ancestors 
+				     (node-parents node))))
+      nil))
 
 #|
 timing of the above>
@@ -90,7 +92,7 @@ Evaluation took:
 ;;; I will also use a predicate that tells me if there is an edge with 
 ;;; :relation NIL from a Y to an X.
 
-(defun nil-edge? (Y X)  ;; => NIL or nonempty list
+(defun nil-edge-p (Y X)  ;; => NIL or nonempty list
   "Returns T if there is an edge in (node-edges Y) with :destination X
 and :relation NIL. X and Y must be nodes."
   (some (lambda (edge)
@@ -106,7 +108,7 @@ or if there is a (relation T) path from Y to Z and from
 W to X, and a (relation NIL) path from W to Z. X and Y
 must be nodes."
   (some (lambda (X-desc) 
-	  (some (lambda (Y-anc) (nil-edge? Y-anc X-desc))
+	  (some (lambda (Y-anc) (nil-edge-P Y-anc X-desc))
 		(cons Y (ancestors Y))))
 	(cons X (descendants X))))
 
@@ -115,7 +117,7 @@ must be nodes."
   ;; Cache (ANCESTORS Y)
   (let ((Y+ancestors (list* Y (ancestors Y))))
     (flet ((ancestors-nil-edge-p (x-desc)
-	     (some (lambda (Y-anc) (nil-edge? Y-anc X-desc))
+	     (some (lambda (Y-anc) (nil-edge-P Y-anc X-desc))
 		   Y+ancestors)))
       (some #'ancestors-nil-edge-p (list* X (descendants X))))))
 |#
