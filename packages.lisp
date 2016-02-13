@@ -33,6 +33,7 @@
 	   :node-names
 	   :node-to-number
 	   :make-graph-from-book1
+	   :*local-directory*
 	   :make-book1))
 
 (defpackage jeffrey.predicates
@@ -65,7 +66,8 @@
   (:use :common-lisp
 	:jeffrey.read
 	:jeffrey.predicates)
-  (:export :draw-graph))
+  (:export :draw-graph)
+  (:documentation "Draws diagrams with information from the matrix book1 and the form infomation stored in {*forms*}."))
 
 (defpackage jeffrey.main
   (:use :common-lisp

@@ -172,10 +172,15 @@ column respectively."
   "Book1 is a list of one or more rows."
   (=one-or-more (=row)))
 
+(defvar *local-directory* "~/quicklisp/local-projects/jeffrey1/")
+
 (defun read-book1 ()
   "Parses book1 and returns a list of rows, i.e., a list of lists
 of fields." 
-  (with-open-file (book1 "Howard-Rubin-data/book1")
+  (with-open-file (book1 (pathname
+			  (concatenate 'string
+				       *local-directory*
+				       "Howard-Rubin-data/book1")))
     (with-standard-io-syntax (run (=book1) book1))))
 
 

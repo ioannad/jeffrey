@@ -78,19 +78,15 @@ It returns the filled in matrix."
 	     for j = (node-name-to-number node-name-j)
 	     unless (equal j 423)       ;; just to be sure again
 	     do (prog1 (format t "~S   " j)
-		  (if (aref matrix i j) ;; if m-i-j exists
-		      nil               ;; then do nothing,
+		  (if #1=(aref matrix i j) ;; if m-i-j exists
+		      nil                  ;; then do nothing,
 		      ;; otherwise ask matrix-implies-p and
 		      ;; matrix-implies-not-p.
-		      (cond ((implies-p
-			      node-i node-j matrix graph)
-			     T)
-			    ((implies-not-p
-			      node-i node-j matrix graph)
-			     T)
+		      (cond ((implies-p     i j matrix graph)  T)
+			    ((implies-not-p i j matrix graph)  T)
 			    ;; If neither predicate has an answer,
-			    ;; then the answer is unknown (code 0). 
-			    (T (setf (aref matrix i j) 0))))))))
+			    ;; then the answer is unknown (code 0).
+			    (T (setf #1# 0))))))))
   ;; Returns the filled in matrix.
   matrix)
 
@@ -101,7 +97,7 @@ fields with codes 1-4 in {matrix} have the same codes in {book1},
 if fields with code 0 in {matrix} have code 0 or 7 in {book1}, and
 ignores fields that have codes 5 and 6 in {book1}."
   (let* ((book1 (make-book1))
-	 (n     (1- (first (array-dimensions matrix))))) 
+	 (n     (1- (array-dimension matrix 0)))) 
     (format t "The new matrix has dimensions ~a.~%" (array-dimensions matrix))
     (if (equal (array-dimensions matrix) (array-dimensions book1))
 	(format t "Matrices have the same dimensions.~%")
@@ -109,25 +105,22 @@ ignores fields that have codes 5 and 6 in {book1}."
     ;; Set all code 7 fields in book1 to 0.
     (loop for i from 0 to n
        do (loop for j from 0 to n
-	     do (if (equal (aref book1 i j) 7)
-		    (setf (aref book1 i j) 0)
-		    nil)))
-    ;; Returns T if every item in the list of answers to the question whether
-    ;; the two matrices have the same code, for each field, is T, unless
-    ;; the codes are 5 or 6.
-    (eval (cons 'and
-		(loop for i from 0 to n
-		   unless (equal i 423)
-		   return (loop for j from 0 to n
-			      collect (if (not (or (equal (aref book1 i j) 5)
-						   (equal (aref book1 i j) 6)))
-					  (if (equal (aref book1 i j) (aref matrix i j))
-					      T
-					      (prog2 (format t "In row ~a, column ~a, book1 has code ~a while matrix has code ~a."
-							     i j (aref book1 i j) (aref matrix i j))
-						  nil))
-					  T)))))))
-
+	     do (case #1= (aref book1 i j)
+		      ((5 6 7) (setf #1# 0)))))
+    ;; Returns T if every item in the list of answers to the
+    ;; question whether the two matrices have the same code, for
+    ;; each field, is T.
+    (notany #'null
+	    (loop for i from 0 to n
+	       unless (equal i 423)
+	       append (loop for j from 0 to n
+			 collect (case #2= (aref book1 i j)
+				       (#3= (aref matrix i j) T)
+				       (otherwise
+					(prog2 (format t "In row ~a, column ~a, book1 has code ~a while matrix has code ~a."
+						       i j #2# #3#)
+					    NIL))))))))
+		    
 (defun print-comparison-file (book1 matrix)
   "Creates the text file {comparison-to-book1.txt} with a 
 field-to-field comparison of the matrices {book1} and {matrix}.
@@ -142,25 +135,25 @@ assumes that the matrices are square and have the same dimensions."
 		   (loop for j from 0 to n
 		      do (format stream
 				 "m-~a-~a = (~a, ~a)   "
-				 i j (aref book1 i j) (aref matrix i j))))))))
+				 i j (aref book1 i j)
+				 (aref matrix i j))))))))
 
 
 (defun test-predicates-with-book1 (create-file?)
-  "Temporarily creates a matrix with {book1} and a matrix induced by 
-the new predicates, and uses the predicate {matrix-equal-to-book1-p} 
-to check if these two matrices are equivalent. If run with {NIL} as 
-an argument, this is all it does. If run with {T} as an argument (or 
-anything non {NIL}), it also produces a file with a side-to-side 
-comparison of each field in the two matrices."
+  "Temporarily creates a matrix with {book1} and a matrix induced
+by the new predicates, and uses the predicate 
+{matrix-equal-to-book1-p} to check if these two matrices are 
+equivalent. If run with {NIL} as an argument, this is all it does.
+If run with {T} as an argument (or anything non {NIL}), it also
+produces a file with a side-to-side comparison of each field in the
+two matrices."
   (let* ((book1  (make-book1))
 	 (graph  (make-graph-from-book1 book1))
 	 (matrix (fill-missing-positions-using-new-predicates 
 		   graph
 		   (make-minimal-matrix-from-graph graph))))
     (if (matrix-equivalent-to-book1-p matrix)
-	(format t "Matrices equivalent.")
-	;; The predicate will throw an error anyway if they are not
-	;; equivalent. 
+	(format t "Matrices equivalent.") 
 	(format t "Matrices NOT equivalent."))
     (if create-file?
 	(prog2 (print-comparison-file book1 matrix)

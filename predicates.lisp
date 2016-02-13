@@ -91,10 +91,10 @@ must be nodes."
 ;  (let ((book1 (make-book1)))
 ;    (make-array 
 
-(defun implication-p (node-i node-j matrix nodes graph-predicate boolean code)
-  (let* ((i (node-to-number node-i nodes))
-	 (j (node-to-number node-j nodes))
-	 (cached (aref matrix i j)))
+(defun implication-p (i j matrix nodes graph-predicate boolean code)
+  (let* ((cached (aref matrix i j))
+	 (node-i (gethash (number-to-node-name i) nodes))
+	 (node-j (gethash (number-to-node-name j) nodes)))
     (if (not (null cached))
 	(ecase cached
 	  ((1 2)  boolean)
