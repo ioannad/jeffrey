@@ -28,52 +28,53 @@
 	   :format-implications
 	   :number-to-node-name
 	   :node-name-to-number
-	   :print-graph))
+	   :print-graph
+	   :node-name-to-number
+	   :node-names
+	   :node-to-number
+	   :make-graph-from-book1
+	   :make-book1))
 
 (defpackage jeffrey.predicates
   (:use :common-lisp
-	:jeffrey.graph)
-  (:export :ancestors
-	   :implies-p
-	   :descendants
-	   :implies-not-p))
-
-
-(defpackage jeffrey.read-book1
-  (:use :common-lisp
-	:mpc :mpc.characters :mpc.numerals
 	:jeffrey.graph
 	:jeffrey.read)
-  (:export :make-graph-from-book1
-	   :make-book1))
-
-(defpackage jeffrey.test-book1
-  (:use :common-lisp
-	:mpc :mpc.characters :mpc.numerals
-	:jeffrey.graph
-	:jeffrey.read
-	:jeffrey.predicates
-	:jeffrey.read-book1)
-  (:export :test-predicates-with-book1))
+  (:export :*predicate-matrix*
+	   :implies-p
+	   :implies-not-p
+	   :make-minimal-matrix-from-graph))
 
 (defpackage jeffrey.read-forms
-  (:use :common-lisp :split-sequence
+  (:use :common-lisp
+	:split-sequence
 	:mpc :mpc.characters :mpc.numerals))
-
 
 (defpackage jeffrey.test
   (:use :common-lisp
-	:jeffrey.graph
+	:mpc :mpc.characters :mpc.numerals
+      	:jeffrey.graph
 	:jeffrey.read
-	:jeffrey.predicates
-	:jeffrey.read-book1)
+	:jeffrey.predicates)
   (:export :*simple-test-data*
 	   :test-read
 	   :setup-test
-	   :test-predicates))
+	   :test-predicates
+	   :test-predicates-with-book1))
 
 (defpackage jeffrey.draw
   (:use :common-lisp
 	:jeffrey.read
-	:jeffrey.read-book1)
+	:jeffrey.predicates)
   (:export :draw-graph))
+
+(defpackage jeffrey.main
+  (:use :common-lisp
+	:jeffrey.graph
+	:jeffrey.read
+	:jeffrey.draw))
+	
+
+(defpackage jeffrey
+  (:documentation "Hello!")
+  ;; ...
+  )

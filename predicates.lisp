@@ -11,55 +11,12 @@
 				     (node-parents node))))
       nil))
 
-#|
-timing of the above>
-
-CL-USER> (time (ancestors (call 'Form0)))
-Evaluation took:
-  0.000 seconds of real time
-  0.000000 seconds of total run time (0.000000 user, 0.000000 system)
-  100.00% CPU
-  28,127 processor cycles
-  0 bytes consed
-
-;;; This was previously "implies-p" but it's slower and longer
-
-(defun implies-p (X Y)
-  "Returns T if there is a path from X to Y in the transitive 
-closure of NODE-PARENTS path from X to Y, 
-otherwise returns NIL, which does not mean a non-implication. 
-X and Y should be nodes."
-  (check-type X node)
-  (check-type Y node)
-  (cond ((equal X Y)     T) ;; <-- Change to NIL if a strict partial order is necessary.
-;;      ((not (node-parents Y)) NIL)    ;; <-- Used to be necessary until I added 'Form1 as a
-                                        ;; parent to every parentless node that is not 'Form1.
-	((member X (node-parents Y)) T)
-	(T (let ((args (map 'list (lambda (Z) (implies-p X Z)) 
-			    (node-parents Y))))
-	     (eval `(or ,@args))))))
-    
-;;; Comparison to #'ancestors:
-
-CL-USER> (time (implies-p (call 'Form1) (call 'Form0)))
-
-Evaluation took:
-  0.000 seconds of real time
-  0.000000 seconds of total run time (0.000000 user, 0.000000 system)
-  100.00% CPU
-  3,927 processor cycles
-  0 bytes consed
-  
-T
-
-;; so they are similar yet ancestors looks better (and catches loops). So: |#
-
-(defun implies-p (X Y)
+(defun graph-implies-p (X Y)
   (member X (ancestors Y)))
 
 
 ;;; For implies-not-p I define the descendants of a node.
-;;; That is because the (implies-not-p Y X) holds (exactly??) if 
+;;; That is because the (implies-not-p Y X) holds  if 
 ;;; there is an edge with (edge-relation edge) = NIL 
 ;;; from an ancestor-or-equal of Y to a descendant-or-equal of X.
 
@@ -75,22 +32,7 @@ and the result will not include NODE."
 			      (node-children node) 
 			      (map 'list 
 				   #'descendants
-				   (node-children node)))))
-  )
-
-#| Time>
-CL-USER> (time (descendants (call 'Form1)))
-
-Evaluation took:
-  0.001 seconds of real time
-  0.000000 seconds of total run time (0.000000 user, 0.000000 system)
-  0.00% CPU
-  50,204 processor cycles
-  0 bytes consed
-|#
-
-;;; I will also use a predicate that tells me if there is an edge with 
-;;; :relation NIL from a Y to an X.
+				   (node-children node))))))
 
 (defun nil-edge-p (Y X)  ;; => NIL or nonempty list
   "Returns T if there is an edge in (node-edges Y) with :destination X
@@ -102,7 +44,7 @@ and :relation NIL. X and Y must be nodes."
 
 
 		  
-(defun implies-not-p (Y X)
+(defun graph-implies-not-p (Y X)
   "Returns T if there is a (relation NIL) from X to Y,
 or if there is a (relation T) path from Y to Z and from 
 W to X, and a (relation NIL) path from W to Z. X and Y
@@ -112,26 +54,73 @@ must be nodes."
 		(cons Y (ancestors Y))))
 	(cons X (descendants X))))
 
-#|
-(defun implies-not-p (Y X)
-  ;; Cache (ANCESTORS Y)
-  (let ((Y+ancestors (list* Y (ancestors Y))))
-    (flet ((ancestors-nil-edge-p (x-desc)
-	     (some (lambda (Y-anc) (nil-edge-P Y-anc X-desc))
-		   Y+ancestors)))
-      (some #'ancestors-nil-edge-p (list* X (descendants X))))))
-|#
+;;; 0 - unknown
+;;; 1 - direct implication
+;;; 2 - indirect implication
+;;; 3 - direct nonimplication
+;;; 4 - indirect nonimplication
 
-#| Time:
+(defun make-minimal-matrix-from-graph (nodes) ;=> matrix
+  "Returns a matrix with the NODES information."
+  ;; Goes through the nodes of the nodes,
+  (let* ((n      (1+ (hash-table-count nodes))) ;; 423 is missing.
+	 (matrix (make-array (list n n) :initial-element NIL)))
+    (loop for node-name being the hash-keys of nodes
+       using (hash-value node)
+       for i = (node-name-to-number node-name)
+       unless (equal i 423) ;; ignoring :FORM423.
+       do (if (node-edges node) ;; If a node has edges,
+	      ;; then for every edge in the node-edges, 
+	      (loop for edge in (node-edges node)
+		 do (let ((j (node-name-to-number 
+			      (gethash (edge-destination edge)
+				       (node-names nodes)))))
+		      ;; and if its relation is T or if i=j
+		      ;; set m-i-j = 1
+		      (if (or (edge-relation edge)
+			      (equal i j))
+			  (setf (aref matrix i j) 1)
+			  ;; else the relation will be NIL so
+			  ;; set m-i-j = 3.
+			(setf (aref matrix i j) 3))))
+	      NIL))
+    matrix))
 
-CL-USER> (time (implies-not-p (call 'g) (call 'Form1)))
-Evaluation took:
-  0.000 seconds of real time
-  0.000000 seconds of total run time (0.000000 user, 0.000000 system)
-  100.00% CPU
-  93,708 processor cycles
-  4,096 bytes consed
 
-|#
+;(defvar *predicate-matrix*
+;  (let ((book1 (make-book1)))
+;    (make-array 
 
+(defun implication-p (node-i node-j matrix nodes graph-predicate boolean code)
+  (let* ((i (node-to-number node-i nodes))
+	 (j (node-to-number node-j nodes))
+	 (cached (aref matrix i j)))
+    (if (not (null cached))
+	(ecase cached
+	  ((1 2)  boolean)
+	  ((3 4)  (not boolean))
+	  ((0)    nil))
+	;; if the matrix has nothing, ask implies-p and update the matrix.
+	(when (funcall graph-predicate node-i node-j)
+	  (setf (aref matrix i j) code)
+	  t))))
 
+(defun implies-p (node-i node-j matrix nodes)
+  "Assume that {node-i} and {node-j} have the numbers {i} and {j} 
+in their hash-keys in {nodes}. This function first checks if 
+{matrix} has a code in row i, column j (say position {m-i-j}), in 
+which case it answers according to that code. If the matrix is not 
+filled in at position {m-i-j} then this function asks 
+{:jeffrey.predicates.implies-p}, and fills m-i-j in {matrix} with
+code 2."
+  (implication-p node-i node-j matrix nodes 'graph-implies-p t 2))
+
+(defun implies-not-p (node-i node-j matrix nodes)
+    "Assume that {node-i} and {node-j} have the numbers {i} and {j} 
+in their hash-keys in {nodes}. This function first checks if {matrix}
+has a code in row i, column j (say position {m-i-j}), in which case 
+it answers according to that code. If the matrix is not filled in at 
+position {m-i-j} then this function asks 
+{:jeffrey.predicates.implies-not-p}, and fills m-i-j in {matrix} with
+code 4."
+    (implication-p node-i node-j matrix nodes 'graph-implies-not-p nil 4))

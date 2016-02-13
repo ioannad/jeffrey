@@ -1,4 +1,4 @@
-# Choiceless grapher #
+# Choiceless grapher 
 
 This is the early stage of a program which creates diagrams with the relationships between consequences of the Axiom of Choice. This project is inspired by the encyclopedia of Set Theory without the Axiom of Choice:
                           **Consequences of the Axiom of Choice Project**
@@ -6,7 +6,7 @@ by Prof. Paul Howard and Prof. Jean E. Rubin. I thank Paul Howard for providing 
 
 A quick overview is given below. A paper with a full description and explanation of the code will appear after I upload the diagram drawing part of this program. A big *thank you* to my Common-Lisp teacher, Max Rottenkolber, for coming up with the graph-structure for this program, for naming Jeffrey, and for his lessons and advice. 
 
-# Description
+## Description
 This program requires package "mpc" and "split-sequence". Quicklisp should be able to quickload these. 
 
 **jeffrey.asd** contains the (defsystem ...) command that creates "jeffrey" as a system of packages. The files that comprise jeffrey's packages and their dependencies are listed in **packages.lisp**.
