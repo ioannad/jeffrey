@@ -172,7 +172,8 @@ column respectively."
   "Book1 is a list of one or more rows."
   (=one-or-more (=row)))
 
-(defvar *local-directory* "~/quicklisp/local-projects/jeffrey1/")
+(defvar *local-directory*
+  "/home/ioa/quicklisp/local-projects/jeffrey1/")
 
 (defun read-book1 ()
   "Parses book1 and returns a list of rows, i.e., a list of lists
