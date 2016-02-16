@@ -60,7 +60,8 @@
 	   :test-read
 	   :setup-test
 	   :test-predicates
-	   :test-predicates-with-book1))
+	   :test-predicates-with-book1
+	   :test-all))
 
 (defpackage jeffrey.draw
   (:use :common-lisp
