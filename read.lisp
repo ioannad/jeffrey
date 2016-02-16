@@ -81,13 +81,13 @@ relation T. NODE must be a node."
 (defun graph-to-implications (nodes)
   "Returns a list of all implications resulting from the graph stored 
 in NODES."
-  (let ((node-names (make-hash-table)))
+  (let ((names (node-names nodes)))
     ;; Compile implications
     (loop for name being the hash-keys of nodes
-       for node = (gethash name nodes)
+       using (hash-value node)
        append (loop for edge in (node-edges node)
 		 collect `(,name
-			   ,(gethash (edge-destination edge) node-names)
+			   ,(gethash (edge-destination edge) names)
 			   ,(edge-relation edge))))))
 
 (defun print-graph (nodes)

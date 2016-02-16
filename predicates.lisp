@@ -63,8 +63,8 @@ must be nodes."
 (defun make-minimal-matrix-from-graph (nodes) ;=> matrix
   "Returns a matrix with the NODES information."
   ;; Goes through the nodes of the nodes,
-  (let* ((n      (1+ (hash-table-count nodes))) ;; 423 is missing.
-	 (matrix (make-array (list n n) :initial-element NIL)))
+  (let* ((matrix (make-array '(431 431)
+			     :initial-element NIL))
     (loop for node-name being the hash-keys of nodes
        using (hash-value node)
        for i = (node-name-to-number node-name)
@@ -84,17 +84,17 @@ must be nodes."
 			  ;; set m-i-j = 3.
 			(setf (aref matrix i j) 3))))
 	      NIL))
-    matrix))
+    matrix)))
 
+(defvar *predicate-matrix* (make-array '(431 431) :initial-element NIL)
+  "Book1 has 431 rows/columns, so we won't need a larger matrix than that.")
 
-;(defvar *predicate-matrix*
-;  (let ((book1 (make-book1)))
-;    (make-array 
-
-(defun implication-p (i j matrix nodes graph-predicate boolean code)
-  (let* ((cached (aref matrix i j))
-	 (node-i (gethash (number-to-node-name i) nodes))
-	 (node-j (gethash (number-to-node-name j) nodes)))
+(defun implication-p (node-i node-j graph-predicate boolean code)
+  (let* ((i (node-name-to-number
+	     (gethash   node-i   (node-names *nodes*))))
+	 (j (node-name-to-number
+	     (gethash   node-j   (node-names *nodes*))))
+	 (cached (aref *predicate-matrix* i j)))
     (if (not (null cached))
 	(ecase cached
 	  ((1 2)  boolean)
@@ -102,10 +102,10 @@ must be nodes."
 	  ((0)    nil))
 	;; if the matrix has nothing, ask implies-p and update the matrix.
 	(when (funcall graph-predicate node-i node-j)
-	  (setf (aref matrix i j) code)
+	  (setf (aref *predicate-matrix* i j) code)
 	  t))))
 
-(defun implies-p (node-i node-j matrix nodes)
+(defun implies-p (node-i node-j)
   "Assume that {node-i} and {node-j} have the numbers {i} and {j} 
 in their hash-keys in {nodes}. This function first checks if 
 {matrix} has a code in row i, column j (say position {m-i-j}), in 
@@ -113,9 +113,9 @@ which case it answers according to that code. If the matrix is not
 filled in at position {m-i-j} then this function asks 
 {:jeffrey.predicates.implies-p}, and fills m-i-j in {matrix} with
 code 2."
-  (implication-p node-i node-j matrix nodes 'graph-implies-p t 2))
+  (implication-p node-i node-j 'graph-implies-p t 2))
 
-(defun implies-not-p (node-i node-j matrix nodes)
+(defun implies-not-p (node-i node-j)
     "Assume that {node-i} and {node-j} have the numbers {i} and {j} 
 in their hash-keys in {nodes}. This function first checks if {matrix}
 has a code in row i, column j (say position {m-i-j}), in which case 
@@ -123,4 +123,4 @@ it answers according to that code. If the matrix is not filled in at
 position {m-i-j} then this function asks 
 {:jeffrey.predicates.implies-not-p}, and fills m-i-j in {matrix} with
 code 4."
-    (implication-p node-i node-j matrix nodes 'graph-implies-not-p nil 4))
+    (implication-p node-i node-j 'graph-implies-not-p nil 4))
