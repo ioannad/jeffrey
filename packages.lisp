@@ -1,40 +1,38 @@
 (defpackage jeffrey.graph 
   (:use :common-lisp)
-  (:export :make-node
+  (:export :*graph*
+	   :make-node
+	   :node-name
 	   :node-edges
 	   :node-parents
+	   :node-LaTeX
+	   :node-references
 	   :node-attributes
 	   :add-edge
 	   :add-parent
 	   :make-edge
 	   :edge-destination
 	   :edge-relation
-	   :edge-attributes
-	   ))
+	   :edge-attributes))
+
+(defpackage jeffrey.parse
+  (:use    :common-lisp
+	   :split-sequence
+	   :mpc :mpc.characters :mpc.numerals)
+  (:export :collect-forms
+	   :=book1))
 
 (defpackage jeffrey.read
   (:use :common-lisp
 	:jeffrey.graph
+	:jeffrey.parse
 	:mpc :mpc.characters :mpc.numerals)
-  (:export :implication-nodes
-	   :node-names
-	   :implications-to-graph
-	   :graph-to-implications
-	   :*nodes*
-	   :call
-	   :add-top-bottom
-	   :Form1
-	   :Form0
-	   :format-implications
-	   :number-to-node-name
-	   :node-name-to-number
-	   :print-graph
-	   :node-name-to-number
-	   :node-names
-	   :node-to-number
-	   :make-graph-from-book1
-	   :*local-directory*
-	   :make-book1))
+  (:export :*local-directory*
+	   :*bad-forms*     ;; for testing only
+	   :matrix-to-graph ;; for testing only
+	   :add-top-bottom  ;; for testing only
+	   :read-all-data
+	   :call))
 
 (defpackage jeffrey.predicates
   (:use :common-lisp
@@ -44,11 +42,6 @@
 	   :implies-p
 	   :implies-not-p
 	   :make-minimal-matrix-from-graph))
-
-(defpackage jeffrey.read-forms
-  (:use :common-lisp
-	:split-sequence
-	:mpc :mpc.characters :mpc.numerals))
 
 (defpackage jeffrey.test
   (:use :common-lisp
