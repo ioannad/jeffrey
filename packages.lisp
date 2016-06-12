@@ -32,13 +32,14 @@
 	   :matrix-to-graph ;; for testing only
 	   :add-top-bottom  ;; for testing only
 	   :read-all-data
+	   :print-graph
 	   :call))
 
 (defpackage jeffrey.predicates
   (:use :common-lisp
 	:jeffrey.graph
 	:jeffrey.read)
-  (:export :*predicate-matrix*
+  (:export :*jeff-matrix*
 	   :implies-p
 	   :implies-not-p
 	   :make-minimal-matrix-from-graph))
@@ -49,12 +50,7 @@
       	:jeffrey.graph
 	:jeffrey.read
 	:jeffrey.predicates)
-  (:export :*simple-test-data*
-	   :test-read
-	   :setup-test
-	   :test-predicates
-	   :test-predicates-with-book1
-	   :test-all))
+  (:export :test-all))
 
 (defpackage jeffrey.draw
   (:use :common-lisp

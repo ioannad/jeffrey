@@ -1,6 +1,6 @@
 (in-package :jeffrey.read)
 
-(defvar *local-directory* "/home/ioa/quicklisp/local-projects/jeffrey/")
+(defvar *local-directory* "~/quicklisp/local-projects/jeffrey/")
 
 (defvar *bad-forms* '(423 374)
   "These two forms are removed until I figure out how to deal with
@@ -55,8 +55,7 @@ book1."
   "This function adds an edge with destination `node-b` and relation `T`
 to `node-a` in `graph`, and it adds `node-a` to the list of parents of `node-b`."
   (add-edge node-a (make-edge node-b T))
-  (add-parent node-b node-a)
-  (format t "adding T-edge and parent from ~a to ~a.~%" node-a node-b))
+  (add-parent node-b node-a))
 
 (defun add-appropriate-edge (node-a node-b code graph)
   "If `code` = 1 and `node-a` is not `node-b`, this adds a T-edge
@@ -67,8 +66,7 @@ Else NIL."
 	      (not (equal node-a node-b)))
 	 (add-edge-and-parent node-a node-b graph))
 	((equal code 3)
-	 (add-edge node-a (make-edge node-b NIL))
-	 (format t "Added NIL-edge from ~a to ~a.~%" node-a node-b))
+	 (add-edge node-a (make-edge node-b NIL)))
 	(T NIL)))
 
 (defun matrix-to-graph (matrix graph) ;=> hash-table (graph)
@@ -92,8 +90,7 @@ parents of node 0, the bottom node of the graph."
   (let ((node-0 (gethash 0 graph)))
     (unless (or (some #'edge-relation (node-edges node))
 		(equal node node-0))
-      (add-edge-and-parent node node-0 graph)
-      (format t "Adding edge from ~a to node 0.~%" node))))
+      (add-edge-and-parent node node-0 graph))))
 
 (defun add-top-node (node graph)
   "Unless `node` is node-1 or it has parents, add node-1 as a parent 
@@ -101,8 +98,7 @@ and add an edge to node-1 with destination `node` and relation T."
   (let ((node-1 (gethash 1 graph))) 
     (unless (or (node-parents node) 
 		(equal node node-1)) 
-      (add-edge-and-parent node-1 node graph)
-      (format t "Added edge from node 1 to ~a.~%" node))))
+      (add-edge-and-parent node-1 node graph))))
 
 (defun add-top-bottom (graph)
   "Takes a graph (a hash table of nodes). Returns `graph` after
