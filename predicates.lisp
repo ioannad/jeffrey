@@ -1,54 +1,76 @@
 (in-package :jeffrey.predicates)
 
+#| 
+# predicates.lisp
+
+This package contains the predicates that, given the code 1 and 
+code 3 implications from book1, can decide whether an arbitrary 
+form A implies another B, or not implies B, or that it is unknown 
+whether it implies B.
+
+## (implies-p A B)
+
+The easiest way to decide whether A implies B is to check if there is
+a path from A to B, i.e., to check whether A is B's ancestor.
+
+## (implies-not-p A B)
+
+The easiest way to decide whether A does not imply B is to check 
+if there is an edge, with (edge-relation edge) = NIL, from an 
+ancestor-or-equal A-anc of A to a descendant-or-equal B-desc of B. 
+Otherwise, if A did imply B, then 
+A-anc implies A implies B implies B-desc,
+therefore A-anc implies B-anc, which is a contradiction to the edge 
+with relation NIL between A-anc and B-desc.
+
+### Implementation
+
+To collect so many ancestors and descendants, every time one asks 
+these predicates is simple but inefficient, especially for 
+implies-not-p. I use the matrix `*jeff-matrix*` to store the answers
+of the simple and overseeable versions of implies-p and implies-not-p.
+|#
+
+(defvar *jeff-matrix* (make-array '(431 431) :initial-element NIL)
+  "This matrix is meant to store the answers of the predicates 
+`implies-p` and `implies-not-p`.")
 
 (defun ancestors (node) ;; => list
   "Returns the list of strict ancestors of NODE."
-  ;; somehow it stopped working for :FORM1??
-  (if (node-parents node) 
-      (remove-duplicates (apply #'append (node-parents node)
-				(map 'list 
-				     #'ancestors 
-				     (node-parents node))))
-      nil))
+  (when (node-parents node) 
+    (remove-duplicates 
+     (apply #'append
+	    (node-parents node)
+	    (map 'list #'ancestors (node-parents node))))))
 
 (defun graph-implies-p (X Y)
   (member X (ancestors Y)))
 
-
-;;; For implies-not-p I define the descendants of a node.
-;;; That is because the (implies-not-p Y X) holds  if 
-;;; there is an edge with (edge-relation edge) = NIL 
-;;; from an ancestor-or-equal of Y to a descendant-or-equal of X.
-
 (defun descendants (node)
-  "Returns a list of all Ys such that there is a path of 
-edges with (edge-relation edge) = T from NODE to Y. NODE must be a node
-and the result will not include NODE."
+  "Returns a list of all Y such that there is a path of edges with 
+`(edge-relation edge) = T` from `node` to Y. The result will not include
+`node`."
   (flet ((node-children (X) ;;Maybe belongs to graph package?
-	   (map 'list #'edge-destination 
+	   (map 'list
+                #'edge-destination 
 		;; Take just the edges with relation T
-		(remove-if-not #'edge-relation (node-edges X))))) 
-    (remove-duplicates (apply #'append 
-			      (node-children node) 
-			      (map 'list 
-				   #'descendants
-				   (node-children node))))))
+		(remove-if-not #'edge-relation (node-edges X)))))
+    (remove-duplicates
+     (apply #'append 
+	    (node-children node) 
+	    (map 'list #'descendants (node-children node))))))
 
 (defun nil-edge-p (Y X)  ;; => NIL or nonempty list
   "Returns T if there is an edge in (node-edges Y) with :destination X
-and :relation NIL. X and Y must be nodes."
+and :relation NIL."
   (some (lambda (edge)
 	  (and (eq X (edge-destination edge))
 	       (not (edge-relation edge))))
 	(node-edges Y)))
 
-
-		  
 (defun graph-implies-not-p (Y X)
-  "Returns T if there is a (relation NIL) from X to Y,
-or if there is a (relation T) path from Y to Z and from 
-W to X, and a (relation NIL) path from W to Z. X and Y
-must be nodes."
+  "Returns T if there is a (relation NIL) from Y to X, or if there is
+an ancestor Y-anc of Y, with a NIL-edge to a descendant X-desc of X."
   (some (lambda (X-desc) 
 	  (some (lambda (Y-anc) (nil-edge-P Y-anc X-desc))
 		(cons Y (ancestors Y))))
@@ -60,67 +82,31 @@ must be nodes."
 ;;; 3 - direct nonimplication
 ;;; 4 - indirect nonimplication
 
-(defun make-minimal-matrix-from-graph (nodes) ;=> matrix
-  "Returns a matrix with the NODES information."
-  ;; Goes through the nodes of the nodes,
-  (let* ((matrix (make-array '(431 431)
-			     :initial-element NIL))
-    (loop for node-name being the hash-keys of nodes
-       using (hash-value node)
-       for i = (node-name-to-number node-name)
-       unless (equal i 423) ;; ignoring :FORM423.
-       do (if (node-edges node) ;; If a node has edges,
-	      ;; then for every edge in the node-edges, 
-	      (loop for edge in (node-edges node)
-		 do (let ((j (node-name-to-number 
-			      (gethash (edge-destination edge)
-				       (node-names nodes)))))
-		      ;; and if its relation is T or if i=j
-		      ;; set m-i-j = 1
-		      (if (or (edge-relation edge)
-			      (equal i j))
-			  (setf (aref matrix i j) 1)
-			  ;; else the relation will be NIL so
-			  ;; set m-i-j = 3.
-			(setf (aref matrix i j) 3))))
-	      NIL))
-    matrix)))
-
-(defvar *predicate-matrix* (make-array '(431 431) :initial-element NIL)
-  "Book1 has 431 rows/columns, so we won't need a larger matrix than that.")
-
 (defun implication-p (node-i node-j graph-predicate boolean code)
-  (let* ((i (node-name-to-number
-	     (gethash   node-i   (node-names *nodes*))))
-	 (j (node-name-to-number
-	     (gethash   node-j   (node-names *nodes*))))
-	 (cached (aref *predicate-matrix* i j)))
+  (let* ((name-i (node-name node-i))
+	 (name-j (node-name node-j))
+	 (cached (aref *jeff-matrix* name-i name-j)))
     (if (not (null cached))
 	(ecase cached
 	  ((1 2)  boolean)
 	  ((3 4)  (not boolean))
 	  ((0)    nil))
-	;; if the matrix has nothing, ask implies-p and update the matrix.
 	(when (funcall graph-predicate node-i node-j)
-	  (setf (aref *predicate-matrix* i j) code)
+	  (setf (aref *jeff-matrix* name-i name-j) code)
 	  t))))
 
 (defun implies-p (node-i node-j)
-  "Assume that {node-i} and {node-j} have the numbers {i} and {j} 
-in their hash-keys in {nodes}. This function first checks if 
-{matrix} has a code in row i, column j (say position {m-i-j}), in 
-which case it answers according to that code. If the matrix is not 
-filled in at position {m-i-j} then this function asks 
-{:jeffrey.predicates.implies-p}, and fills m-i-j in {matrix} with
-code 2."
+  "This takes two nodes with names say i and j, checks if 
+*jeff-matrix* is filled in at the field (i,j), in which case it 
+answers according to that code. Otherwise it asks `graph-implies-p`,
+and if the answer is `T`, it fills (i,j) with code 2, otherwise does
+nothing."
   (implication-p node-i node-j 'graph-implies-p t 2))
 
 (defun implies-not-p (node-i node-j)
-    "Assume that {node-i} and {node-j} have the numbers {i} and {j} 
-in their hash-keys in {nodes}. This function first checks if {matrix}
-has a code in row i, column j (say position {m-i-j}), in which case 
-it answers according to that code. If the matrix is not filled in at 
-position {m-i-j} then this function asks 
-{:jeffrey.predicates.implies-not-p}, and fills m-i-j in {matrix} with
-code 4."
+    "Similarly, this takes two nodes with names say i and j, checks 
+if *jeff-matrix* is filled in at the field (i,j), in which case it 
+answers according to that code. Otherwise it asks 
+`graph-implies-not-p`, and if the answer is `T`, it fills (i,j) with 
+code 2, otherwise does nothing."
     (implication-p node-i node-j 'graph-implies-not-p nil 4))
