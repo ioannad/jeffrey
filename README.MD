@@ -1,7 +1,6 @@
 # Choiceless grapher 
 
-This is the early stage of a program which creates diagrams with the relationships between consequences of the axiom of choice. This project is inspired by the **Consequences of the Axiom of Choice Project**, 
-the encyclopedia of set theory without the axiom of choice, by *Prof. Paul Howard and Prof. Jean E. Rubin*. I thank Paul Howard for providing me with the original implication matrix (book1), a tex document with the form statements in LaTeX form, and permision to use these files, which can be found in the folder "Howard-Rubin-data".
+This is the early stage of a program which creates diagrams with the relationships between consequences of the axiom of choice. This project is inspired by and based on the **Consequences of the Axiom of Choice Project**, the encyclopedia of set theory without the axiom of choice, by *Prof. Paul Howard and Prof. Jean E. Rubin*. I thank Paul Howard for providing me with the original implication matrix (book1), a tex document with the form statements in LaTeX form, and permision to use these files, which can be found in the folder "Howard-Rubin-data".
 
 A quick overview is given below. A paper with a full description and explanation of the code will appear after I upload the diagram drawing part of this program. A big *thank you* to my teammate Max Rottenkolber over at [interstellar ventures](http://inters.co). 
 
