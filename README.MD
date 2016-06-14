@@ -20,13 +20,17 @@ To load the **Choiceless Grapher**, open an SBCL Common Lisp REPL (I haven't tes
 
 ## Usage
 You can draw diagrams with this program by loading its main package :jeffrey.main, i.e. 
+
 `(ql:quickload "jeffrey")` and `(in-package :jeffrey.main)`. 
 
 Now if '(a b c ..) is the list of form numbers (numbers without parameters), then type in 
+
 `(graph '(a b c ...) "filename")`. 
 
 **At the moment,** calling tred and dot from SBCL doesn't work, so afterwards you'll have to open a terminal and type 
+
 `tred filename.dot  | dot -Tpdf -o filename.pdf`
+
 or `tred filename.dot  | dot -Tpng -o filename.png` if you would like a png file. 
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
