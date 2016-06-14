@@ -22,20 +22,6 @@
       (set-code 0 9 nil))
     matrix))
 
-(defun graph-to-matrix (graph) ;=> matrix
-  "Returns a matrix with the NODES information."
-  (let ((matrix (make-array '(431 431) :initial-element NIL)))
-    (loop for name-1 being the hash-keys of graph
-       using (hash-value node-1)
-       unless #2=(member name-1 *bad-forms*)
-       when   #1=(node-edges node-1)
-       do (loop for edge in #1#
-	     for name-2 = #3=(node-name (edge-destination edge))
-	     do (if (edge-relation edge)
-		    (setf (aref matrix name-1 name-2) 1)
-		    (setf (aref matrix name-1 name-2) 3))))
-    matrix))
-
 (defun setup-test-graph ()
   (format t "Initializing *graph* only with node-names...~%")
   (setf *graph* (make-hash-table))
@@ -126,8 +112,12 @@
 	     for jeff-code = (aref matrix i j)
 	     for book-code = (aref book1-matrix i j)
 	     unless (member j *bad-forms*)
-	     do (assert (member '(jeff-code book-code)
-					      ok-pairs)))))
+	     do (assert (member #1=(list jeff-code book-code)
+				ok-pairs
+				:test #'equal)
+			()
+			"Wrong code in place (~a,~a) => ~a"
+			i j #1#))))
   (format t "Passed test-matrix-equivalency.~%"))
 
 (defun test-all ()
@@ -143,5 +133,6 @@
   ;; book1
   (format t "Testing equivalence of the filled out *jeff-matrix* with book1...~%")
   (let ((book1-matrix (read-all-data)))
+    (setup-jeff-matrix *graph*)
     (fill-missing-positions-using-predicates *graph*)
-    (test-matrix-equivalency *jeff-matrix* *book1-matrix*)))
+    (test-matrix-equivalency *jeff-matrix* book1-matrix)))
