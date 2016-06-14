@@ -28,12 +28,21 @@ with relation NIL between A-anc and B-desc.
 To collect so many ancestors and descendants, every time one asks 
 these predicates is simple but inefficient, especially for 
 implies-not-p. I use the matrix `*jeff-matrix*` to store the answers
-of the simple and overseeable versions of implies-p and implies-not-p.
+of the simple and overseeable but slow predicates graph-implies-p 
+and graph-implies-not-p.
 |#
 
-(defvar *jeff-matrix* (make-array '(431 431) :initial-element NIL)
+(defvar *jeff-matrix* (make-array '(430 430) :initial-element NIL)
   "This matrix is meant to store the answers of the predicates 
 `implies-p` and `implies-not-p`.")
+
+(defun setup-jeff-matrix (graph)
+  "Prepares *jeff-matrix* with the information from `graph`, and some
+obvious predicate answers."
+  (setf *jeff-matrix* (graph-to-matrix graph))
+  (loop for name being the hash-keys of graph
+     do (setf (aref *jeff-matrix* name 0) 1)
+       (setf (aref *jeff-matrix* 1 name) 1)))	
 
 (defun ancestors (node) ;; => list
   "Returns the list of strict ancestors of NODE."
@@ -44,7 +53,7 @@ of the simple and overseeable versions of implies-p and implies-not-p.
 	    (map 'list #'ancestors (node-parents node))))))
 
 (defun graph-implies-p (X Y)
-  (member X (ancestors Y)))
+  (member X (cons Y (ancestors Y))))
 
 (defun descendants (node)
   "Returns a list of all Y such that there is a path of edges with 
