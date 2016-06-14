@@ -62,8 +62,10 @@
 
 (defpackage jeffrey.draw
   (:use :common-lisp
+	:jeffrey.graph
 	:jeffrey.read
-	:jeffrey.predicates)
+	:jeffrey.predicates
+	:split-sequence)
   (:export :draw-graph)
   (:documentation "<PACKAGE UNDER PRODUCTION> Draws diagrams with the command (draw a b c d ...) where a b c d ... is a space separated list of natural numbers up to 430, excluding 423 and 374 for the moment. Requires the database, i.e., *graph* to be loaded and *jeff-matrix* initiated. Normal users please use the :jeffrey.main package."))
 
