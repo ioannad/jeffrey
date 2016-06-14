@@ -12,7 +12,7 @@ Install this package using quicklisp ([installation instructions](https://www.qu
 * Create a folder called `jeffrey` in `quicklisp/local-projects/`,
 * Navigate to this folder in a terminal and type `git init` and `git clone git@github.com:ioannad/jeffrey.git`. Alternatively otherwise download the contents of this repository to this folder. 
 
-To produce a diagram, open an SBCL Common Lisp REPL (I haven't tested it yet in other Common-Lisp implementations, please let me know if it works!). Then type in `(ql:quickload "jeffrey")`. Then choose a package you'd like to use, for example to run all tests and read the report type in `(in-package :jeffrey.test)` and then type in `(test-all)`.
+To load the **Choiceless Grapher**, open an SBCL Common Lisp REPL (I haven't tested it yet in other Common-Lisp implementations, please let me know if it works!). Then type in `(ql:quickload "jeffrey")`. Then choose a package you'd like to use, for example to run all tests and read the report type in `(in-package :jeffrey.test)` and then type in `(test-all)`.
 
 ## Description
 This program requires package "mpc" and "split-sequence". In the to-do list is to change mpc to maxpc, the new version of mpc.
