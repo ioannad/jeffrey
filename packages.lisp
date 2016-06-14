@@ -66,16 +66,17 @@
 	:jeffrey.read
 	:jeffrey.predicates
 	:split-sequence)
-  (:export :draw-graph)
-  (:documentation "<PACKAGE UNDER PRODUCTION> Draws diagrams with the command (draw a b c d ...) where a b c d ... is a space separated list of natural numbers up to 430, excluding 423 and 374 for the moment. Requires the database, i.e., *graph* to be loaded and *jeff-matrix* initiated. Normal users please use the :jeffrey.main package."))
+  (:export :draw)
+  (:documentation "Draws diagrams with the command `(draw '(a b c d ...) \"filename\")` where `'(a b c d ...)` is a list of natural numbers up to 430, excluding 360, and 423 and 374 for the moment. Requires the database, i.e., *graph* to be loaded and *jeff-matrix* initiated. Normal users please use the :jeffrey.main package."))
 
 (defpackage jeffrey.main
   (:use :common-lisp
 	:jeffrey.graph
 	:jeffrey.read
+	:jeffrey.predicates
 	:jeffrey.draw)
   (:export :main)
-  (:documentation "<PACKAGE UNDER PRODUCTION> Install this package using quicklisp (installation instructions for quicklisp can be found in https:////www.quicklisp.org//beta//#installation) and git (https:////git-scm.com//book//en//v2//Getting-Started-Installing-Git) as follows:
+  (:documentation "Install this package using quicklisp (installation instructions for quicklisp can be found in https:////www.quicklisp.org//beta//#installation) and git (https:////git-scm.com//book//en//v2//Getting-Started-Installing-Git) as follows:
 
 * Create a folder called `jeffrey` in `quicklisp//local-projects//`,
 * Navigate to this folder in a terminal and type `git init` and `git clone git@github.com:ioannad//jeffrey.git`. Alternatively otherwise download the contents of this repository to this folder. 
