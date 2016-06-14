@@ -22,10 +22,13 @@ equivalent forms.
     text))
 
 (defun separate-forms-rough (list-of-strings)
-  "Takes the list of words created by {read-formsnum} and returns 
+  "Takes the list of words created by `read-formsnum` and returns 
 a list of lists of words, each these lists containing one form and 
 its equivalent statements."
-  (split-sequence "\\noindent{\\bf" list-of-strings :test #'equal))
+  (split-sequence-if 
+   (lambda (word) (or (equal word "\\noindent{\\bf")
+		      (equal word "\\noindent")))
+   list-of-strings))
 
 (defun separate-equivalent-forms (rough-forms)
   "Takes the list of lists containing the forms created by 
@@ -35,8 +38,9 @@ lists of words contains only the main form number, the LaTeX-
 formatted statement, and perhaps some references. "
   (let ((forms-list nil))
     (loop for item in rough-forms
-       when (equal (first item)
-		   "FORM")
+       when (or (equal (first item)       "FORM")
+		(and (equal (first item)  "{\\bf")
+		     (equal (second item) "FORM")))
        do (push
 	   (split-sequence "\\item{}{\\bf"
 			   item :test #'equal) forms-list))
