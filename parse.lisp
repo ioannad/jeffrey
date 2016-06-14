@@ -100,19 +100,22 @@ which satisfy {predicate}, with spaces in between."
 
 ;; For the moment we ignore the equivalent forms. 
 (defun get-main-form (main-form) ;;=> '(form-number LaTeX-statement references)
-  (let* ((references (member-if (lambda (string)
+  (let* ((form-name (if (equal (second main-form) "FORM") ;;due to stupid parsing 
+			(string-trim ".}" (third main-form))
+			(string-trim ".}" (second main-form))))
+	 (references (member-if (lambda (string)
 				  (run (=reference-beginning) string))
 				main-form))
 	 (n          (length references))
 	 (LaTeX      (cddr (butlast main-form n))))
-    (list (string-trim ".}" (second main-form))
+    (list form-name
 	  (zip-strings-if (lambda (string) (eql string string))
 			  (drop-badstrings LaTeX))
 	  (zip-strings-if (lambda (string) (not (form-delimiter-p string)))
 			  (drop-badstrings references)))))
 
-    ;; the first elements of the lists representing all forms
-    ;; in formsnum contain the main form number and statement.
+;; the first elements of the lists representing all forms
+;; in formsnum contain the main form number and statement.
 
 (defun read-forms-rough (file)
   "Reads in the `file` (should be //Howard-Rubin-data//FORMSNUM.TEX) 
