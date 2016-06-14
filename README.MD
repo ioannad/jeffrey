@@ -1,7 +1,6 @@
 # Choiceless grapher 
 
-This is the early stage of a program which creates diagrams with the relationships between consequences of the axiom of choice. This project is inspired by the                       
- **Consequences of the Axiom of Choice Project**, 
+This is the early stage of a program which creates diagrams with the relationships between consequences of the axiom of choice. This project is inspired by the **Consequences of the Axiom of Choice Project**, 
 the encyclopedia of set theory without the axiom of choice, by *Prof. Paul Howard and Prof. Jean E. Rubin*. I thank Paul Howard for providing me with the original implication matrix (book1), a tex document with the form statements in LaTeX form, and permision to use these files, which can be found in the folder "Howard-Rubin-data".
 
 A quick overview is given below. A paper with a full description and explanation of the code will appear after I upload the diagram drawing part of this program. A big *thank you* to my teammate Max Rottenkolber over at [interstellar ventures](http://inters.co). 
@@ -10,7 +9,7 @@ A quick overview is given below. A paper with a full description and explanation
 Install this package using quicklisp ([installation instructions](https://www.quicklisp.org/beta/#installation)) and git ([installation instructions](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)) as follows:
 
 * Create a folder called `jeffrey` in `quicklisp/local-projects/`,
-* Navigate to this folder in a terminal and type `git init` and `git clone git@github.com:ioannad/jeffrey.git`. Alternatively otherwise download the contents of this repository to this folder. 
+* Navigate to this folder in a terminal and type `git init` and `git clone git@github.com:ioannad/jeffrey.git`. Alternatively otherwise download the cohntents of this repository to this folder. 
 
 To load the **Choiceless Grapher**, open an SBCL Common Lisp REPL (I haven't tested it yet in other Common-Lisp implementations, please let me know if it works!). Then type in `(ql:quickload "jeffrey")`. Then choose a package you'd like to use, for example to run all tests and read the report type in `(in-package :jeffrey.test)` and then type in `(test-all)`.
 
