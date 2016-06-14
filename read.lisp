@@ -83,6 +83,21 @@ respectively."
 	   do (add-appropriate-edge node-i node-j #1# graph)))
   graph)
 
+(defun graph-to-matrix (graph) ;=> matrix
+  "Returns a matrix with the NODES information."
+  (let ((matrix (make-array '(431 431) :initial-element NIL)))
+    (loop for name-1 being the hash-keys of graph
+       using (hash-value node-1)
+       unless (member name-1 *bad-forms*)
+       do (setf (aref matrix name-1 name-1) 1) 
+	 (when #1=(node-edges node-1)
+	       (loop for edge in #1#
+		  for name-2 = (node-name (edge-destination edge))
+		  do (if (edge-relation edge)
+			 (setf (aref matrix name-1 name-2) 1)
+			 (setf (aref matrix name-1 name-2) 3)))))
+    matrix))
+
 (defun add-bottom-node (node graph)
   "Unless `node` has edges or it is node 0, add an edge to `node` 
 with :destination node-0 :relation T, and also add `node` to the 
