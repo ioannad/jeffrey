@@ -2,9 +2,11 @@
 
 (defvar *local-directory* "~/quicklisp/local-projects/jeffrey/")
 
-(defvar *bad-forms* '(423 374)
+(defvar *bad-forms* '(423 374 383)
   "These two forms are removed until I figure out how to deal with
-them. Form 423 is equivalent to form 374.")
+them. Form 423 is equivalent to form 374. For 383, FORMSNUM.TEX says:
+\"NOTE that 383 and 232 are equivalent. Therefore, 383, and 
+[383 A]- [383 C] have become [232 H]-[232 K]\".")
 
 #| 
 I will need to iterate over all forms from 0 to 430 that are not in
