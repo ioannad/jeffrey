@@ -23,7 +23,7 @@ You can draw diagrams with this program by loading its main package :jeffrey.mai
 
 `(ql:quickload "jeffrey")` and `(in-package :jeffrey.main)`. 
 
-Now if '(a b c ..) is the list of form numbers (numbers without parameters), then type in 
+Now if '(a b c ..) is the list of form numbers (numbers without parameters), whose relationships you wish to graph and save in the file "filename", then type in 
 
 `(graph '(a b c ...) "filename")`. 
 
