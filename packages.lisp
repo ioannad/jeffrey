@@ -31,6 +31,8 @@
 	:mpc :mpc.characters :mpc.numerals)
   (:export :*local-directory*
 	   :*bad-forms*     ;; export for testing only
+	   :*book-file*     ;; export for testing only
+	   :read-book1      ;; export for testing only
 	   :matrix-to-graph ;; export for testing only
 	   :graph-to-matrix
 	   :add-top-bottom  ;; export for testing only
@@ -71,7 +73,7 @@
 	:jeffrey.read
 	:jeffrey.draw)
   (:export :main)
-  (:documentation "<PACKAGE UNDER PRODUCTION> Install this package in using quicklisp (installation instructions for quicklisp can be found in https:////www.quicklisp.org//beta//#installation) and git (https:////git-scm.com//book//en//v2//Getting-Started-Installing-Git) as follows:
+  (:documentation "<PACKAGE UNDER PRODUCTION> Install this package using quicklisp (installation instructions for quicklisp can be found in https:////www.quicklisp.org//beta//#installation) and git (https:////git-scm.com//book//en//v2//Getting-Started-Installing-Git) as follows:
 
 * Create a folder called `jeffrey` in `quicklisp//local-projects//`,
 * Navigate to this folder in a terminal and type `git init` and `git clone git@github.com:ioannad//jeffrey.git`. Alternatively otherwise download the contents of this repository to this folder. 

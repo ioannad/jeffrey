@@ -119,19 +119,40 @@
 			  i j #1#)))))
   (format t "Passed test-matrix-equivalency.~%"))
 
+
+(defun compare-equivalents? (stream name-1 name-2 book1-list)
+  (format stream "Comparison of codes for node ~a and node ~a, only printing the places where the codes are *not* equal:~%~%~%"
+	  name-1 name-2)
+  (loop for i from 0 to 430
+     when (or (not (equal #1=(nth name-1 (nth i book1-list))
+			  #2=(nth name-2 (nth i book1-list))))
+	      (not (equal #3=(nth i (nth name-1 book1-list))
+			  #4=(nth i (nth name-2 book1-list)))))
+     do (format t "(~a;~a) implies ~a = (~a;~a) respectively, and~% ~a implies (~a;~a) = (~a;~a) respectively.~%~%"
+		    name-1 name-2 i
+		    #1# #2#
+		    i name-1 name-2
+		    #3# #4#)))
+		   
+(defun checkout-423-374 ()
+  (compare-equivalents? t 423 374 (read-book *book1-file*)))
+
+
 (defun test-all ()
   ;; test data
   (format t "Setting up test...~%")
   (setup-test)
-  (format t "Testing add-edge...~%")
+  (format t "~%Testing add-edge...~%")
   (test-add-edge)
-  (format t "Testing predicates with the test-matrix...~%")
+  (format t "~%Testing predicates with the test-matrix...~%")
   (test-predicates)
-  (format t "Testing the reading module...~%")
+  (format t "~%Testing the reading module...~%")
   (test-read)
   ;; book1
-  (format t "Testing equivalence of the filled out *jeff-matrix* with book1...~%")
+  (format t "~%Testing equivalence of the filled out *jeff-matrix* with book1...~%")
   (let ((book1-matrix (read-all-data)))
     (setup-jeff-matrix *graph*)
     (fill-missing-positions-using-predicates *graph*)
-    (test-matrix-equivalency *jeff-matrix* book1-matrix)))
+    (test-matrix-equivalency *jeff-matrix* book1-matrix))
+  (format t "~%Still to do, take care of the equivalency between 374 and 423. Checking book1 for the codes in row 423 vs row 374, and column 423 vs column 374 gives the following places where these are not equal:~%")
+  (checkout-423-374))
