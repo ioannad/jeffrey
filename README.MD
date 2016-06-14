@@ -4,13 +4,25 @@ This is the early stage of a program which creates diagrams with the relationshi
 
 A quick overview is given below. A paper with a full description and explanation of the code will appear after I upload the diagram drawing part of this program. A big *thank you* to my teammate Max Rottenkolber over at [interstellar ventures](http://inters.co). 
 
+
+### Requirements
+* SBCL Common-Lisp: This is the standard implementation in Debian and Ubuntu: `apt-get install sbcl` or if you want to use it via Emacs: `apt-get install slime`. Please let me know if it works in other implementations except SBCL!.
+* [Graphviz](www.graphviz.org/) (with dot and tred installed, `apt-get install graphviz`)
+* [Quicklisp](www.quicklisp.org)
+
 ## Installation
 Install this package using quicklisp ([installation instructions](https://www.quicklisp.org/beta/#installation)) and git ([installation instructions](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)) as follows:
 
 * Create a folder called `jeffrey` in `quicklisp/local-projects/`,
 * Navigate to this folder in a terminal and type `git init` and `git clone git@github.com:ioannad/jeffrey.git`. Alternatively otherwise download the cohntents of this repository to this folder. 
 
-To load the **Choiceless Grapher**, open an SBCL Common Lisp REPL (I haven't tested it yet in other Common-Lisp implementations, please let me know if it works!). Then type in `(ql:quickload "jeffrey")`. Then choose a package you'd like to use, for example to run all tests and read the report type in `(in-package :jeffrey.test)` and then type in `(test-all)`.
+To load the **Choiceless Grapher**, open an SBCL Common Lisp REPL (I haven't tested it yet in other Common-Lisp implementations, please let me know if it works!). Then type in `(ql:quickload "jeffrey")`. Then choose a package you'd like to use, for example to run all tests and read the report type in `(in-package :jeffrey.test)` and then type in `(test-all)`. For drawing diagrams see below.
+
+## Usage
+You can draw diagrams with this program by loading its main package :jeffrey.main, i.e. `(ql:quickload "jeffrey")` and `(in-package :jeffrey.main)`. Now if '(a b c ..) is the list of form numbers (numbers without parameters), then type in `(graph '(a b c ...) "filename")`. **At the moment,** calling tred and dot from SBCL doesn't work, so afterwards you'll have to open a terminal and type `tred filename.dot  | dot -Tpdf -o filename.pdf`
+or `tred filename.dot  | dot -Tpng -o filename.png` if you would like a png file. 
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 
 ## Description
 This program requires package "mpc" and "split-sequence". In the to-do list is to change mpc to maxpc, the new version of mpc.
@@ -27,10 +39,12 @@ This program requires package "mpc" and "split-sequence". In the to-do list is t
   B-anc implies B implies A implies A-desc, 
 therefore B-anc implies A-desc, contradiction to the NIL-edge from B-desc to A-desc. 
 
+**draw.lisp** draws diagrams with the command `(draw '(a b c d ...) \"filename\")` where `'(a b c d ...)` is a list of natural numbers up to 430, excluding 360, and 423 and 374 for the moment. Requires the database, i.e., `*graph*` to be loaded and `*jeff-matrix*` initiated. Normal users please use the `:jeffrey.main` package.")
+
 **test.lisp** contains test data and testing functions, which should be run after every and any change in the above files.
 Run all tests while `(in-package :jeffrey-test)` with the command `(test-all)`, which prints a report to your REPL.
 
-**/sneak-preview/** contains diagrams with sets of forms that make sense, e.g., between forms about alephs and their properties, as well as diagrams with random sets of forms. A boldfaced arrow from A to B means that the implication is non-reversible, i.e., there exists a model of ZF set theory in which B holds and A doesn't. *Just imagine the endless possibilities for random research projects, theses, and papers, filling or boldfacing those arrows! :)*  The `full-diagram.pdf` is also included, only for standard "number names" (not full statements). Its size is 3,63m x 78 cm. 
+**/sneak-preview/** contains diagrams with sets of forms that make sense, e.g., between forms about alephs and their properties, as well as diagrams with random sets of forms. A boldfaced arrow from A to B means that the implication is non-reversible, i.e., there exists a model of ZF set theory in which B holds and A doesn't. *Just imagine the endless possibilities for random research projects, theses, and papers, filling or boldfacing those arrows! :)*  The `full-diagram.pdf` is also included, only for standard "number names" (not full statements). Its size is 3,75m x 78 cm. 
 
 **complexity issues**
 I haven't really tried to optimize this algorithm yet (from the graph structure to the diagram), apart from the addition of the *jeff-matrix* that remembers the answers of the predicates. This could be made even faster, but it's not necessary now. 
