@@ -135,7 +135,7 @@
 		    #3# #4#)))
 		   
 (defun checkout-423-374 ()
-  (compare-equivalents? t 423 374 (read-book *book1-file*)))
+  (compare-equivalents? t 423 374 (read-book1 *book-file*)))
 
 
 (defun test-all ()
