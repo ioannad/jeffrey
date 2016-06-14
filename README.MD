@@ -19,7 +19,14 @@ Install this package using quicklisp ([installation instructions](https://www.qu
 To load the **Choiceless Grapher**, open an SBCL Common Lisp REPL (I haven't tested it yet in other Common-Lisp implementations, please let me know if it works!). Then type in `(ql:quickload "jeffrey")`. Then choose a package you'd like to use, for example to run all tests and read the report type in `(in-package :jeffrey.test)` and then type in `(test-all)`. For drawing diagrams see below.
 
 ## Usage
-You can draw diagrams with this program by loading its main package :jeffrey.main, i.e. `(ql:quickload "jeffrey")` and `(in-package :jeffrey.main)`. Now if '(a b c ..) is the list of form numbers (numbers without parameters), then type in `(graph '(a b c ...) "filename")`. **At the moment,** calling tred and dot from SBCL doesn't work, so afterwards you'll have to open a terminal and type `tred filename.dot  | dot -Tpdf -o filename.pdf`
+You can draw diagrams with this program by loading its main package :jeffrey.main, i.e. 
+`(ql:quickload "jeffrey")` and `(in-package :jeffrey.main)`. 
+
+Now if '(a b c ..) is the list of form numbers (numbers without parameters), then type in 
+`(graph '(a b c ...) "filename")`. 
+
+**At the moment,** calling tred and dot from SBCL doesn't work, so afterwards you'll have to open a terminal and type 
+`tred filename.dot  | dot -Tpdf -o filename.pdf`
 or `tred filename.dot  | dot -Tpng -o filename.png` if you would like a png file. 
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
