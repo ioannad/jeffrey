@@ -5,6 +5,7 @@
 	       (:file "read" :depends-on ("packages" "graph" "parse"))
 	       (:file "predicates" :depends-on ("packages" "graph" "read"))
 	       (:file "draw" :depends-on ("packages" "graph" "read" "predicates"))
+	       (:file "labelmaker" :depends-on ("packages" "graph" "read"))
 	       (:file "main" :depends-on ("graph" "read" "predicates" "draw"))
 	       (:file "test" :depends-on ("packages" "graph" "read" "predicates")))
   :depends-on ("mpc" "split-sequence"))

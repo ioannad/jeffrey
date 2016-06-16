@@ -53,6 +53,7 @@ the strings: \"(See\", \"van \\ac\", \"\\ac\", \"Note\", \"Clear\", and
 \"G\\.\". This parses exactly these."
   (=or (=string "(See")
        (=string "van \\ac")
+       (=string "\\item{}\\ac")
        (=string "\\ac")
        (=string "Note")
        (=string "Clear")

@@ -109,10 +109,10 @@ to the `*standard-output*`."
 	       (print-gray-arrow name name%))
 	      (T NIL))))
 
-(defun print-dot-content (input-names)
+(defun print-dot-content (input-names style)
   (loop for name in input-names
      for node = (call name)
-     do (print-node-label name node "numbers")
+     do (print-node-label name node style)
        (print-arrows-from name node input-names)))
 
 (defun run-tred-dot (dot-file pdf-file)
@@ -121,7 +121,7 @@ Graphviz dot. Outputson {pdf-file}, which contains the diagram."
   (sb-ext:run-program "/usr/bin/tred"
 		      (list dot-file " | dot -Tpdf -o " pdf-file)))
 		     
-(defun draw (input-names diagram-filename)
+(defun draw (input-names diagram-filename style)
   (let ((dot-file      (make-filename ".dot" diagram-filename))
 	(pdf-file      (make-filename ".pdf" diagram-filename)))
     (with-open-file (*standard-output* dot-file
@@ -129,7 +129,7 @@ Graphviz dot. Outputson {pdf-file}, which contains the diagram."
 				       :if-does-not-exist :create
 				       :if-exists :supersede)
       (print-dot-head)
-      (print-dot-content input-names)
+      (print-dot-content input-names style)
       (format *standard-output* "~%}"))
     (run-tred-dot dot-file pdf-file)
     (format nil

@@ -69,6 +69,13 @@
   (:export :draw)
   (:documentation "Draws diagrams with the command `(draw '(a b c d ...) \"filename\")` where `'(a b c d ...)` is a list of natural numbers up to 430, excluding 360, and 423 and 374 for the moment. Requires the database, i.e., *graph* to be loaded and *jeff-matrix* initiated. Normal users please use the :jeffrey.main package."))
 
+(defpackage jeffrey.labelmaker
+  (:use :common-lisp
+	:jeffrey.graph
+	:jeffrey.read
+	:split-sequence))
+
+
 (defpackage jeffrey.main
   (:use :common-lisp
 	:jeffrey.graph

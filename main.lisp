@@ -4,5 +4,5 @@
 
 (setup-jeff-matrix *graph*)
 
-(defun graph (names-list filename)
-  (draw names-list filename))
+(defun graph (names-list filename style)
+  (draw names-list filename style))
