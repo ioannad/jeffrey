@@ -28,7 +28,7 @@ that makes Graphviz-dot use the pdf file in the folder
 `\"form-name-pics\"`, that contains this form's LaTeX formatted 
 statement." 
   (format *standard-output*
-	  "~a [image=\"form-name-pics/~a.png\", label=\" \"];~%"
+	  "~a [image=\"fancy-labels/~a.png\", label=\" \"];~%"
 	  name name))
 
 (defun special-join-string-list (string-list)

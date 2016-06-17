@@ -7,5 +7,6 @@
 	       (:file "draw" :depends-on ("packages" "graph" "read" "predicates"))
 	       (:file "labelmaker" :depends-on ("packages" "graph" "read"))
 	       (:file "main" :depends-on ("graph" "read" "predicates" "draw"))
+	       (:file "example-form-groups" :depends-on ("main"))
 	       (:file "test" :depends-on ("packages" "graph" "read" "predicates")))
   :depends-on ("mpc" "split-sequence"))
