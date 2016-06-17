@@ -1,0 +1,43 @@
+digraph diagram { 
+
+	  node [shape=ellipse,width=0.5,height=1];
+0 [label="HR 0."];
+1 [label="HR 1."];
+1 -> 0 [style=bold];
+1 -> 2 [color=dimgray];
+1 -> 3 [style=bold];
+1 -> 4 [style=bold];
+1 -> 5 [style=bold];
+1 -> 6 [style=bold];
+1 -> 7 [color=dimgray];
+1 -> 8 [style=bold];
+1 -> 9 [style=bold];
+2 [label="HR 2."];
+2 -> 0 [style=bold];
+2 -> 3 [color=dimgray];
+2 -> 4 [style=bold];
+2 -> 9 [style=bold];
+3 [label="HR 3."];
+3 -> 0 [style=bold];
+3 -> 4 [style=bold];
+3 -> 9 [style=bold];
+4 [label="HR 4."];
+4 -> 0 [style=bold];
+4 -> 9 [color=dimgray];
+5 [label="HR 5."];
+5 -> 0 [style=bold];
+6 [label="HR 6."];
+6 -> 0 [style=bold];
+6 -> 5 [color=dimgray];
+7 [label="HR 7."];
+7 -> 0 [style=bold];
+7 -> 9 [color=dimgray];
+8 [label="HR 8."];
+8 -> 0 [style=bold];
+8 -> 5 [style=bold];
+8 -> 6 [style=bold];
+8 -> 9 [style=bold];
+9 [label="HR 9."];
+9 -> 0 [style=bold];
+
+}
