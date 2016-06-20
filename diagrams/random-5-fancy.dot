@@ -1,0 +1,27 @@
+digraph diagram { 
+
+	  node [shape=ellipse,width=0.5,height=1];
+362 [image="fancy-labels/362.png", label=" "];
+362 -> 0 [color=dimgray];
+114 [image="fancy-labels/114.png", label=" "];
+114 -> 362 [style=bold];
+114 -> 91 [color=dimgray];
+114 -> 0 [style=bold];
+91 [image="fancy-labels/91.png", label=" "];
+91 -> 362 [style=bold];
+91 -> 0 [style=bold];
+277 [image="fancy-labels/277.png", label=" "];
+277 -> 0 [style=bold];
+174 [image="fancy-labels/174.png", label=" "];
+174 -> 362 [style=bold];
+174 -> 0 [style=bold];
+1 [image="fancy-labels/1.png", label=" "];
+1 -> 362 [style=bold];
+1 -> 114 [color=dimgray];
+1 -> 91 [color=dimgray];
+1 -> 277 [style=bold];
+1 -> 174 [style=bold];
+1 -> 0 [style=bold];
+0 [image="fancy-labels/0.png", label=" "];
+
+}
