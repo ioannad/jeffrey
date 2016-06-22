@@ -1,14 +1,17 @@
 # Choiceless grapher 
 
-This is the early stage of a program which creates diagrams with the relationships between consequences of the axiom of choice. This project is inspired by and based on the **Consequences of the Axiom of Choice Project**, the encyclopedia of set theory without the axiom of choice, by *Prof. Paul Howard and Prof. Jean E. Rubin*. I thank Paul Howard for providing me with the original implication matrix (book1), a tex document with the form statements in LaTeX form, and permision to use these files, which can be found in the folder "Howard-Rubin-data".
+The Choiceless Grapher can produce any size of graph of the implication relationships between the consequences of the axiom of choice (428 in total), with an option on the style of nodes: you can either have the Howard-Rubin (HR) numbering of the forms ("numbers"), or the full LaTeX-formatted statements ("fancy").
+
+This project is inspired by and based on the **Consequences of the Axiom of Choice Project**, the encyclopedia of set theory without the axiom of choice, by *Prof. Paul Howard and Prof. Jean E. Rubin*. I thank Paul Howard for providing me with the original implication matrix (book1), a tex document with the form statements in LaTeX form, and permision to use these files, which can be found in the folder "Howard-Rubin-data". 
 
 A quick overview is given below. A paper with a full description and explanation of the code will appear after I upload the diagram drawing part of this program. A big *thank you* to my teammate Max Rottenkolber over at [interstellar ventures](http://inters.co). 
 
 
 ### Requirements
-* SBCL Common-Lisp: This is the standard implementation in Debian and Ubuntu: `apt-get install sbcl` or if you want to use it via Emacs: `apt-get install slime`. Please let me know if it works in other implementations except SBCL!.
+* SBCL Common-Lisp: This is the standard implementation in Debian and Ubuntu: `apt-get install sbcl` or if you want to use it via Emacs: `apt-get install slime`. Please let me know if it works in other implementations except SBCL (it should).
 * [Graphviz](www.graphviz.org/) (with dot and tred installed, `apt-get install graphviz`)
 * [Quicklisp](www.quicklisp.org)
+* **Temporarily** it only works in Linux. Windows and Macintosh support are on the to-do list. 
 
 ## Installation
 Install this package using quicklisp ([installation instructions](https://www.quicklisp.org/beta/#installation)) and git ([installation instructions](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)) as follows:
@@ -16,29 +19,52 @@ Install this package using quicklisp ([installation instructions](https://www.qu
 * Create a folder called `jeffrey` in `quicklisp/local-projects/`,
 * Navigate to this folder in a terminal and type `git init` and `git clone git@github.com:ioannad/jeffrey.git`. Alternatively otherwise download the cohntents of this repository to this folder. 
 
-To load the **Choiceless Grapher**, open an SBCL Common Lisp REPL (I haven't tested it yet in other Common-Lisp implementations, please let me know if it works!). Then type in `(ql:quickload "jeffrey")`. Then choose a package you'd like to use, for example to run all tests and read the report type in `(in-package :jeffrey.test)` and then type in `(test-all)`. For drawing diagrams see below.
+To load the **Choiceless Grapher**, open an SBCL Common Lisp REPL (I haven't tested it yet in other Common-Lisp implementations, please let me know if it works!). Then type in `(ql:quickload "jeffrey")`. 
+If an error appears, due to required packages "mpc", "split-sequence", and "external-program", please evaluate
+
+`(map 'list #'ql:quickload '("mpc" "split-sequence" "external-program" "jeffrey"))`
+
+If at all, you will only have to do this once. 
+
+Then you can choose a package you'd like to use, for example to run all tests and read the report type in `(in-package :jeffrey.test)` and then type in `(test-all)`. For drawing diagrams see below.
 
 ## Usage
-You can draw diagrams with this program by loading its main package :jeffrey.main, i.e. 
+You can draw diagrams with this program by loading its main package :jeffrey.main, with quicklisp in a Common-Lisp REPL as follows: 
 
 `(ql:quickload "jeffrey")` and `(in-package :jeffrey.main)`. 
 
-Now if '(a b c ..) is the list of form numbers (numbers without parameters), whose relationships you wish to graph and save in the file "filename", then type in 
+### Drawing the diagram between a given list of form HR numbers
+
+If '(a b c ..) is the list of form numbers (only numbers, without parameters or equivalent form letters), whose relationships you wish to graph, and if you want to save the diagram in the file "filename", then do:
 
 `(graph '(a b c ...) "filename" "style")`,
 
 where "style" should be either "numbers" to get the numbers of the nodes in the diagram, or "fancy" to get the full LaTeX-formatted statements of the nodes in the diagram. "fancy" is still experimental and doesn't work well for very large diagrams, in the magnitude of the full one (goes over 13 meters in width). 
 
-**At the moment,** calling tred and dot from SBCL doesn't work, so afterwards you'll have to open a terminal and type 
+### Drawing a random diagram of a given size
 
-`tred filename.dot  | dot -Tpdf -o filename.pdf`
+You can also draw the diagram of a pseudo-random collection of forms, of a given size, as follows (for size 6):
 
-or `tred filename.dot  | dot -Tpng -o filename.png` if you would like a png file. 
+`(random-graph 6 "filename" "style")` 
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+where "style", as above, should be either "numbers" or "fancy". 
+
+### Output format
+
+The default output is pdf but you can output any filetype supported by dot (png, svg, ps,...) with, for example:
+
+`(graph '(0 1 2 3 23) "test" "fancy" "png")`
+
+or 
+
+`(random-graph 5 "random5" "fancy" "png")`
+
+The resulting images and dot files will appear in `~/quicklisp/local-projects/jeffrey/diagrams`. If you have quicklisp installed somewhere else, then please do a `(setf *local-directory* "/path-to-your-jeffrey")`, where "path-to-your-jeffrey" should be the directory where the Choiceless Grapher is installed. 
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND WHATSOEVER.
 
 ## Description
-This program requires package "mpc" and "split-sequence". In the to-do list is to change mpc to maxpc, the new version of mpc.
+This program requires package "mpc", "split-sequence", and "external-program". In the to-do list is to change mpc to maxpc, the new version of mpc.
 
 **jeffrey.asd** contains the (defsystem ...) command that creates "jeffrey" as a system of packages. The files that comprise jeffrey's packages, their exported functions, and their dependencies are listed in **packages.lisp**.
 
