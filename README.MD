@@ -6,9 +6,8 @@ This project is inspired by and based on the **Consequences of the Axiom of Choi
 
 A quick overview is given below. A paper with a full description and explanation of the code will appear after I upload the diagram drawing part of this program. A big *thank you* to my teammate Max Rottenkolber over at [interstellar ventures](http://inters.co). 
 
-
 ### Requirements
-* SBCL Common-Lisp: This is the standard implementation in Debian and Ubuntu: `apt-get install sbcl` or if you want to use it via Emacs: `apt-get install slime`. Please let me know if it works in other implementations except SBCL (it should).
+* Common-Lisp: SBCL is the standard implementation in Debian and Ubuntu: `apt-get install sbcl` or if you want to use it via Emacs: `apt-get install slime`. I have only tested this in SBCL so far, but it should work in any implementation that [external-program](https://github.com/sellout/external-program) supports. Please let me know if you check this!
 * [Graphviz](www.graphviz.org/) (with dot and tred installed, `apt-get install graphviz`)
 * [Quicklisp](www.quicklisp.org)
 * **Temporarily** it only works in Linux. Windows and Macintosh support are on the to-do list. 
@@ -19,7 +18,7 @@ Install this package using quicklisp ([installation instructions](https://www.qu
 * Create a folder called `jeffrey` in `quicklisp/local-projects/`,
 * Navigate to this folder in a terminal and type `git init` and `git clone git@github.com:ioannad/jeffrey.git`. Alternatively otherwise download the cohntents of this repository to this folder. 
 
-To load the **Choiceless Grapher**, open an SBCL Common Lisp REPL (I haven't tested it yet in other Common-Lisp implementations, please let me know if it works!). Then type in `(ql:quickload "jeffrey")`. 
+To load the **Choiceless Grapher**, open a Common Lisp REPL and type in `(ql:quickload "jeffrey")`. 
 If an error appears, due to required packages "mpc", "split-sequence", and "external-program", please evaluate
 
 `(map 'list #'ql:quickload '("mpc" "split-sequence" "external-program" "jeffrey"))`
@@ -29,6 +28,7 @@ If at all, you will only have to do this once.
 Then you can choose a package you'd like to use, for example to run all tests and read the report type in `(in-package :jeffrey.test)` and then type in `(test-all)`. For drawing diagrams see below.
 
 ## Usage
+
 You can draw diagrams with this program by loading its main package :jeffrey.main, with quicklisp in a Common-Lisp REPL as follows: 
 
 `(ql:quickload "jeffrey")` and `(in-package :jeffrey.main)`. 
@@ -59,11 +59,12 @@ or
 
 `(random-graph 5 "random5" "fancy" "png")`
 
-The resulting images and dot files will appear in `~/quicklisp/local-projects/jeffrey/diagrams`. If you have quicklisp installed somewhere else, then please do a `(setf *local-directory* "/path-to-your-jeffrey")`, where "path-to-your-jeffrey" should be the directory where the Choiceless Grapher is installed. 
+The resulting images and dot files will appear in `~/quicklisp/local-projects/jeffrey/diagrams`. If you have quicklisp installed somewhere else, then please do a `(setf *local-directory* "path/to/your/jeffrey")`, where "path/to/your/jeffrey" should be the directory where the Choiceless Grapher is installed. 
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND WHATSOEVER.
 
-## Description
+## Detailed description
+
 This program requires package "mpc", "split-sequence", and "external-program". In the to-do list is to change mpc to maxpc, the new version of mpc.
 
 **jeffrey.asd** contains the (defsystem ...) command that creates "jeffrey" as a system of packages. The files that comprise jeffrey's packages, their exported functions, and their dependencies are listed in **packages.lisp**.
