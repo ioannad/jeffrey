@@ -20,6 +20,7 @@ above list, and save the .dot and .pdf files to
   "Writes the standard header of a diagram to the {*standard-output*}."
   (format *standard-output* 
 	  "digraph diagram { ~%
+          ratio=0.5;~%
 	  node [shape=ellipse,width=0.5,height=1];~%"  ))
 
 (defun print-fancy-label (name)
@@ -28,8 +29,8 @@ that makes Graphviz-dot use the pdf file in the folder
 `\"form-name-pics\"`, that contains this form's LaTeX formatted 
 statement." 
   (format *standard-output*
-	  "~a [image=\"fancy-labels/~a.png\", label=\" \"];~%"
-	  name name))
+	  "~a [image=\"~adiagrams/fancy-labels/~a.png\", label=\" \"];~%"
+	  name *local-directory* name))
 
 (defun special-join-string-list (string-list)
   "Formats the parameters, which may appear in the number labels,
@@ -115,15 +116,25 @@ to the `*standard-output*`."
      do (print-node-label name node style)
        (print-arrows-from name node input-names)))
 
-(defun run-tred-dot (dot-file pdf-file)
-  "Runs Graphviz tred on {dot-file} and feeds the output to 
-Graphviz dot. Outputson {pdf-file}, which contains the diagram."
-  (sb-ext:run-program "/usr/bin/tred"
-		      (list dot-file " | dot -Tpdf -o " pdf-file)))
+(defun run-tred-dot (dot-file result-file ending)
+  "Runs Graphviz tred on `dot-file` and feeds the output to 
+Graphviz dot. Outputs `result-file`, which contains the diagram."
+  (let ((command-string  (concatenate 'string 
+				      "/usr/bin/tred " 
+				      dot-file 
+				      " | dot -T" 
+				      ending
+				      " -o "
+				      result-file)))
+    (run "/bin/sh" (list "-c" command-string)
+			:output t)))
 		     
-(defun draw (input-names diagram-filename style)
-  (let ((dot-file      (make-filename ".dot" diagram-filename))
-	(pdf-file      (make-filename ".pdf" diagram-filename)))
+(defun draw (input-names diagram-filename style &optional (ending "pdf"))
+  "`style` should be either the string \"fancy\" or \"numbers\".
+`format` can be anything supported by dot, e.g., pdf, png, svg, ps.
+The default format is pdf."
+  (let ((dot-file    (make-filename ".dot" diagram-filename))
+	(result-file (make-filename (concatenate 'string "." ending) diagram-filename)))
     (with-open-file (*standard-output* dot-file
 				       :direction :output
 				       :if-does-not-exist :create
@@ -131,7 +142,7 @@ Graphviz dot. Outputson {pdf-file}, which contains the diagram."
       (print-dot-head)
       (print-dot-content input-names style)
       (format *standard-output* "~%}"))
-    (run-tred-dot dot-file pdf-file)
+    (run-tred-dot dot-file result-file ending)
     (format nil
 	    "Files ~a and ~a in diagrams/ should be created successfully."
-	    dot-file pdf-file)))
+	    dot-file result-file)))
