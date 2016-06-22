@@ -1,6 +1,9 @@
 (in-package :jeffrey.read)
 
-(defvar *local-directory* "~/quicklisp/local-projects/jeffrey/")
+(defvar *local-directory* 
+  (concatenate 'string 
+	       (directory-namestring (USER-HOMEDIR-PATHNAME))
+	       "quicklisp/local-projects/jeffrey/"))
 
 (defvar *bad-forms* '(423 374 383)
   "These two forms are removed until I figure out how to deal with
