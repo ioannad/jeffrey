@@ -62,6 +62,7 @@
 
 (defpackage jeffrey.draw
   (:use :common-lisp
+	:external-program
 	:jeffrey.graph
 	:jeffrey.read
 	:jeffrey.predicates
