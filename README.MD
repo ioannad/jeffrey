@@ -6,6 +6,8 @@ This project is inspired by and based on the **Consequences of the Axiom of Choi
 
 A quick overview is given below. A paper with a full description and explanation of the code will appear after I upload the diagram drawing part of this program. A big *thank you* to my teammate Max Rottenkolber over at [interstellar ventures](http://inters.co). 
 
+**THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND WHATSOEVER.**
+
 ### Requirements
 * Common-Lisp: SBCL is the standard implementation in Debian and Ubuntu: `apt-get install sbcl` or if you want to use it via Emacs: `apt-get install slime`. I have only tested this in SBCL so far, but it should work in any implementation that [external-program](https://github.com/sellout/external-program) supports. Please let me know if you check this!
 * [Graphviz](www.graphviz.org/) (with dot and tred installed, `apt-get install graphviz`)
@@ -60,8 +62,6 @@ or
 `(random-graph 5 "random5" "fancy" "png")`
 
 The resulting images and dot files will appear in `~/quicklisp/local-projects/jeffrey/diagrams`. If you have quicklisp installed somewhere else, then please do a `(setf *local-directory* "path/to/your/jeffrey")`, where "path/to/your/jeffrey" should be the directory where the Choiceless Grapher is installed. 
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND WHATSOEVER.
 
 ## Detailed description
 
