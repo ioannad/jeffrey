@@ -45,11 +45,17 @@ where "style" should be either "numbers" to get the numbers of the nodes in the 
 
 ### Drawing a random diagram of a given size
 
-You can also draw the diagram of a pseudo-random collection of forms, of a given size, as follows (for size 6):
+You can also draw the implication diagram of a pseudo-random collection of forms, of a given size, as follows (for size 6):
 
 `(random-graph 6 "filename" "style")` 
 
 where "style", as above, should be either "numbers" or "fancy". 
+
+### Drawing the consequences of a list of forms
+
+Similarly, you can draw the implication diagram of a list of forms (e.g. of `'(8 85)`) as follows:
+
+`(graph-descendants '(8 85) "filename" "style")`
 
 ### Output format
 
