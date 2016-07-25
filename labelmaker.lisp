@@ -7,8 +7,6 @@
 	       (write-to-string name)
 	       ending))
 
-
-
 (defun tex-file-content (latex-statement width-cm)
   (format *standard-output*
 	  "\\PassOptionsToPackage{usenames,dvipsnames}{xcolor}
