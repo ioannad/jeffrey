@@ -19,7 +19,7 @@
 (defpackage jeffrey.parse
   (:use    :common-lisp
 	   :split-sequence
-	   :mpc :mpc.characters :mpc.numerals)
+	   :maxpc :maxpc.digit :maxpc.char)
   (:export :collect-forms
 	   :=book1)
   (:documentation "parse.lisp contains parsing functions for reading in node (form) information, and for reading book1, the original matrix with all the implication codes. Form information, i.e., name, LaTeX-statement, and references are parsed in a machete-style chopping of the TeX-file Howard-Rubin-data/FORMSNUM.TEX. Implication information is parsed simply, because book1 is a simple integer matrix whose lines terminate with -1. "))
@@ -28,7 +28,7 @@
   (:use :common-lisp
 	:jeffrey.graph
 	:jeffrey.parse
-	:mpc :mpc.characters :mpc.numerals)
+	:maxpc :maxpc.char :maxpc.digit)
   (:export :*local-directory*
 	   :*bad-forms*     ;; export for testing only
 	   :*book-file*     ;; export for testing only
@@ -55,7 +55,7 @@
 
 (defpackage jeffrey.test
   (:use :common-lisp
-	:mpc :mpc.characters :mpc.numerals
+	:maxpc :maxpc.char :maxpc.digit
       	:jeffrey.graph
 	:jeffrey.read
 	:jeffrey.predicates)
