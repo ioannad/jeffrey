@@ -1,196 +1,245 @@
 (in-package :jeffrey.parse)
 
+(defvar *comments* NIL) ;; consider storing comments here (still unused).
+
 #|
-Parse form information, returning lists of lists, whose first items
-are the main forms and their statements. The rest are their 
-equivalent forms.
+Parse form information:
 |#
 
-(defun =lexer ()
-  "Cuts up text in words."
-  (=zero-or-more (=skip-whitespace
-		  (=string-of (=not (=whitespace))))))
+(defun ?form-delimiter ()
+  (?seq (?string "\\medskip")
+	(?char #\Newline)))
+    
+(defun ?eq-form-delimiter ()
+  (?seq (?string "\\smallskip")
+	(?char #\Newline)))
+
+(defun ?delimiter ()
+  (%or (?eq-form-delimiter)
+       (?form-delimiter)))
+
+(assert (multiple-value-bind (a b c)
+	    (parse "\\medskip
+" (?delimiter))
+	  (and (equal a NIL)  ;; returns nothing
+	       (equal b T)    ;; succeeds in parsing a delimiter
+	       (equal c T)))) ;; finished with the input
+
+(assert (multiple-value-bind (a b c)
+	    (parse "\\smallskip
+ mnmn" (?delimiter))
+	  (and (equal a NIL)    ;; returns nothing
+	       (equal b T)      ;; succeeds in parsing a delimiter
+	       (equal c NIL)))) ;; not finished with the input
+
+(defun =text-until (parser)
+  "The input, which `parser` parses is not consumed."
+  (=subseq (%some (?not parser))))
+
+(defun =parameter ()
+  (let ((start (?char #\())
+	(end   (?char #\))))
+    (=subseq (?seq start (=text-until end) end))))
+  
+(assert (equal "($p$)" (parse "($p$)lg" (=parameter)))) 
+(assert (equal "(n)" (parse "(n)lg" (=parameter)))) 
+(assert (equal "($\\alpha$)" (parse "($\\alpha$)lg" (=parameter)))) 
+
+(defun =name ()
+  (=destructure (number _ parameter _)
+      (=list (=natural-number)
+	     (%maybe (?whitespace))
+	     (%maybe (=parameter))
+	     (?string ".}"))
+    (list number parameter)))
+
+(assert (equal '(423 "($n$)") (parse "423 ($n$).}hjfjf" (=name))))
+(assert (equal '(423 NIL) (parse "423.}  oiiu ghj f" (=name))))
+
+(defun =short-name-ending ()
+  (=subseq (=list (?eq #\$)
+		 (%maybe (?eq #\)))
+		 (?eq #\:)
+		 (?whitespace))))
+
+(assert (equal "$): " (parse "$): " (=short-name-ending))))
+(assert (equal "$: " (parse "$: " (=short-name-ending))))
+  
+(defun =short-name ()
+  (=destructure (short-name ending)
+      (=list (=text-until (=short-name-ending))
+	     (=short-name-ending))
+    (concatenate 'string short-name ending)))
+
+(assert (equal
+	 (parse
+	  " $UT(WO,\aleph_{0},WO)$ ($U_{\aleph_{1}}$): The un"
+	  (=short-name))
+	 " $UT(WO,aleph_{0},WO)$ ($U_{aleph_{1}}$): "))
+
+(defun reference-start-strings ()
+  (list "(See" "See" "van \\ac" "\\item{}\\ac" "\\ac" "Note" "Clear" "G\\."))
+
+(defun reference-start-p (x)
+  (member x (reference-start-strings) :test #'equal))
+
+(assert (reference-start-p "\\ac"))
+
+(defun =reference-start ()
+  (=subseq (%some (apply '%or (mapcar '?string (reference-start-strings))))))
+
+(assert (equal "Note" (parse "Note" (=reference-start))))
+
+(defun =full-name ()
+  (=text-until (%or (?delimiter)
+		    (=reference-start))))
+
+(assert (equal "relatively prime. "
+	       (parse "relatively prime. See form" (=full-name))))
+(assert (equal "relatively prime$.
+"
+	       (parse "relatively prime$.
+\\smallskip
+" (=full-name))))
+
+(defun =references ()
+  (=destructure (ref-start ref)
+      (=list (=reference-start)
+	     (=text-until (?delimiter)))
+    (concatenate 'string ref-start ref)))
+
+(assert (equal "See form 218 and \\ac{Bleicher} \\cite{1964}. 
+"
+	       (parse "See form 218 and \\ac{Bleicher} \\cite{1964}. 
+\\medskip
+"
+		      (=references))))
+
+(defun =main-form ()
+  (=destructure (_ _ name short-name full-name references)
+      (=list (?form-delimiter)
+	     (?string "\\noindent{\\bf FORM ")
+	     (=name)
+	     (%maybe (=short-name))
+	     (=full-name)
+	     (%maybe (=references)))
+  (list name short-name full-name references)))
+
+(assert (equal
+	 '((6 NIL)
+	   "a$: "
+	   "b. "
+	   "G\\. \\ac{Moore} \\cite{1982} and note 3.
+")
+	 (parse "\\medskip
+\\noindent{\\bf FORM 6.}a$: b. G\\. \\ac{Moore} \\cite{1982} and note 3.
+\\smallskip
+"
+		(=main-form))))
+
+(defun =eq-name ()
+  (=destructure (number _ eq-id _ parameter _)
+      (=list (=natural-number)
+	     (?whitespace)
+	     (=subseq (%some (?satisfies 'upper-case-p)))
+	     (%maybe (?whitespace))
+	     (%maybe (=parameter))
+	     (%or (?string "]}")
+		  (?string "].}")))
+    (list number eq-id parameter)))
+    
+(assert (equal '(14 "M" NIL) (parse "14 M]}  R. Cowen's " (=eq-name))))
+(assert (equal '(14 "N" "(n)") (parse "14 N(n)]} ($n\\in\\omega$" (=eq-name))))
+(assert (equal '(430 "AB" "($p$)") (parse "430 AB($p$)].} (Where $p" (=eq-name))))
 
 
-(defun read-formsnum (file) ;;=> list of strings
-  "Reads the file FORMSNUM.TEX and returns a list of its words."
-  (let ((text nil))
-    (with-open-file (stream file)
-      (loop for line = (read-line stream nil 'eof)
-	 until (eq line 'eof)
-	 do (setf text (append text (run (=lexer) line)))))
-    text))
+(defun =eq-form ()
+  (=destructure (_ _ eq-name short-name full-name references)
+      (=list (?eq-form-delimiter)
+	     (?string "\\item{}{\\bf [")
+	     (=eq-name)
+	     (%maybe (=short-name))
+	     (=full-name)
+	     (%maybe (=references)))
+    (list eq-name short-name full-name references)))
 
-(defun separate-forms-rough (list-of-strings)
-  "Takes the list of words created by `read-formsnum` and returns 
-a list of lists of words, each these lists containing one form and 
-its equivalent statements."
-  (split-sequence-if 
-   (lambda (word) (or (equal word "\\noindent{\\bf")
-		      (equal word "\\noindent")))
-   list-of-strings))
+(assert (equal
+	 '((14 "M" NIL) NIL
+	   "  R. Cowen's ... T.  "
+	   "\\ac{Cowen} ...
+21. \\iput{Konig's lemma}
+")
+	 (parse "\\smallskip
+\\item{}{\\bf [14 M]}  R. Cowen's ... T.  \\ac{Cowen} ...
+21. \\iput{Konig's lemma}
+\\smallskip
+\\item{}{\\bf [14 N(n)]}..." (=eq-form))))
 
-(defun separate-equivalent-forms (rough-forms)
-  "Takes the list of lists containing the forms created by 
-{separate-forms-rough} and returns a list of lists of lists of 
-words. The first, and often the unique, element of each list of 
-lists of words contains only the main form number, the LaTeX-
-formatted statement, and perhaps some references. "
-  (let ((forms-list nil))
-    (loop for item in rough-forms
-       when (or (equal (first item)       "FORM")
-		(and (equal (first item)  "{\\bf")
-		     (equal (second item) "FORM")))
-       do (push
-	   (split-sequence "\\item{}{\\bf"
-			   item :test #'equal) forms-list))
-    forms-list))
+(defun =form ()
+      (=list (=main-form)
+	     (%maybe (%some (=eq-form)))))
 
+(assert (equal
+	 '(((430 "($p$)") " (Where $p$ is a prime) AL21$(p)$: "
+	    "Every ... $V = S \\oplus
+S'$.  "
+	    "\\ac{Bleicher} ... AL21}.
+")
+	   (((430 "A" "($p$)")
+	      " (Where $p$ is a prime) MC$...$, MC4$(p)$: "
+	      " For ... prime. "
+	      "See ... 6.38}.")))
+	 (parse "\\medskip
+\\noindent{\\bf FORM 430($p$).} (Where $p$ is a prime) AL21$(p)$: Every ... $V = S \\oplus
+S'$.  \\ac{Bleicher} ... AL21}.
+\\smallskip
+\\item{}{\\bf [430 A($p$)].} (Where $p$ is a prime) MC$...$, MC4$(p)$:  For ... prime. See ... 6.38}." (=form))))
 
-(defun =reference-beginning ()
-  "So far I only saw references in {FORMSNUM.TEX} that start with
-the strings: \"(See\", \"van \\ac\", \"\\ac\", \"Note\", \"Clear\", and 
-\"G\\.\". This parses exactly these."
-  (=or (=string "(See")
-       (=string "van \\ac")
-       (=string "\\item{}\\ac")
-       (=string "\\ac")
-       (=string "Note")
-       (=string "Clear")
-       (=string "G\\.")))
+(assert (equal
+	 '(((0 NIL) NIL " $0 = 0$.
+" NIL) NIL)
+	 (parse "\\medskip
+\\noindent{\\bf FORM 0.} $0 = 0$.
+\\medskip
+"
+		(=form))))
 
-(defun form-delimiter-p (string)
-  "Returns T if the string is either \\medskip or \\smallskip."
-  (or (equal string "\\medskip")
-      (equal string "\\smallskip")))
+(defun =formsnum.tex ()
+  (=list (=text-until (?form-delimiter))
+	 (%some (=form))))
+#|
+(assert (equal
+	 ""
+	 (parse "bla \\medskip
+\\noindent{\\bf FORM 0.} $0 = 0$.
+\\smallskip
+\\item{}{\\bf [0 A]}  Cardinal successors 2:  For n)$.
+\\ac{Tarski} \\cite{1954a} and \\ac{Jech} \\cite{1966a}.
+\\smallskip
+\\item{}{\\bf [0 AK]} Every separable metric space is second countable.
 
-(defun =badstring ()
-  "Parses strings that are considered 'bad', in the sense that a 
-list of words has to be trimmed, if it contains strings that start
-with the strings parsed here. So far I found: 
-\"\\iput{\" and \"\\rightheadtext{\"."
-  (=or (=string "\\iput{")
-       (=string "\\rightheadtext{")))
+\\medskip
+\\medskip
+\\noindent{\\bf FORM 1.} $C(\\infty,\\infty)$:  The Axiom of Choice:
+Every  set  of  non-empty sets has a choice function.
+\\rightheadtext{Form 1: The Axiom of Choice}
+\\iput{axiom of choice}
+\\smallskip
+\\item{}{\\bf [1 A]} In every vector space, every generating set
+contains a basis.  \\ac{Halpern} \\cite{1966}.
+\\medskip
+\\medskip
+\\noindent{\\bf FORM 1.} $C(\\infty,\\infty)$:  The Axiom of Choice:
+Every  set  of  non-empty sets has a choice function.
+\\rightheadtext{Form 1: The Axiom of Choice}
+\\iput{axiom of choice}
+\\smallskip
+\\item{}{\\bf [1 A]} In every vector space, every generating set
+contains a basis.  \\ac{Halpern} \\cite{1966}.
+"
+		(=formsnum.tex))))
 
-(defun drop-badstrings (list-of-strings)
-  "Removes the tail of a list that contains an element which begins
-with a string parsed by {=badstring}."
-  (let ((n (length (member-if (lambda (string)
-				(run (=badstring)
-				     string))
-			      list-of-strings))))
-    (butlast list-of-strings n)))
-
-(assert (equal '("a" "b") (drop-badstrings
-			   '("a" "b" "\\iput{asd" "c")))) 
-(assert (equal '("a" "b") (drop-badstrings
-			   '("a" "b" "\\rightheadtext{w2d" "c"))))
-
-(defun zip-strings-if (predicate list-of-words)
-  "Takes a predicate on strings and a list of words, and returns 
-the results of concatenating all the words in {list-of-words} 
-which satisfy {predicate}, with spaces in between."
-  (let ((result ""))
-    (loop for word in list-of-words
-       when (funcall predicate word)
-       do (setf result (concatenate 'string
-				    result
-				    word
-				    " ")))
-    result))
-
-;; For the moment we ignore the equivalent forms. 
-(defun get-main-form (main-form) ;;=> '(form-number LaTeX-statement references)
-  (let* ((form-name (if (equal (second main-form) "FORM") ;;due to stupid parsing 
-			(string-trim ".}" (third main-form))
-			(string-trim ".}" (second main-form))))
-	 (references (member-if (lambda (string)
-				  (run (=reference-beginning) string))
-				main-form))
-	 (n          (length references))
-	 (LaTeX      (cddr (butlast main-form n))))
-    (list form-name
-	  (zip-strings-if (lambda (string) (eql string string))
-			  (drop-badstrings LaTeX))
-	  (zip-strings-if (lambda (string) (not (form-delimiter-p string)))
-			  (drop-badstrings references)))))
-
-;; the first elements of the lists representing all forms
-;; in formsnum contain the main form number and statement.
-
-(defun read-forms-rough (file)
-  "Reads in the `file` (should be //Howard-Rubin-data//FORMSNUM.TEX) 
-and returns a list with the main form data."
-  (let ((formsnum (read-formsnum file)))
-    (loop for main-form in (map 'list #'first
-				(separate-equivalent-forms
-				 (separate-forms-rough formsnum)))
-       collect (get-main-form main-form))))
-
-(defun search-replace (this with in-string)
-  (let ((start-pos  (search this in-string)))
-    (if start-pos
-	(let* ((end-pos    (+ start-pos (length this)))
-	       (left-part  (subseq in-string
-				   0
-				   start-pos))
-	       (right-part (subseq in-string
-				   end-pos
-				   (length in-string))))
-	  (concatenate 'string
-		       left-part
-		       with
-		       (search-replace this with right-part)))
-	in-string)))
-
-(defvar *comments* '()
-  "To collect any comments in {FORMSNUM.TEX}, as this may involve 
-information about forms being equivalent.")
-
-(defun extract-comments (string)
-  (let ((comment-beginning (search "%" string)))
-    (if comment-beginning
-	(let ((new-string (subseq string
-				  0
-				  comment-beginning))
-	      (comment (subseq string
-			       comment-beginning
-			       (length string))))
-	  (progn (push comment *comments*)
-		 new-string))
-	string)))
-
-       
-
-(defun process-string (string)
-  "Ugliest function ever written?"
-  (let* ((process1 (search-replace "\\item\\item{}"
-				   "\\itemitem"
-				   string))
-	 (process2 (search-replace "\\item{}"
-				   " "
-				   process1))
-	 (process3 (search-replace "\\leqno(*)"
-				   "($*$)"
-				   process2))
-	 (process4 (extract-comments process3))
-	 (process5 (search-replace "\\item {"
-				   "\\itemitem{"
-				   process4))
-	 (process6 (search-replace "$$"
-				   "\\\\"
-				   process5)))
-    process6))
-
-(defun process-forms (forms)
-  "Some corrections to make the strings LaTeX-compatible."
-  (loop for (form-name LaTeX references) in forms
-     collect (list (parse-integer form-name :junk-allowed t)
-		   (concatenate 'string "{HR " form-name ".} " (process-string LaTeX))
-		   (process-string references))))
-
-(defun collect-forms (formsnum.tex)
-  (process-forms (read-forms-rough formsnum.tex)))
+|#
 		 
 ;; ------------------------------------------------------------------
 ;; Print the forms in a LaTeX file, to check that they were parsed
@@ -247,6 +296,11 @@ have been parsed correctly."
 
 ;;; Parsing is much easier for book1:
 
+(defun =skip-whitespace (parser)
+  (=destructure (_ result)
+      (=list (%maybe (%some (?whitespace)))
+	     parser)))
+
 (defun =field ()
   "A field is a code number for the implication 'Form #row' => 
 'Form-#column', where #row or #column is the number of the row or 
@@ -255,15 +309,21 @@ column respectively."
 
 (defun =row-delim ()
   "Book1 ends rows with a -1"
-  (=skip-whitespace (=string "-1")))
+  (=skip-whitespace (?string "-1")))
 
 (defun =row ()
   "A row is a list of one or more fields that ends in -1."
-  (=prog1 (=one-or-more (=field)) (=row-delim)))
+  (=destructure (result _)
+      (=list (%some (=field)) (=row-delim))))
 
-(assert (equal '(1 2 3) (run (=row) "1 2 3 -1")))
+(assert (equal '(1 2 3) (parse "1 2 3 -1" (=row))))
 
 (defun =book1 ()
   "Book1 is a list of one or more rows."
-  (=one-or-more (=row)))
+  (%some (=row)))
+
+(assert (equal (parse "1 2 3 -1 
+4 5 6 -1   7 8 9 -1"
+		      (=book1))
+	       '((1 2 3) (4 5 6) (7 8 9))))
 
