@@ -1,8 +1,12 @@
 ### TO-DO list for the Choiceless Grapher
 
-# Finish rewriting parse.lisp
+# Finish process-strings.lisp
 
-Using the maxpc library.
+ and make the rest of the modules work with this and the new parse.lisp. 
+
+# Add short names?
+
+This could be very non-straightforward, as there is no obvious way to do this well.
 
 # Consider implementing "levels"
 

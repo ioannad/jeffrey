@@ -18,16 +18,22 @@
 
 (defpackage jeffrey.parse
   (:use    :common-lisp
-	   :split-sequence
 	   :maxpc :maxpc.digit :maxpc.char)
-  (:export :collect-forms
-	   :=book1)
-  (:documentation "parse.lisp contains parsing functions for reading in node (form) information, and for reading book1, the original matrix with all the implication codes. Form information, i.e., name, LaTeX-statement, and references are parsed in a machete-style chopping of the TeX-file Howard-Rubin-data/FORMSNUM.TEX. Implication information is parsed simply, because book1 is a simple integer matrix whose lines terminate with -1. "))
+  (:export :=formsnum.tex
+	   :=book1
+	   :test-formsnum-parsers)
+  (:documentation "parse.lisp contains parsing functions for reading in node (form) information, and for reading book1, the original matrix with all the implication codes. Form information, i.e., name, LaTeX-statement, and references are parsed from in a machete-style chopping of the TeX-file Howard-Rubin-data/FORMSNUM.TEX . Implication information is parsed from the file Howard-Rubin-data/book1 ."))
+
+(defpackage jeffrey.process-strings
+  (:use    :common-lisp)
+  (:export :process-formsnum)
+  (:documentation "process-strings.lisp contains functions which make the text in any LaTeX-statement LaTeX compatible (the origin is TeX). It's a crude search and replace routine."))
 
 (defpackage jeffrey.read
   (:use :common-lisp
 	:jeffrey.graph
 	:jeffrey.parse
+	:jeffrey.process-strings
 	:maxpc :maxpc.char :maxpc.digit)
   (:export :*local-directory*
 	   :*bad-forms*     ;; export for testing only

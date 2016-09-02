@@ -1,7 +1,5 @@
 (in-package :jeffrey.parse)
 
-(defvar *comments* NIL) ;; consider storing comments here (still unused).
-
 #|
 Parse form information:
 |#
@@ -18,52 +16,42 @@ Parse form information:
   (%or (?eq-form-delimiter)
        (?form-delimiter)))
 
-(assert (multiple-value-bind (a b c)
-	    (parse "\\medskip
+(defun test-delimiters ()
+  (assert (multiple-value-bind (a b c)
+	      (parse "\\medskip
 " (?delimiter))
-	  (and (equal a NIL)  ;; returns nothing
-	       (equal b T)    ;; succeeds in parsing a delimiter
-	       (equal c T)))) ;; finished with the input
-
-(assert (multiple-value-bind (a b c)
-	    (parse "\\smallskip
+	    (and (equal a NIL)  ;; returns nothing
+		 (equal b T)    ;; succeeds in parsing a delimiter
+		 (equal c T)))) ;; finished with the input
+  
+  (assert (multiple-value-bind (a b c)
+	      (parse "\\smallskip
  mnmn" (?delimiter))
-	  (and (equal a NIL)    ;; returns nothing
-	       (equal b T)      ;; succeeds in parsing a delimiter
-	       (equal c NIL)))) ;; not finished with the input
-
+	    (and (equal a NIL)    ;; returns nothing
+		 (equal b T)      ;; succeeds in parsing a delimiter
+		 (equal c NIL))))) ;; not finished with the input
+  
 (defun =text-until (parser)
   "The input, which `parser` parses is not consumed."
   (=subseq (%some (?not parser))))
 
-(defun =parameter ()
-  (let ((start (?char #\())
-	(end   (?char #\))))
-    (=subseq (?seq start (=text-until end) end))))
-  
-(assert (equal "($p$)" (parse "($p$)lg" (=parameter)))) 
-(assert (equal "(n)" (parse "(n)lg" (=parameter)))) 
-(assert (equal "($\\alpha$)" (parse "($\\alpha$)lg" (=parameter)))) 
-
 (defun =name ()
-  (=destructure (number _ parameter _)
-      (=list (=natural-number)
-	     (%maybe (?whitespace))
-	     (%maybe (=parameter))
-	     (?string ".}"))
-    (list number parameter)))
+  (flet ((name-end () (%or (?string ".}")
+			   (?string "]}")
+			   (?string "].}"))))
+    (=destructure (name _)
+	(=list (=text-until (name-end))
+	       (name-end)))))
 
-(assert (equal '(423 "($n$)") (parse "423 ($n$).}hjfjf" (=name))))
-(assert (equal '(423 NIL) (parse "423.}  oiiu ghj f" (=name))))
-
-(defun =short-name-ending ()
+(defun test-name ()
+  (assert (equal "423 ($n$)" (parse "423 ($n$).}hjfjf" (=name))))
+  (assert (equal "423" (parse "423.}  oiiu ghj f" (=name)))))
+  
+#|(defun =short-name-ending ()
   (=subseq (=list (?eq #\$)
 		 (%maybe (?eq #\)))
 		 (?eq #\:)
 		 (?whitespace))))
-
-(assert (equal "$): " (parse "$): " (=short-name-ending))))
-(assert (equal "$: " (parse "$: " (=short-name-ending))))
   
 (defun =short-name ()
   (=destructure (short-name ending)
@@ -71,11 +59,14 @@ Parse form information:
 	     (=short-name-ending))
     (concatenate 'string short-name ending)))
 
-(assert (equal
-	 (parse
-	  " $UT(WO,\aleph_{0},WO)$ ($U_{\aleph_{1}}$): The un"
-	  (=short-name))
-	 " $UT(WO,aleph_{0},WO)$ ($U_{aleph_{1}}$): "))
+(defun test-short-name ()
+  (assert (equal "$): " (parse "$): " (=short-name-ending))))
+  (assert (equal "$: " (parse "$: " (=short-name-ending))))
+  (assert (equal
+	   (parse
+	    " $UT(WO,\aleph_{0},WO)$ ($U_{\aleph_{1}}$): The un"
+	    (=short-name))
+	   " $UT(WO,aleph_{0},WO)$ ($U_{aleph_{1}}$): ")))|#
 
 (defun reference-start-strings ()
   (list "(See" "See" "van \\ac" "\\item{}\\ac" "\\ac" "Note" "Clear" "G\\."))
@@ -83,24 +74,8 @@ Parse form information:
 (defun reference-start-p (x)
   (member x (reference-start-strings) :test #'equal))
 
-(assert (reference-start-p "\\ac"))
-
 (defun =reference-start ()
   (=subseq (%some (apply '%or (mapcar '?string (reference-start-strings))))))
-
-(assert (equal "Note" (parse "Note" (=reference-start))))
-
-(defun =full-name ()
-  (=text-until (%or (?delimiter)
-		    (=reference-start))))
-
-(assert (equal "relatively prime. "
-	       (parse "relatively prime. See form" (=full-name))))
-(assert (equal "relatively prime$.
-"
-	       (parse "relatively prime$.
-\\smallskip
-" (=full-name))))
 
 (defun =references ()
   (=destructure (ref-start ref)
@@ -108,116 +83,141 @@ Parse form information:
 	     (=text-until (?delimiter)))
     (concatenate 'string ref-start ref)))
 
-(assert (equal "See form 218 and \\ac{Bleicher} \\cite{1964}. 
+(defun test-references ()
+  (assert (reference-start-p "\\ac"))
+  (assert (equal "Note" (parse "Note" (=reference-start))))
+  (assert (equal "See form 218 and \\ac{Bleicher} \\cite{1964}. 
 "
-	       (parse "See form 218 and \\ac{Bleicher} \\cite{1964}. 
+		 (parse "See form 218 and \\ac{Bleicher} \\cite{1964}. 
 \\medskip
 "
-		      (=references))))
+			(=references)))))  
 
-(defun =main-form ()
-  (=destructure (_ _ name short-name full-name references)
-      (=list (?form-delimiter)
-	     (?string "\\noindent{\\bf FORM ")
-	     (=name)
-	     (%maybe (=short-name))
-	     (=full-name)
-	     (%maybe (=references)))
-  (list name short-name full-name references)))
+(defun =full-name ()
+  (=text-until (%or (?delimiter)
+		    (=reference-start))))
 
-(assert (equal
-	 '((6 NIL)
-	   "a$: "
-	   "b. "
-	   "G\\. \\ac{Moore} \\cite{1982} and note 3.
-")
-	 (parse "\\medskip
-\\noindent{\\bf FORM 6.}a$: b. G\\. \\ac{Moore} \\cite{1982} and note 3.
+(defun test-full-name ()
+  (assert (equal "relatively prime. "
+		 (parse "relatively prime. See form" (=full-name))))
+  (assert (equal "relatively prime$.
+"
+		 (parse "relatively prime$.
 \\smallskip
 "
-		(=main-form))))
+			(=full-name)))))  
 
-(defun =eq-name ()
-  (=destructure (number _ eq-id _ parameter _)
-      (=list (=natural-number)
-	     (?whitespace)
-	     (=subseq (%some (?satisfies 'upper-case-p)))
-	     (%maybe (?whitespace))
-	     (%maybe (=parameter))
-	     (%or (?string "]}")
-		  (?string "].}")))
-    (list number eq-id parameter)))
-    
-(assert (equal '(14 "M" NIL) (parse "14 M]}  R. Cowen's " (=eq-name))))
-(assert (equal '(14 "N" "(n)") (parse "14 N(n)]} ($n\\in\\omega$" (=eq-name))))
-(assert (equal '(430 "AB" "($p$)") (parse "430 AB($p$)].} (Where $p" (=eq-name))))
-
-
-(defun =eq-form ()
-  (=destructure (_ _ eq-name short-name full-name references)
-      (=list (?eq-form-delimiter)
-	     (?string "\\item{}{\\bf [")
-	     (=eq-name)
-	     (%maybe (=short-name))
+(defun =main-form ()
+  (=destructure (_ name full-name references)
+      (=list (?string "\\noindent{\\bf FORM ")
+	     (=name)
 	     (=full-name)
 	     (%maybe (=references)))
-    (list eq-name short-name full-name references)))
+    (list name full-name references)))
 
-(assert (equal
-	 '((14 "M" NIL) NIL
-	   "  R. Cowen's ... T.  "
-	   "\\ac{Cowen} ...
+(defun test-main-form ()
+  (assert (equal
+	   '("6"
+	     "a$: b. "
+	     "G\\. \\ac{Moore} \\cite{1982} and note 3.")
+	   (parse "\\noindent{\\bf FORM 6.}a$: b. G\\. \\ac{Moore} \\cite{1982} and note 3.\\smallskip
+"
+		  (=main-form)))))
+
+(defun =eq-form ()
+  (=destructure (_ _ eq-name full-name references)
+      (=list (?eq-form-delimiter)
+	     (?string "\\item{}{\\bf [")
+	     (=name)
+	     (=full-name)
+	     (%maybe (=references)))
+    (list eq-name full-name references)))
+
+(defun test-eq-form ()
+  (assert (equal
+	   '("14 M"
+	     "  R. Cowen's ... T.  "
+	     "\\ac{Cowen} ...
 21. \\iput{Konig's lemma}
 ")
-	 (parse "\\smallskip
+	   (parse "\\smallskip
 \\item{}{\\bf [14 M]}  R. Cowen's ... T.  \\ac{Cowen} ...
 21. \\iput{Konig's lemma}
 \\smallskip
-\\item{}{\\bf [14 N(n)]}..." (=eq-form))))
-
+\\item{}{\\bf [14 N(n)]}..." (=eq-form)))))
+  
 (defun =form ()
-      (=list (=main-form)
-	     (%maybe (%some (=eq-form)))))
+  "The main form and its equivalents are returned in one list, starting with the main form."
+  (=destructure (_ main eq)
+      (=list (%some (?form-delimiter))
+	     (=main-form)
+	     (%maybe (%some (=eq-form))))
+    (append (list main) eq)))
 
-(assert (equal
-	 '(((430 "($p$)") " (Where $p$ is a prime) AL21$(p)$: "
-	    "Every ... $V = S \\oplus
-S'$.  "
-	    "\\ac{Bleicher} ... AL21}.
-")
-	   (((430 "A" "($p$)")
-	      " (Where $p$ is a prime) MC$...$, MC4$(p)$: "
-	      " For ... prime. "
-	      "See ... 6.38}.")))
-	 (parse "\\medskip
-\\noindent{\\bf FORM 430($p$).} (Where $p$ is a prime) AL21$(p)$: Every ... $V = S \\oplus
-S'$.  \\ac{Bleicher} ... AL21}.
-\\smallskip
-\\item{}{\\bf [430 A($p$)].} (Where $p$ is a prime) MC$...$, MC4$(p)$:  For ... prime. See ... 6.38}." (=form))))
-
-(assert (equal
-	 '(((0 NIL) NIL " $0 = 0$.
-" NIL) NIL)
-	 (parse "\\medskip
-\\noindent{\\bf FORM 0.} $0 = 0$.
-\\medskip
+(defun test-form ()
+  (assert (equal
+	   '(("430($p$)"  " A " "\\ac{B}")
+	     ("430 A($p$)" " C " "See V"))
+	   (parse "\\medskip
+\\noindent{\\bf FORM 430($p$).} A \\ac{B}\\smallskip
+\\item{}{\\bf [430 A($p$)].} C See V"
+		  (=form))))
+  (assert (equal
+	   '(("0" " $0 = 0$." NIL))
+	   (parse "\\medskip
+\\noindent{\\bf FORM 0.} $0 = 0$.\\smallskip
 "
-		(=form))))
+		  (=form)))))
+
+(defun no-newlines-subform (subform)
+  "This function replaces newlines with spaces, at the full-name 
+and references of `subform`. With `subform` I mean either 
+main-form or eq-form (an equivalent form). No further processing at this point, the rest will be done in a string processing package."
+  (cons (first subform) ;; the first is the name 
+	(mapcar (lambda (string)
+		  (substitute #\Space #\Newline string))
+		;; the rest are the strings with possible newlines
+		(rest subform)))) 
+
+(defun no-newlines (forms)
+  "The argument, `forms`, is a list of forms, which are lists of 
+subforms"
+  (mapcar (lambda (form) (mapcar #'no-newlines-subform form))
+	  forms))
 
 (defun =formsnum.tex ()
-  (=list (=text-until (?form-delimiter))
-	 (%some (=form))))
-#|
-(assert (equal
-	 ""
-	 (parse "bla \\medskip
+  (=destructure (_ forms)
+      (=list (=text-until (?form-delimiter))
+	     (%some (=form)))
+    (no-newlines forms)))
+   
+  
+(defun test-formsnum.tex ()
+  (assert (equal  (parse "bla 
+\\medskip
+\\noindent{\\bf FORM 0.} A
+\\smallskip
+\\item{}{\\bf [0 B]} C \\ac{ D
+\\smallskip
+\\item{}{\\bf [0 EF]} G
+\\medskip
+\\noindent{\\bf FORM 1.} H$: I
+\\smallskip
+\\item{}{\\bf [1 A]} J See K
+" (=formsnum.tex))
+		  '((("0"    " A "     NIL)
+		     ("0 B"  " C "     "\\ac{ D ")
+		     ("0 EF" " G "     NIL))
+		    (("1"    " H$: I " NIL)
+		     ("1 A"  " J "     "See K ")))))
+  (assert (equal
+	   (parse "bla \\medskip
 \\noindent{\\bf FORM 0.} $0 = 0$.
 \\smallskip
 \\item{}{\\bf [0 A]}  Cardinal successors 2:  For n)$.
 \\ac{Tarski} \\cite{1954a} and \\ac{Jech} \\cite{1966a}.
 \\smallskip
 \\item{}{\\bf [0 AK]} Every separable metric space is second countable.
-
 \\medskip
 \\medskip
 \\noindent{\\bf FORM 1.} $C(\\infty,\\infty)$:  The Axiom of Choice:
@@ -237,55 +237,33 @@ Every  set  of  non-empty sets has a choice function.
 \\item{}{\\bf [1 A]} In every vector space, every generating set
 contains a basis.  \\ac{Halpern} \\cite{1966}.
 "
-		(=formsnum.tex))))
+		  (=formsnum.tex))
+	   '((("0" " $0 = 0$. " NIL)
+	      ("0 A" "  Cardinal successors 2:  For n)$. "
+	       "\\ac{Tarski} \\cite{1954a} and \\ac{Jech} \\cite{1966a}. ")
+	      ("0 AK" " Every separable metric space is second countable. " NIL))
+	     (("1" " $C(\\infty,\\infty)$:  The Axiom of Choice: Every  set  of  non-empty sets has a choice function. \\rightheadtext{Form 1: The Axiom of Choice} \\iput{axiom of choice} " NIL)
+	      ("1 A" " In every vector space, every generating set contains a basis.  "
+	       "\\ac{Halpern} \\cite{1966}. "))
+	     (("1" " $C(\\infty,\\infty)$:  The Axiom of Choice: Every  set  of  non-empty sets has a choice function. \\rightheadtext{Form 1: The Axiom of Choice} \\iput{axiom of choice} "
+	       NIL)
+	      ("1 A" " In every vector space, every generating set contains a basis.  "
+	       "\\ac{Halpern} \\cite{1966}. "))))))
 
-|#
-		 
-;; ------------------------------------------------------------------
-;; Print the forms in a LaTeX file, to check that they were parsed
-;; correctly:
-;; ------------------------------------------------------------------
-
-(defun print-forms-file-heading (stream)
-  (format stream
-	  "\\documentclass[11pt,a4 paper]{article}
-   \\usepackage{amssymb,amsmath,longtable,tabu}
-   \\newcommand{\\ac}{} 
-   \\newcommand{\\icopy}{\\emph}
-   \\renewcommand{\\cite}[1]{({#1})}
-   \\newcommand{\\Cal}{\\mathcal}
-   \\newcommand{\\itemitem}[1]{\\\\ ~%\\hspace{0.2cm}\\mbox{#1}.\\vspace{0.2cm}}       
-   \\title{Forms and their statements, from Paul Howard and Jane Rubin's\\\\ ``Consequences of the Axiom of Choice'' project.}
-   \\begin{document}
-   \\maketitle   
-   This is a list of the consequences of the axiom of choice, which contains ``Howard-Rubin'' numbers (HR), their statements, and references to the locations in which they were found by Paul Howard and Jane Rubin. The references and more information can be found in the book {\\bf Consequences of the Axiom of Choice}. All information has been extracted from the file ``FORMSNUM.TEX'' which was kindly provided by Paul Howard.\\~%
-\\begin{itemize}~%"))
-
-(defun print-form-item (form stream)
-  (format stream "~{ \\item~a ~%{\\bf References:} ~a~}\\\\~%" form))
-
-(defun print-forms-file-ending (stream)
-  (format stream "\\end{itemize}
-                    ~%Extracted comments: 
-                    ~%
-                    ~% ~a
-                    ~%
-                    ~%\\end{document}" *comments*))
-
-(defun print-forms-to-file (forms filename)
-  "Creates or overwrites {filename}.tex with a LaTeX document with 
-the form statements and references, to make sure that the forms 
-have been parsed correctly."
-  (let ((file (concatenate 'string filename ".tex")))
-    (with-open-file (stream file
-			    :direction :output
-			    :if-exists :supersede)
-      (print-forms-file-heading stream)   
-      (loop for form in forms
-	 do (print-form-item form stream))
-      (print-forms-file-ending stream))))
+(defun test-formsnum-parsers ()
+  (test-delimiters)
+;  (test-parameter)
+  (test-name)
+  (test-references)
+  (test-full-name)
+  (test-main-form)
+ ; (test-eq-name)
+  (test-eq-form)
+  (test-form)
+  (test-formsnum.tex))
 
 
+;;; ### Parse book1
 
 ;;; The functions defined here convert the matrix that is stored in
 ;;; book1 of Howard and Rubin's "Consequences of the Axiom of
