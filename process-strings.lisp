@@ -1,4 +1,4 @@
-(in-package :jeffrey.process-strings)
+(In-package :jeffrey.process-strings)
 
 #| 
 This is an inefficient way to parse strings. Since the target 
@@ -47,29 +47,81 @@ information about forms being equivalent.")
 	  new-string)
 	string)))
 
-(defvar *this-with-pairs*
+(defun this-with-pairs ()
   "The substitutions will be performed backwards in 
 process-string."
-  (reverse '('("\\item\\item{}" "\\itemitem")
-	     '("\\item{}"       " ")
-	     '("\\leqno(*)"     "($*$)")
-	     '("\\item {"       "\\itemitem{")
-	     '("$$"             "\\\\"))))
+  (reverse '(("\\item\\item{}" "\\itemitem")
+	     ("\\item{}"       " ")
+	     ("\\leqno(*)"     "($*$)")
+	     ("\\item {"       "\\itemitem{")
+	     ("$$"             "\\\\"))))
 
-(defun process-string (string this-with-pairs)
-  (let ((first-pair (first this-with-pairs))
-	(rest-pairs (rest  this-with-pairs)))
-    (destructuring-bind (this with) first-pair
-      (search-replace this
-		      with
-		      (process-string string rest-pairs)))))
+(defun process-string (string this-with-pairs%)
+  (if this-with-pairs%
+      (let ((this (first  #1=(first this-with-pairs%)))
+	    (with (second #1#))
+	    (rest-pairs (rest  this-with-pairs%)))
+	(search-replace this
+			with
+			(process-string string rest-pairs)))
+      string))
 
-(defun process-form (main-form)
-  (=destructuring-bind (form-name LaTeX references)
-		       (list (parse-integer form-name :junk-allowed t)
-			     (concatenate 'string
-					  "{HR " form-name ".} "
-					  (process-string LaTeX))
-			     (process-string references))))
+(assert (equal (process-string "There $$ are no $\\aleph_{\\alpha}$ minimal  sets.  \\item{}That is, \\leqno(*) there are no sets\\item { $X$} such that \\item\\item{}{(1)} $|X|$ is incomparable with $\\aleph_{\\alpha}$"
+			       (this-with-pairs))
+	       "There \\\\ are no $\\aleph_{\\alpha}$ minimal  sets.   That is, ($*$) there are no sets\\itemitem{ $X$} such that \\itemitem{(1)} $|X|$ is incomparable with $\\aleph_{\\alpha}$"))
+
+(defun process-subform (id name LaTeX references)
+  (list id
+	(concatenate 'string "{HR " name ".} "
+		     (extract-comments
+		      (process-string LaTeX (this-with-pairs))))
+	(extract-comments
+	 (process-string references (this-with-pairs)))))
+
+(defun process-main-form (form-name LaTeX references) 
+  (let ((form-number (parse form-name (=natural-number))))
+    (process-subform form-number form-name LaTeX references)))
+
+(defun =eq-form-name ()
+  (=list (=natural-number)
+	 (?whitespace)
+	 (=subseq (%some (?satisfies 'upper-case-p)))))
+
+(assert (equal '(0 NIL "AD")
+	       (parse "0 AD($p$)" (=eq-form-name))))
+
+(defun process-eq-form (eq-form-name LaTeX references form-number)
+  (let ((eq-form-number (first #1=(parse eq-form-name
+					 (=eq-form-name))))
+	(eq-form-id (third #1#)))
+    (assert eq-form-id)
+    (assert (equal form-number eq-form-number))
+    (process-subform eq-form-id eq-form-name LaTeX references)))
+
+(assert (equal
+	 '(430 "{HR 430($p$).}  A \\\\ " "\\ac{B}")
+	 (process-main-form "430($p$)"  " A $$ " "\\ac{B}")))
+
+(defun process-form (form)
+  (let* ((main-form   (apply #'process-main-form (first form)))
+	 (form-number (first main-form)))
+    (append
+     (list main-form)
+     (loop for (eq-form-name LaTeX references) in (rest form)
+	collect (process-eq-form eq-form-name
+				 LaTeX
+				 references
+				 form-number)))))
+	  
+(defun process-forms (forms)
+  (mapcar #'process-form forms))
+	     
+(assert (equal 
+	 (process-forms '((("0" "a" "b") ("0 C"  "d" NIL))
+			  (("1" "e" NIL) ("1 FG" "h" "i"))))
+	 '(((0 "{HR 0.} a" "b") ("C" "{HR 0 C.} d" NIL))
+	   ((1 "{HR 1.} e" NIL) ("FG" "{HR 1 FG.} h" "i")))))
+	 
+	   
 
 ;; Check if eq-forms have the same number as their main form

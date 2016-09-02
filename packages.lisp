@@ -25,7 +25,8 @@
   (:documentation "parse.lisp contains parsing functions for reading in node (form) information, and for reading book1, the original matrix with all the implication codes. Form information, i.e., name, LaTeX-statement, and references are parsed from in a machete-style chopping of the TeX-file Howard-Rubin-data/FORMSNUM.TEX . Implication information is parsed from the file Howard-Rubin-data/book1 ."))
 
 (defpackage jeffrey.process-strings
-  (:use    :common-lisp)
+  (:use    :common-lisp
+  	   :maxpc :maxpc.digit :maxpc.char)
   (:export :process-formsnum)
   (:documentation "process-strings.lisp contains functions which make the text in any LaTeX-statement LaTeX compatible (the origin is TeX). It's a crude search and replace routine."))
 
