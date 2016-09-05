@@ -144,6 +144,8 @@
   (setup-test)
   (format t "~%Testing add-edge...~%")
   (test-add-edge)
+  (format t "~%Testing formsnum.tex parsers...~%")
+  (test-formsnum-parsers)
   (format t "~%Testing predicates with the test-matrix...~%")
   (test-predicates)
   (format t "~%Testing the reading module...~%")

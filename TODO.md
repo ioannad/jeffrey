@@ -1,8 +1,11 @@
 ### TO-DO list for the Choiceless Grapher
 
-# Finish process-strings.lisp
+# Fix parse.lisp (upgrade to maxpc)
 
- and make the rest of the modules work with this and the new parse.lisp. 
+\\smallskip is not a good eq-form separator, it appears inside LaTeX-statements of forms (e.g. "14 CY"). Switch to "\\smallskip
+\\item{}{\\bf [".
+
+Aslo finish checking read.lisp and run tests.
 
 # Add short names?
 

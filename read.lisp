@@ -6,16 +6,10 @@
 	       "quicklisp/local-projects/jeffrey/"))
 
 (defvar *bad-forms* '(423 374 383)
-  "These two forms are removed until I figure out how to deal with
+  "These three forms are removed until I figure out how to deal with
 them. Form 423 is equivalent to form 374. For 383, FORMSNUM.TEX says:
 \"NOTE that 383 and 232 are equivalent. Therefore, 383, and 
-[383 A]- [383 C] have become [232 H]-[232 K]\".")
-
-#| 
-I will need to iterate over all forms from 0 to 430 that are not in
-*bad-forms*. At this point I should add a macro of some sort to make
-these iterations shorter to write. 
-|#
+[383 A]-[383 C] have become [232 H]-[232 K]\".")
 
 (defvar *forms-file* (concatenate 'string
 				  *local-directory*
@@ -25,22 +19,33 @@ these iterations shorter to write.
 				 *local-directory*
 				 "Howard-Rubin-data/book1"))
 
+(defun read-formsnum (forms-file)
+  "Parses `FORMSNUM.TEX` and returns a list of forms. Each form
+starts with a main-form which is possibly followed by equivalent 
+forms."
+  (process-forms (with-open-file (formsnum (pathname forms-file))
+    (with-standard-io-syntax (parse formsnum (=formsnum.tex))))))
+		 
+
+
 (defun read-forms-to-graph (forms-file) ;=> hash table (graph)
-  "Parses the data in `file` and returns a hash table with the node 
-information."
-  (let ((forms (collect-forms forms-file))
+  "Parses the data in `forms-file` and returns a hash table with the
+node information."
+  (let ((forms (read-formsnum forms-file))
 	(graph (make-hash-table)))
     (loop for form in forms
-       for name = (first form)
+       for main-form = (first form)
+       for name = (first main-form)
+       do (assert (integerp name))
        unless (member name *bad-forms*)
        do (setf (gethash name graph)
-		(apply #'make-node form)))
+		(apply #'make-node main-form)))
     graph))
 
 (defun read-book1 (book-file) ;=> list of lists (book1-list)
   "Parses book1 and returns a list of lists of fields."
   (with-open-file (book1 (pathname book-file))
-    (with-standard-io-syntax (run (=book1) book1))))
+    (with-standard-io-syntax (parse book1 (=book1)))))
 
 (defun book1-to-matrix (book1-list) ;=> book1-matrix
   "Takes the result of `read-book1`. Returns a matrix version of 
@@ -56,20 +61,20 @@ book1."
 	     do (setf (aref book1-matrix i j) code))
        finally (return book1-matrix))))
 
-(defun add-edge-and-parent (node-a node-b graph)
+(defun add-edge-and-parent (node-a node-b)
   "This function adds an edge with destination `node-b` and relation `T`
 to `node-a` in `graph`, and it adds `node-a` to the list of parents of `node-b`."
   (add-edge node-a (make-edge node-b T))
   (add-parent node-b node-a))
 
-(defun add-appropriate-edge (node-a node-b code graph)
+(defun add-appropriate-edge (node-a node-b code)
   "If `code` = 1 and `node-a` is not `node-b`, this adds a T-edge
 from `node-a` to `node-b` and `node-a` to the parents of `node-b`.
 If `code` = 3, this adds a NIL-edge from `node-a` to `node-b`.
 Else NIL."
   (cond ((and (equal code 1)
 	      (not (equal node-a node-b)))
-	 (add-edge-and-parent node-a node-b graph))
+	 (add-edge-and-parent node-a node-b))
 	((equal code 3)
 	 (add-edge node-a (make-edge node-b NIL)))
 	(T NIL)))
@@ -85,7 +90,7 @@ respectively."
      do (loop for name-j being the hash-keys of graph
 	   using (hash-value node-j)
 	   when (member #1=(aref matrix name-i name-j) '(1 3))
-	   do (add-appropriate-edge node-i node-j #1# graph)))
+	   do (add-appropriate-edge node-i node-j #1#)))
   graph)
 
 (defun graph-to-matrix (graph) ;=> matrix
@@ -110,7 +115,7 @@ parents of node 0, the bottom node of the graph."
   (let ((node-0 (gethash 0 graph)))
     (unless (or (some #'edge-relation (node-edges node))
 		(equal node node-0))
-      (add-edge-and-parent node node-0 graph))))
+      (add-edge-and-parent node node-0))))
 
 (defun add-top-node (node graph)
   "Unless `node` is node-1 or it has parents, add node-1 as a parent 
@@ -118,7 +123,7 @@ and add an edge to node-1 with destination `node` and relation T."
   (let ((node-1 (gethash 1 graph))) 
     (unless (or (node-parents node) 
 		(equal node node-1)) 
-      (add-edge-and-parent node-1 node graph))))
+      (add-edge-and-parent node-1 node))))
 
 (defun add-top-bottom (graph)
   "Takes a graph (a hash table of nodes). Returns `graph` after

@@ -57,14 +57,16 @@ process-string."
 	     ("$$"             "\\\\"))))
 
 (defun process-string (string this-with-pairs%)
-  (if this-with-pairs%
-      (let ((this (first  #1=(first this-with-pairs%)))
-	    (with (second #1#))
-	    (rest-pairs (rest  this-with-pairs%)))
-	(search-replace this
-			with
-			(process-string string rest-pairs)))
-      string))
+  (if (null string)
+      ""
+      (if this-with-pairs%
+	  (let ((this (first  #1=(first this-with-pairs%)))
+		(with (second #1#))
+		(rest-pairs (rest  this-with-pairs%)))
+	    (search-replace this
+			    with
+			    (process-string string rest-pairs)))
+	  string)))
 
 (assert (equal (process-string "There $$ are no $\\aleph_{\\alpha}$ minimal  sets.  \\item{}That is, \\leqno(*) there are no sets\\item { $X$} such that \\item\\item{}{(1)} $|X|$ is incomparable with $\\aleph_{\\alpha}$"
 			       (this-with-pairs))
@@ -119,9 +121,5 @@ process-string."
 (assert (equal 
 	 (process-forms '((("0" "a" "b") ("0 C"  "d" NIL))
 			  (("1" "e" NIL) ("1 FG" "h" "i"))))
-	 '(((0 "{HR 0.} a" "b") ("C" "{HR 0 C.} d" NIL))
-	   ((1 "{HR 1.} e" NIL) ("FG" "{HR 1 FG.} h" "i")))))
-	 
-	   
-
-;; Check if eq-forms have the same number as their main form
+	 '(((0 "{HR 0.} a" "b") ("C" "{HR 0 C.} d" ""))
+	   ((1 "{HR 1.} e" "") ("FG" "{HR 1 FG.} h" "i")))))
