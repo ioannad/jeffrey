@@ -27,7 +27,9 @@
 (defpackage jeffrey.process-strings
   (:use    :common-lisp
   	   :maxpc :maxpc.digit :maxpc.char)
-  (:export :process-forms)
+  (:export :process-forms
+	   :search-replace
+	   :*comments*)
   (:documentation "process-strings.lisp contains functions which make the text in any LaTeX-statement LaTeX compatible (the origin is TeX). It's a crude search and replace routine."))
 
 (defpackage jeffrey.read
