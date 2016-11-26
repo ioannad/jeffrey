@@ -20,12 +20,7 @@ Install this package using quicklisp ([installation instructions](https://www.qu
 * Create a folder called `jeffrey` in `quicklisp/local-projects/`,
 * Navigate to this folder in a terminal and type `git init` and `git clone git@github.com:ioannad/jeffrey.git`. Alternatively otherwise download the cohntents of this repository to this folder. 
 
-To load the **Choiceless Grapher**, open a Common Lisp REPL and type in `(ql:quickload "jeffrey")`. 
-If an error appears, due to required packages "mpc", "split-sequence", and "external-program", please evaluate
-
-`(map 'list #'ql:quickload '("mpc" "split-sequence" "external-program" "jeffrey"))`
-
-If at all, you will only have to do this once. 
+To load the **Choiceless Grapher**, open a Common Lisp REPL and type in `(ql:quickload "jeffrey")`.
 
 Then you can choose a package you'd like to use, for example to run all tests and read the report type in `(in-package :jeffrey.test)` and then type in `(test-all)`. For drawing diagrams see below.
 
@@ -71,7 +66,7 @@ The resulting images and dot files will appear in `~/quicklisp/local-projects/je
 
 ## Detailed description
 
-This program requires package "mpc", "split-sequence", and "external-program". In the to-do list is to change mpc to maxpc, the new version of mpc.
+This program requires package "maxpc", "split-sequence", and "external-program".
 
 **jeffrey.asd** contains the (defsystem ...) command that creates "jeffrey" as a system of packages. The files that comprise jeffrey's packages, their exported functions, and their dependencies are listed in **packages.lisp**.
 
@@ -95,7 +90,7 @@ Run all tests while `(in-package :jeffrey-test)` with the command `(test-all)`, 
 **/fancy-labels/** contains the result of **labelmaker.lisp**, i.e., the png-files containing the full LaTeX-formatted statements of the nodes. Works together with a bash script to run pdflatex and convert the pdf to png. *Still under experimentation!* 
 
 **complexity issues**
-I haven't really tried to optimize this algorithm yet (from the graph structure to the diagram), apart from the addition of the *jeff-matrix* that remembers the answers of the predicates. This could be made even faster, but it's not necessary now. 
+I haven't really tried to optimize this algorithm yet (from the graph structure to the diagram), apart from the addition of the *jeff-matrix* that remembers the answers of the predicates. This could be made even faster, which is in the todo list (in `TODO.md`). 
 
 More details to be added.
  
