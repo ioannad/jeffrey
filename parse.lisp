@@ -15,7 +15,7 @@ Parse form information:
     
 (defun ?eq-form-delimiter ()
   (?seq (?tex-skip)
-	(?string "\\item{}{\\bf [")))
+	(?string "\\item{}{\\bf ")))
 
 (defun ?delimiter ()
   (%or (?eq-form-delimiter)
@@ -139,7 +139,7 @@ Parse form information:
 
 (defun test-eq-form ()
   (assert (equal
-	   '("14 M]"
+	   '("[14 M]"
 	     "  R. Cowen's ... T.  "
 	     "\\ac{Cowen} ...
 21. \\iput{Konig's lemma}
@@ -160,7 +160,7 @@ Parse form information:
 (defun test-form ()
   (assert (equal
 	   '(("430($p$)."  " A " "\\ac{B}")
-	     ("430 A($p$)]." " C " "See V"))
+	     ("[430 A($p$)]." " C " "See V"))
 	   (parse "\\medskip
 \\noindent{\\bf FORM 430($p$).} A \\ac{B}\\smallskip
 \\item{}{\\bf [430 A($p$)].} C See V"
@@ -209,10 +209,10 @@ subforms"
 \\item{}{\\bf [1 A]} J See K
 " (=formsnum.tex))
 		  '((("0."    " A "     NIL)
-		     ("0 B]"  " C "     "\\ac{ D ")
-		     ("0 EF]" " G "     NIL))
+		     ("[0 B]"  " C "     "\\ac{ D ")
+		     ("[0 EF]" " G "     NIL))
 		    (("1."    " H$: I " NIL)
-		     ("1 A]"  " J "     "See K ")))))
+		     ("[1 A]"  " J "     "See K ")))))
   (assert (equal
 	   (parse "bla \\medskip
 \\noindent{\\bf FORM 0.} $0 = 0$.
@@ -233,11 +233,11 @@ contains a basis.  \\ac{Halpern} \\cite{1966}.
 "
 		  (=formsnum.tex))
 	   '((("0." " $0 = 0$. " NIL)
-	      ("0 A]" "  Cardinal successors 2:  For n)$. "
+	      ("[0 A]" "  Cardinal successors 2:  For n)$. "
 	       "\\ac{Tarski} \\cite{1954a} and \\ac{Jech} \\cite{1966a}. ")
-	      ("0 AK]" " Every separable metric space is second countable. " NIL))
+	      ("[0 AK]" " Every separable metric space is second countable. " NIL))
 	     (("1." " $C(\\infty,\\infty)$:  The Axiom of Choice: Every  set  of  non-empty sets has a choice function. \\rightheadtext{Form 1: The Axiom of Choice} \\iput{axiom of choice} " NIL)
-	      ("1 A]" " In every vector space, every generating set contains a basis.  "
+	      ("[1 A]" " In every vector space, every generating set contains a basis.  "
 	       "\\ac{Halpern} \\cite{1966}. "))))))
 
 (defun test-formsnum-parsers ()
@@ -258,8 +258,6 @@ contains a basis.  \\ac{Halpern} \\cite{1966}.
 ;;; The functions defined here convert the matrix that is stored in
 ;;; book1 of Howard and Rubin's "Consequences of the Axiom of
 ;;; Choice" into a graph structure. 
-;;; Parsing is done with Max Rottenkolber's Monadic Parser
-;;; Combinator (mpc) library. 
 
 
 ;;; Parsing is much easier for book1:

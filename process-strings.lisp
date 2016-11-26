@@ -108,10 +108,10 @@ in {*badends*}."
 			     (process-string string
 					     (this-with-pairs))))))
     (list id
-	  (concatenate 'string "{HR " name ".} " (process LaTeX))
+	  (concatenate 'string "{HR " name "} " (process LaTeX))
 	  (process references))))
 		   
-(assert (equal '(2 "{HR name.} latex" "ar")
+(assert (equal '(2 "{HR name} latex" "ar")
 	       (process-subform 2 "name"
 				"latex\\rightheadtext{njf"
 				"ar\\iput{kjg")))
@@ -121,23 +121,24 @@ in {*badends*}."
     (process-subform form-number form-name LaTeX references)))
 
 (defun =eq-form-name ()
-  (=list (=natural-number)
+  (=list (?char #\[)
+	 (=natural-number)
 	 (?whitespace)
 	 (=subseq (%some (?satisfies 'upper-case-p)))))
 
-(assert (equal '(0 NIL "AD")
-	       (parse "0 AD($p$)" (=eq-form-name))))
+(assert (equal '(NIL 0 NIL "AD")
+	       (parse "[0 AD($p$)" (=eq-form-name))))
 
 (defun process-eq-form (eq-form-name LaTeX references form-number)
-  (let ((eq-form-number (first #1=(parse eq-form-name
+  (let ((eq-form-number (second #1=(parse eq-form-name
 					 (=eq-form-name))))
-	(eq-form-id (third #1#)))
+	(eq-form-id (fourth #1#)))
     (assert eq-form-id)
     (assert (equal form-number eq-form-number))
     (process-subform eq-form-id eq-form-name LaTeX references)))
 
 (assert (equal
-	 '(430 "{HR 430($p$).}  A $ " "\\ac{B}")
+	 '(430 "{HR 430($p$)}  A $ " "\\ac{B}")
 	 (process-main-form "430($p$)"  " A $$ " "\\ac{B}")))
 
 (defun process-form (form)
@@ -155,7 +156,7 @@ in {*badends*}."
   (mapcar #'process-form forms))
 	     
 (assert (equal 
-	 (process-forms '((("0" "a" "b") ("0 C"  "d" NIL))
-			  (("1" "e" NIL) ("1 FG" "h" "i"))))
-	 '(((0 "{HR 0.} a" "b") ("C" "{HR 0 C.} d" ""))
-	   ((1 "{HR 1.} e" "") ("FG" "{HR 1 FG.} h" "i")))))
+	 (process-forms '((("0" "a" "b") ("[0 C]"  "d" NIL))
+			  (("1" "e" NIL) ("[1 FG]" "h" "i"))))
+	 '(((0 "{HR 0} a" "b") ("C" "{HR [0 C]} d" ""))
+	   ((1 "{HR 1} e" "") ("FG" "{HR [1 FG]} h" "i")))))
