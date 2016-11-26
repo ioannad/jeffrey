@@ -7,7 +7,7 @@
 ;; integer, though they should be natural numbers.
 
 (defstruct (node (:constructor make-node%))
-  (name       -23   :type integer) ; A node must have a name.
+  (name       1000  :type integer) ; A node must have a name. 1000 should not actually occur.
   (edges      nil   :type list)   
   (parents    nil   :type list)
   (LaTeX      ""    :type string)
