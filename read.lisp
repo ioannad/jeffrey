@@ -25,8 +25,6 @@ starts with a main-form which is possibly followed by equivalent
 forms."
   (process-forms (with-open-file (formsnum (pathname forms-file))
     (with-standard-io-syntax (parse formsnum (=formsnum.tex))))))
-		 
-
 
 (defun read-forms-to-graph (forms-file) ;=> hash table (graph)
   "Parses the data in `forms-file` and returns a hash table with the

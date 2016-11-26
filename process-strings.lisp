@@ -28,24 +28,33 @@ It should only be references from read.lisp.
 		       (search-replace this with right-part)))
 	in-string)))
 
-(defvar *comments* '()
+(assert (equal "bbcdefg" (search-replace "a" "b" "abcdefg")))
+
+(defvar *comments* ""
   "To collect any comments in {FORMSNUM.TEX}, as this may involve 
 information about forms being equivalent.")
 
 (defun extract-comments (string)
-  "Removes a comment from `string` and pushes it into 
-`*comments*`."
+  "Removes a comment from `string` and concatenates it to
+`*comments*`. Returns "
   (let ((comment-beginning (search "%" string)))
     (if comment-beginning
 	(let ((new-string (subseq string
 				  0
 				  comment-beginning))
 	      (comment (subseq string
-			       comment-beginning
+			       (+ 1 comment-beginning)
 			       (length string))))
-	  (push comment *comments*)
+	  (setf *comments* (format nil "~a~%~%~a" *comments* comment))
 	  new-string)
 	string)))
+
+(defun test-extract-comments ()
+  (setf *comments* " ")
+  (assert (and (equal "abc " (extract-comments "abc %qwe"))
+	       (equal *comments* " 
+
+qwe"))))
 
 (defun this-with-pairs ()
   "The substitutions will be performed backwards in 
@@ -54,7 +63,8 @@ process-string."
 	     ("\\item{}"       " ")
 	     ("\\leqno(*)"     "($*$)")
 	     ("\\item {"       "\\itemitem{")
-	     ("$$"             "\\\\"))))
+	     ("$$"             "$")
+	     ("\\tag"          " "))))
 
 (defun process-string (string this-with-pairs%)
   (if (null string)
@@ -68,17 +78,43 @@ process-string."
 			    (process-string string rest-pairs)))
 	  string)))
 
-(assert (equal (process-string "There $$ are no $\\aleph_{\\alpha}$ minimal  sets.  \\item{}That is, \\leqno(*) there are no sets\\item { $X$} such that \\item\\item{}{(1)} $|X|$ is incomparable with $\\aleph_{\\alpha}$"
+(assert (equal (process-string "There $$5$$ are no $\\aleph_{\\alpha}$ minimal  sets.  \\item{}That is, \\leqno(*) there are no sets\\item { $X$} such that \\item\\item{}{(1)} $|X|$ is incomparable with $\\aleph_{\\alpha}$"
 			       (this-with-pairs))
-	       "There \\\\ are no $\\aleph_{\\alpha}$ minimal  sets.   That is, ($*$) there are no sets\\itemitem{ $X$} such that \\itemitem{(1)} $|X|$ is incomparable with $\\aleph_{\\alpha}$"))
+	       "There $5$ are no $\\aleph_{\\alpha}$ minimal  sets.   That is, ($*$) there are no sets\\itemitem{ $X$} such that \\itemitem{(1)} $|X|$ is incomparable with $\\aleph_{\\alpha}$"))
+
+(defvar *badends*
+  '("\\iput{" "\\rightheadtext{" "\\medskip  \\end-"))
+
+  
+(defun drop-badends (string)
+  "Removes the tail of `string` which begins with a string 
+in {*badends*}."
+  (let ((positions (mapcar (lambda (badend)
+			     (search badend string))
+			   *badends*)))
+    (if #1=(remove-if #'null positions)
+	(let ((pos (first (sort #1# #'<))))
+	  (subseq string 0 pos))
+	string)))
+	   
+(assert (equal "a" (drop-badends "a\\iput{asd"))) 
+(assert (equal "b"
+	       (drop-badends
+		"b\\rightheadtext{w2d \\iput{sg")))
 
 (defun process-subform (id name LaTeX references)
-  (list id
-	(concatenate 'string "{HR " name ".} "
-		     (extract-comments
-		      (process-string LaTeX (this-with-pairs))))
-	(extract-comments
-	 (process-string references (this-with-pairs)))))
+  (flet ((process (string) (drop-badends
+			    (extract-comments
+			     (process-string string
+					     (this-with-pairs))))))
+    (list id
+	  (concatenate 'string "{HR " name ".} " (process LaTeX))
+	  (process references))))
+		   
+(assert (equal '(2 "{HR name.} latex" "ar")
+	       (process-subform 2 "name"
+				"latex\\rightheadtext{njf"
+				"ar\\iput{kjg")))
 
 (defun process-main-form (form-name LaTeX references) 
   (let ((form-number (parse form-name (=natural-number))))
@@ -101,7 +137,7 @@ process-string."
     (process-subform eq-form-id eq-form-name LaTeX references)))
 
 (assert (equal
-	 '(430 "{HR 430($p$).}  A \\\\ " "\\ac{B}")
+	 '(430 "{HR 430($p$).}  A $ " "\\ac{B}")
 	 (process-main-form "430($p$)"  " A $$ " "\\ac{B}")))
 
 (defun process-form (form)
