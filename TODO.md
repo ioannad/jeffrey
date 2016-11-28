@@ -14,3 +14,7 @@ This could be very non-straightforward, as there is no obvious way to do this we
 # Improve predicate algorithms
 
 Implement one of the nice path finding graph algorithms of the AlgorithmsI course (coursera).
+
+# Add Windows and Macintosh support.
+
+The external-programs only work for Linux for the moment.
