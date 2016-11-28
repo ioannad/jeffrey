@@ -87,9 +87,9 @@ therefore B-anc implies A-desc, contradiction to the NIL-edge from B-desc to A-d
 **test.lisp** contains test data and testing functions, which should be run after every and any change in the above files.
 Run all tests while `(in-package :jeffrey-test)` with the command `(test-all)`, which prints a report to your REPL.
 
-**/sneak-preview/** contains diagrams with sets of forms that make sense, e.g., between forms about alephs and their properties, as well as diagrams with random sets of forms. A boldfaced arrow from A to B means that the implication is non-reversible, i.e., there exists a model of ZF set theory in which B holds and A doesn't. *Just imagine the endless possibilities for random research projects, theses, and papers, filling or boldfacing those arrows! :)*  The `full-diagram.pdf` is also included, only for standard "number names" (not full statements). Its size is 3,75m x 78 cm. 
+**/diagrams/** contains diagrams with sets of forms that make sense, e.g., between forms about alephs and their properties, as well as diagrams with random sets of forms. A boldfaced arrow from A to B means that the implication is non-reversible, i.e., there exists a model of ZF set theory in which B holds and A doesn't. *Just imagine the endless possibilities for random research projects, theses, and papers, filling or boldfacing those arrows! :)*  The `full-diagram.pdf` is also included, only for standard "number names" (not full statements). Its size is 3,75m x 78 cm. 
 
-**/fancy-labels/** contains the result of **labelmaker.lisp**, i.e., the png-files containing the full LaTeX-formatted statements of the nodes. Works together with a bash script to run pdflatex and convert the pdf to png. *Still under experimentation!* 
+**/fancy-labels/** is not included here, but you can produce it from package `:jeffrey.labelmaker` with the command `(make-all-texs)` followed by `(make-all-pngs`).
 
 **complexity issues**
 I haven't really tried to optimize this algorithm yet (from the graph structure to the diagram), apart from the addition of the *jeff-matrix* that remembers the answers of the predicates. This could be made even faster, which is in the todo list (in `TODO.md`). 
