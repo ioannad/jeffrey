@@ -5,11 +5,13 @@
 	       (directory-namestring (USER-HOMEDIR-PATHNAME))
 	       "quicklisp/local-projects/jeffrey/"))
 
-(defvar *bad-forms* '(423 374 383)
-  "These three forms are removed until I figure out how to deal with
+(defvar *bad-forms* '(423 374 383 360)
+  "These four forms are removed until I figure out how to deal with
 them. Form 423 is equivalent to form 374. For 383, FORMSNUM.TEX says:
 \"NOTE that 383 and 232 are equivalent. Therefore, 383, and 
-[383 A]-[383 C] have become [232 H]-[232 K]\".")
+[383 A]-[383 C] have become [232 H]-[232 K]\". Testing also showed that
+360 is not existent (I got a (NIL x) answer between 360 and any other
+form name." )
 
 (defvar *forms-file* (concatenate 'string
 				  *local-directory*
