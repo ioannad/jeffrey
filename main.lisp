@@ -4,7 +4,7 @@
 
 (setup-jeff-matrix *graph*)
 
-(defun graph (names-list filename style &optional (ending "pdf"))
+(defun graph (names-list filename style &optional (ending "png"))
   (draw names-list filename style ending))
 
 (defun node-names (graph)
@@ -23,7 +23,7 @@
      into numbers
      finally (return numbers)))
 	    
-(defun random-graph (amount-of-nodes filename style &optional (ending "pdf"))
+(defun random-graph (amount-of-nodes filename style &optional (ending "png"))
   (graph 
    (append (random-numbers amount-of-nodes 
 			   (node-names *graph*)

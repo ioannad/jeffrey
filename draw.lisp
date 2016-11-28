@@ -129,7 +129,7 @@ Graphviz dot. Outputs `result-file`, which contains the diagram."
     (run "/bin/sh" (list "-c" command-string)
 			:output t)))
 		     
-(defun draw (input-names diagram-filename style &optional (ending "pdf"))
+(defun draw (input-names diagram-filename style &optional (ending "png"))
   "`style` should be either the string \"fancy\" or \"numbers\".
 `format` can be anything supported by dot, e.g., pdf, png, svg, ps.
 The default format is pdf."
