@@ -54,13 +54,13 @@ Similarly, you can draw the implication diagram of a list of forms (e.g. of `'(8
 
 ### Output format
 
-The default output is pdf but you can output any filetype supported by dot (png, svg, ps,...) with, for example:
+The default output is no longer pdf, as there is an issue with the borders of the fancy labels. The current default is `png` but you can output any filetype supported by dot (svg, ps,...) with, for example:
 
-`(graph '(0 1 2 3 23) "test" "fancy" "png")`
+`(graph '(0 1 2 3 23) "test" "fancy" "ps")`
 
 or 
 
-`(random-graph 5 "random5" "fancy" "png")`
+`(random-graph 5 "random5" "fancy" "svg")`
 
 The resulting images and dot files will appear in `~/quicklisp/local-projects/jeffrey/diagrams`. If you have quicklisp installed somewhere else, then please do a `(setf *local-directory* "path/to/your/jeffrey")`, where "path/to/your/jeffrey" should be the directory where the Choiceless Grapher is installed. 
 
@@ -72,7 +72,9 @@ This program requires package "maxpc", "split-sequence", and "external-program".
 
 **graph.lisp** contains the graph structure where the information is stored (the types), and the related functions, which are the basic language of the system. There are two types, one type `node`, which is a name of type natural number, a list of edges of type edge described below, a list of parents of type node, a LaTeX statement of type string, references of type string, and a placeholder for attributes. The other type is `edge`, which is a destination of type node, a relation (T or NIL), which corresponds to positive and negative implication arrow respectively, and a placeholder for attributes. The nodes are to be stored in the exported hash-table `*graph*`.
 
-**parse.lisp** contains parsing functions for reading in node (form) information, and for reading `book1`, the original matrix with all the implication codes. Form information, i.e., name, LaTeX-statement, and references are parsed in a machete-style chopping of the TeX-file `Howard-Rubin-data/FORMSNUM.TEX`. Implication information is parsed simply, because book1 is a simple integer matrix whose lines terminate with -1. 
+**parse.lisp** contains parsing functions for reading in node (form) information, and for reading `book1`, the original matrix with all the implication codes. Form information, i.e., name, LaTeX-statement, and references are parsed from the TeX-file `Howard-Rubin-data/FORMSNUM.TEX`. Implication information is parsed simply, because book1 is a simple integer matrix whose lines terminate with -1. I use Max's Parser Combinators ([maxpc](https://github.com/eugeneia/maxpc)).
+
+**process-strings.lisp** contains functions which make the text in any LaTeX-statement LaTeX compatible (the origin is TeX). It's a crude search and replace routine.
 
 **read.lisp** contains the functions that read input, and it can be run in its whole with `(read-all-data)`. This function will first store the form data from `FORMSNUM.TEX` as nodes in `*graph*`, then add edges and parents to these nodes, following only the direct information from `book1`. That is, if book1 has code 1 in position (i,j), then it will add an edge to the node with name i (node i) with destination node j and relation T, and it will add node i to the set of parents of node j. If book1 has code 3 in position (i,j), then it will only add an edge to node i with destination node j and relation NIL. All other codes should be derivable from this information, using the predicates in the next module.
 
