@@ -1,11 +1,9 @@
 ### TO-DO list for the Choiceless Grapher
 
-# Fix parse.lisp (finish upgrading to maxpc)
+# Figure out pdf output issue
 
-\\smallskip is not a good eq-form separator, it appears inside LaTeX-statements of forms (e.g. "14 CY"). Switch to "\\smallskip
-\\item{}{\\bf [".
-
-Also finish checking read.lisp.
+PDF output does not render fancy labels properly. Why?
+For the moment use png, which is the current default. 
 
 # Add short names?
 
