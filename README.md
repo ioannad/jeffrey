@@ -13,7 +13,7 @@ A quick overview is given below. A paper with a full description and explanation
 * [Graphviz](www.graphviz.org/) (with dot and tred installed, `apt-get install graphviz`)
 * [Quicklisp](www.quicklisp.org)
 * **Temporarily** it only works in Linux. Windows and Macintosh support are on the to-do list.
-* The package `labelmaker` also requires `/bin/bash`, `pdflatex`, and `dvipng`. 
+* The package `labelmaker` also requires `/bin/bash`, `pdflatex`, and `convert`. 
 
 ## Installation
 Install this package using quicklisp ([installation instructions](https://www.quicklisp.org/beta/#installation)) and git ([installation instructions](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)) as follows:
@@ -88,11 +88,11 @@ therefore B-anc implies A-desc, contradiction to the NIL-edge from B-desc to A-d
 **test.lisp** contains test data and testing functions, which should be run after every and any change in the above files.
 Run all tests while `(in-package :jeffrey-test)` with the command `(test-all)`, which prints a report to your REPL.
 
-**/diagrams/** contains diagrams with sets of forms that make sense, e.g., between forms about alephs and their properties, as well as diagrams with random sets of forms. A boldfaced arrow from A to B means that the implication is non-reversible, i.e., there exists a model of ZF set theory in which B holds and A doesn't. *Just imagine the endless possibilities for random research projects, theses, and papers, filling or boldfacing those arrows! :)*  The `full-diagram.pdf` is also included, only for standard "number names" (not full statements). Its size is 3,75m x 78 cm. 
+**/diagrams/** contains diagrams with sets of forms that make sense, e.g., between forms about alephs and their properties, as well as diagrams with random sets of forms. A boldfaced arrow from A to B means that the implication is non-reversible, i.e., there exists a model of ZF set theory in which B holds and A doesn't. *Just imagine the endless possibilities for random research projects, theses, and papers, filling or boldfacing those arrows! :)*  The `full-diagram.pdf` is also included, only for standard "number names" (not full statements). Its size is 3,41m x 1,72 m. 
 
 **/fancy-labels/** is not included here, but you can produce it from package `:jeffrey.labelmaker` with the command `(make-fancy-labels`).
 
 **/Howard-Rubin-data/** contains the files from the Consequences of the Axiom of Choice Project, which were kindly provided by Prof. Paul Howard. 
 
 **complexity issues**
-I have made some small steps to improve the original brute force algorithm for calculating the predicates. The biggest difference was made by memoising with the addition of the `*jeff-matrix*`. A 7%-25% improvement (SBCL and CCL resp.) was achieved by changing the double loop of `(graph-implies-not-p Y X)` to three single loops (finding destinations of nil edges of ancestors of Y, finding descendants of X, and intersecting these two lists.
+I have made some small steps to improve the original brute force algorithm for calculating the predicates. The biggest difference was made by memoising with the addition of the `*jeff-matrix*`. A 7%-25% improvement (SBCL and CCL resp.) was achieved by changing the double loop of `(graph-implies-not-p Y X)` to three single loops (finding destinations of nil edges of ancestors of Y, finding descendants of X, and intersecting these two lists).
