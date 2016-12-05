@@ -1,10 +1,14 @@
 (in-package :jeffrey.labelmaker)
 
-(defun filename (name ending)  
+(defun fancy-dir ()
   (concatenate 'string 
 	       *local-directory*
-	       "diagrams/form-name-pics/"
-	       (write-to-string name)
+	       "diagrams/fancy-labels/"))
+
+(defun filename (name ending)  
+  (concatenate 'string
+	       (fancy-dir)
+	       (format NIL "~a" name)
 	       ending))
 
 (defun tex-file-content (latex-statement width-cm)
@@ -37,21 +41,12 @@
 				5.5)))
       (tex-file-content latex-statement width-cm))))
 
-(defun make-png (name)
-  "Creates a .png file for the node of the FORM, in the folder
-diagrams/form-name-pics/."
-  (run "/usr/bin/pdflatex" (list (filename name ".tex")))
-  (run "/usr/bin/dvipng"   (list (filename name ".png")))
-  (format t "File ~a created successfully.~%"
-	  (filename name ".png")))
-	   		
 (defun make-all-texs ()
-  (setf (node-LaTeX (gethash 360 *graph*)) "{HR 360.} A system of linear equations over the field $\\{0,1\\}$ has a solution, if and only if every finite subsystem has a solution.")
   (loop for name being the hash-keys of *graph*
      using (hash-value node)
      do (make-tex-file name node)))
 
-(defun make-all-pngs ()
-  (loop for name being the hash-keys of *graph*
-     do (make-png name)))
-	     
+(defun make-fancy-labels ()
+  (make-all-texs)
+  (run "/bin/bash" '("make-fancy-labels.sh") :error T :output T))
+			
