@@ -9,7 +9,7 @@ A quick overview is given below. A paper with a full description and explanation
 **THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND WHATSOEVER.**
 
 ### Requirements
-* Common-Lisp: SBCL is the standard implementation in Debian and Ubuntu: `apt-get install sbcl` or if you want to use it via Emacs: `apt-get install slime`. I have only tested this in SBCL so far, but it should work in any implementation that [external-program](https://github.com/sellout/external-program) supports. Please let me know if you check this!
+* Common-Lisp: I have only tested this with **SBCL** or **CCL**  but it should work in any implementation that [external-program](https://github.com/sellout/external-program) supports. Please let me know if you check this!
 * [Graphviz](www.graphviz.org/) (with dot and tred installed, `apt-get install graphviz`)
 * [Quicklisp](www.quicklisp.org)
 * **Temporarily** it only works in Linux. Windows and Macintosh support are on the to-do list. 
@@ -91,8 +91,9 @@ Run all tests while `(in-package :jeffrey-test)` with the command `(test-all)`, 
 
 **/fancy-labels/** is not included here, but you can produce it from package `:jeffrey.labelmaker` with the command `(make-all-texs)` followed by `(make-all-pngs`).
 
+**/Howard-Rubin-data/** contains the files that were kindly provided by Prof. Paul Howard. 
+
 **complexity issues**
-I haven't really tried to optimize this algorithm yet (from the graph structure to the diagram), apart from the addition of the *jeff-matrix* that remembers the answers of the predicates. This could be made even faster, which is in the todo list (in `TODO.md`). 
+I have made some small steps to improve the original brute force algorithm for calculating the predicates. The biggest difference was made by memoising with the addition of the `*jeff-matrix*`. A 7%-25% improvement (SBCL and CCL resp.) was achieved by changing the double loop of `(graph-implies-not-p Y X)` to three single loops (finding destinations of nil edges of ancestors of Y, finding descendants of X, and intersecting these two lists.
 
 More details to be added.
- 
