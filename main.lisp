@@ -45,7 +45,7 @@ names in `name-list`."
 		 (descendants (gethash name *graph*)))))
 
 (defun graph-descendants (name-list filename style
-			  &optional (ending "pdf"))
+			  &optional (ending "png"))
   "Graphs the descendants of the nodes with names in `names-list`."
   (graph (append (descendants-names name-list) name-list)
 	 filename
