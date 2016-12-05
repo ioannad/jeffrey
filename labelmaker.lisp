@@ -40,11 +40,8 @@
 (defun make-png (name)
   "Creates a .png file for the node of the FORM, in the folder
 diagrams/form-name-pics/."
-  (sb-ext:run-program "/usr/bin/pdflatex" 
-		      (list (filename name ".tex")))
-  (sb-ext:run-program "/usr/bin/dvipng"
-		      (list (filename name ".png")))
- 
+  (run "/usr/bin/pdflatex" (list (filename name ".tex")))
+  (run "/usr/bin/dvipng"   (list (filename name ".png")))
   (format t "File ~a created successfully.~%"
 	  (filename name ".png")))
 	   		
