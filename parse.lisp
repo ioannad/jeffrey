@@ -22,17 +22,14 @@ Parse form information:
        (?form-delimiter)))
 
 (defun test-delimiters ()
-  (assert (multiple-value-bind (a b c)
-	      (parse "\\medskip
-\\medskip
-\\noindent{\\bf FORM " (?delimiter))
+  (assert (multiple-value-bind
+		(a b c) (parse (test-string 0) (?delimiter))
 	    (and (equal a NIL)  ;; returns nothing
 		 (equal b T)    ;; succeeds in parsing a delimiter
 		 (equal c T)))) ;; finished with the input
   
   (assert (multiple-value-bind (a b c)
-	      (parse "\\smallskip
-\\item{}{\\bf [ mnmn" (?delimiter))
+	      (parse (test-string 1) (?delimiter))
 	    (and (equal a NIL)    ;; returns nothing
 		 (equal b T)      ;; succeeds in parsing a delimiter
 		 (equal c NIL))))) ;; not finished with the input
@@ -51,7 +48,9 @@ Parse form information:
   (assert (equal "423 ($n$)." (parse "423 ($n$).}hjfjf" (=name))))
   (assert (equal "423." (parse "423.}  oiiu ghj f" (=name)))))
   
-#|(defun =short-name-ending ()
+#| Perhaps use the following in a subsequent parse:
+
+(defun =short-name-ending ()
   (=subseq (=list (?eq #\$)
 		 (%maybe (?eq #\)))
 		 (?eq #\:)
@@ -73,7 +72,9 @@ Parse form information:
 	   " $UT(WO,aleph_{0},WO)$ ($U_{aleph_{1}}$): ")))|#
 
 (defun reference-start-strings ()
-  (list "(See" "See" "van \\ac" "\\item{}\\ac" "\\ac" "Note" "Clear" "G\\."))
+  (list "(See" "See" "van \\ac" "\\item{}\\ac" " \\ac" "
+\\ac" "Note" "Clear" "G\\." "
+Keremedis "))
 
 (defun reference-start-p (x)
   (member x (reference-start-strings) :test #'equal))
@@ -90,11 +91,8 @@ Parse form information:
 (defun test-references ()
   (assert (reference-start-p "\\ac"))
   (assert (equal "Note" (parse "Note" (=reference-start))))
-  (assert (equal "See form 218 and \\ac{Bleicher} \\cite{1964}. 
-"
-		 (parse "See form 218 and \\ac{Bleicher} \\cite{1964}. 
-\\smallskip
-\\item{}{\\bf ["
+  (assert (equal (test-string 3)
+		 (parse (test-string 2)
 			(=references)))))
 
 (defun =full-name ()
@@ -103,12 +101,10 @@ Parse form information:
 
 (defun test-full-name ()
   (assert (equal "relatively prime. "
-		 (parse "relatively prime. See form" (=full-name))))
-  (assert (equal "relatively prime$.
-"
-		 (parse "relatively prime$.
-\\smallskip
-\\item{}{\\bf ["
+		 (parse "relatively prime. See form"
+			(=full-name))))
+  (assert (equal (test-string 4)
+		 (parse (test-string 5)
 			(=full-name)))))  
 
 (defun =main-form ()
@@ -121,12 +117,9 @@ Parse form information:
 
 (defun test-main-form ()
   (assert (equal
-	   '("6."
-	     "a$: b. "
+	   '("6." "a$: b. "
 	     "G\\. \\ac{Moore} \\cite{1982} and note 3.")
-	   (parse "\\medskip
-\\noindent{\\bf FORM 6.}a$: b. G\\. \\ac{Moore} \\cite{1982} and note 3.\\smallskip
-\\item{}{\\bf ["
+	   (parse (test-string 6)
 		  (=main-form)))))
 
 (defun =eq-form ()
@@ -139,16 +132,9 @@ Parse form information:
 
 (defun test-eq-form ()
   (assert (equal
-	   '("[14 M]"
-	     "  R. Cowen's ... T.  "
-	     "\\ac{Cowen} ...
-21. \\iput{Konig's lemma}
-")
-	   (parse "\\smallskip
-\\item{}{\\bf [14 M]}  R. Cowen's ... T.  \\ac{Cowen} ...
-21. \\iput{Konig's lemma}
-\\smallskip
-\\item{}{\\bf [14 N(n)]}..." (=eq-form)))))
+	   (list "[14 M]" "  R. Cowen's ... T.  "
+		 (test-string 8))
+	   (parse (test-string 7) (=eq-form)))))
   
 (defun =form ()
   "The main form and its equivalents are returned in one list, starting with the main form."
@@ -161,16 +147,10 @@ Parse form information:
   (assert (equal
 	   '(("430($p$)."  " A " "\\ac{B}")
 	     ("[430 A($p$)]." " C " "See V"))
-	   (parse "\\medskip
-\\noindent{\\bf FORM 430($p$).} A \\ac{B}\\smallskip
-\\item{}{\\bf [430 A($p$)].} C See V"
-		  (=form))))
+	   (parse (test-string 9) (=form))))
   (assert (equal
 	   '(("0." " $0 = 0$." NIL))
-	   (parse "\\medskip
-\\noindent{\\bf FORM 0.} $0 = 0$.\\smallskip
-\\item{}{\\bf ["
-		  (=form)))))
+	   (parse (test-string 10) (=form)))))
 
 (defun no-newlines-subform (subform)
   "This function replaces newlines with spaces, at the full-name 
@@ -196,49 +176,16 @@ subforms"
    
   
 (defun test-formsnum.tex ()
-  (assert (equal  (parse "bla 
-\\medskip
-\\noindent{\\bf FORM 0.} A
-\\smallskip
-\\item{}{\\bf [0 B]} C \\ac{ D
-\\smallskip
-\\item{}{\\bf [0 EF]} G
-\\medskip
-\\noindent{\\bf FORM 1.} H$: I
-\\smallskip
-\\item{}{\\bf [1 A]} J See K
-" (=formsnum.tex))
-		  '((("0."    " A "     NIL)
-		     ("[0 B]"  " C "     "\\ac{ D ")
-		     ("[0 EF]" " G "     NIL))
-		    (("1."    " H$: I " NIL)
-		     ("[1 A]"  " J "     "See K ")))))
+  (assert (equal (parse (test-string 11) (=formsnum.tex))
+		 '((("0."     " A "     NIL)
+		    ("[0 B]"  " C "     "\\ac{ D ")
+		    ("[0 EF]" " G "     NIL))
+		   (("1."     " H$: I " NIL)
+		    ("[1 A]"  " J "     "See K ")))))
   (assert (equal
-	   (parse "bla \\medskip
-\\noindent{\\bf FORM 0.} $0 = 0$.
-\\smallskip
-\\item{}{\\bf [0 A]}  Cardinal successors 2:  For n)$.
-\\ac{Tarski} \\cite{1954a} and \\ac{Jech} \\cite{1966a}.
-\\smallskip
-\\item{}{\\bf [0 AK]} Every separable metric space is second countable.
-\\medskip
-\\medskip
-\\noindent{\\bf FORM 1.} $C(\\infty,\\infty)$:  The Axiom of Choice:
-Every  set  of  non-empty sets has a choice function.
-\\rightheadtext{Form 1: The Axiom of Choice}
-\\iput{axiom of choice}
-\\smallskip
-\\item{}{\\bf [1 A]} In every vector space, every generating set
-contains a basis.  \\ac{Halpern} \\cite{1966}.
-"
+	   (parse (test-string 12)
 		  (=formsnum.tex))
-	   '((("0." " $0 = 0$. " NIL)
-	      ("[0 A]" "  Cardinal successors 2:  For n)$. "
-	       "\\ac{Tarski} \\cite{1954a} and \\ac{Jech} \\cite{1966a}. ")
-	      ("[0 AK]" " Every separable metric space is second countable. " NIL))
-	     (("1." " $C(\\infty,\\infty)$:  The Axiom of Choice: Every  set  of  non-empty sets has a choice function. \\rightheadtext{Form 1: The Axiom of Choice} \\iput{axiom of choice} " NIL)
-	      ("[1 A]" " In every vector space, every generating set contains a basis.  "
-	       "\\ac{Halpern} \\cite{1966}. "))))))
+	   (formsnum-test-result))))
 
 (defun test-formsnum-parsers ()
   (test-delimiters)
@@ -292,3 +239,114 @@ column respectively."
 4 5 6 -1   7 8 9 -1"
 		      (=book1))
 	       '((1 2 3) (4 5 6) (7 8 9))))
+
+
+
+;; ----------- Testing strings
+
+
+(defun test-string (x)
+  (case x
+    (0
+      "\\medskip
+\\medskip
+\\noindent{\\bf FORM ")
+
+     (1
+      "\\smallskip
+\\item{}{\\bf [ mnmn")
+
+     (2
+      "See form 218 and \\ac{Bleicher} \\cite{1964}. 
+\\smallskip
+\\item{}{\\bf [")
+
+     (3
+      "See form 218 and \\ac{Bleicher} \\cite{1964}. 
+")
+
+     (4
+      "relatively prime$.
+")
+
+     (5
+      "relatively prime$.
+\\smallskip
+\\item{}{\\bf [")
+
+     (6
+      "\\medskip
+\\noindent{\\bf FORM 6.}a$: b. G\\. \\ac{Moore} \\cite{1982} and note 3.\\smallskip
+\\item{}{\\bf [")
+
+     (7
+      "\\smallskip
+\\item{}{\\bf [14 M]}  R. Cowen's ... T.  \\ac{Cowen} ...
+21. \\iput{Konig's lemma}
+\\smallskip
+\\item{}{\\bf [14 N(n)]}...")
+
+     (8
+      "\\ac{Cowen} ...
+21. \\iput{Konig's lemma}
+")
+
+     (9
+      "\\medskip
+\\noindent{\\bf FORM 430($p$).} A \\ac{B}\\smallskip
+\\item{}{\\bf [430 A($p$)].} C See V")
+
+     (10
+      "\\medskip
+\\noindent{\\bf FORM 0.} $0 = 0$.\\smallskip
+\\item{}{\\bf [")
+
+     (11
+      "bla 
+\\medskip
+\\noindent{\\bf FORM 0.} A
+\\smallskip
+\\item{}{\\bf [0 B]} C \\ac{ D
+\\smallskip
+\\item{}{\\bf [0 EF]} G
+\\medskip
+\\noindent{\\bf FORM 1.} H$: I
+\\smallskip
+\\item{}{\\bf [1 A]} J See K
+")
+
+     (12
+      "bla \\medskip
+\\noindent{\\bf FORM 0.} $0 = 0$.
+\\smallskip
+\\item{}{\\bf [0 A]}  Cardinal successors 2:  For n)$.
+\\ac{Tarski} \\cite{1954a} and \\ac{Jech} \\cite{1966a}.
+\\smallskip
+\\item{}{\\bf [0 AK]} Every separable metric space is second countable.
+\\medskip
+\\medskip
+\\noindent{\\bf FORM 1.} $C(\\infty,\\infty)$:  The Axiom of Choice:
+Every  set  of  non-empty sets has a choice function.
+\\rightheadtext{Form 1: The Axiom of Choice}
+\\iput{axiom of choice}
+\\smallskip
+\\item{}{\\bf [1 A]} In every vector space, every generating set
+contains a basis.  \\ac{Halpern} \\cite{1966}.
+")))
+
+(defun formsnum-test-result ()
+  '((("0." " $0 = 0$. " NIL)
+     ("[0 A]"
+      "  Cardinal successors 2:  For n)$. "
+      "\\ac{Tarski} \\cite{1954a} and \\ac{Jech} \\cite{1966a}. ")
+     ("[0 AK]"
+      " Every separable metric space is second countable. "
+      NIL))
+    (("1."
+      " $C(\\infty,\\infty)$:  The Axiom of Choice: Every  set  of  non-empty sets has a choice function. \\rightheadtext{Form 1: The Axiom of Choice} \\iput{axiom of choice} "
+      NIL)
+     ("[1 A]"
+      " In every vector space, every generating set contains a basis.  "
+      "\\ac{Halpern} \\cite{1966}. "))))
+
+   
