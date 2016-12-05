@@ -1,0 +1,55 @@
+digraph diagram { 
+
+          ratio=0.5;
+
+	  node [shape=ellipse,width=0.5,height=1];
+25 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/25.png", label=" "];
+25 -> 34 [color=dimgray];
+25 -> 104 [color=dimgray];
+25 -> 108 [style=bold];
+25 -> 182 [color=dimgray];
+25 -> 315 [color=dimgray];
+34 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/34.png", label=" "];
+34 -> 104 [color=dimgray];
+34 -> 108 [style=bold];
+34 -> 182 [color=dimgray];
+40 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/40.png", label=" "];
+40 -> 34 [style=bold];
+40 -> 58 [color=dimgray];
+40 -> 104 [style=bold];
+40 -> 108 [style=bold];
+40 -> 170 [style=bold];
+40 -> 182 [style=bold];
+40 -> 208 [color=dimgray];
+40 -> 209 [style=bold];
+41 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/41.png", label=" "];
+41 -> 365 [color=dimgray];
+54 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/54.png", label=" "];
+56 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/56.png", label=" "];
+58 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/58.png", label=" "];
+71 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/71.png", label=" "];
+71 -> 183 [color=dimgray];
+104 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/104.png", label=" "];
+104 -> 182 [color=dimgray];
+108 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/108.png", label=" "];
+159 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/159.png", label=" "];
+159 -> 104 [color=dimgray];
+159 -> 182 [color=dimgray];
+170 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/170.png", label=" "];
+182 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/182.png", label=" "];
+183 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/183.png", label=" "];
+208 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/208.png", label=" "];
+208 -> 58 [color=dimgray];
+209 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/209.png", label=" "];
+245 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/245.png", label=" "];
+245 -> 34 [color=dimgray];
+245 -> 104 [color=dimgray];
+245 -> 108 [style=bold];
+245 -> 182 [color=dimgray];
+245 -> 246 [color=dimgray];
+246 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/246.png", label=" "];
+275 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/275.png", label=" "];
+315 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/315.png", label=" "];
+365 [image="/home/ioa/quicklisp/local-projects/jeffrey/diagrams/fancy-labels/365.png", label=" "];
+
+}
