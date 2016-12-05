@@ -16,3 +16,8 @@ Implement one of the nice path finding graph algorithms of the AlgorithmsI cours
 # Add Windows and Macintosh support.
 
 The external-programs only work for Linux for the moment.
+
+# Create proper website
+
+and set up Choiceless Grapher to be used via a web form.
+
