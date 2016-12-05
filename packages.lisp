@@ -87,7 +87,9 @@
   (:use :common-lisp
 	:jeffrey.graph
 	:jeffrey.read
-	:split-sequence))
+	:split-sequence
+	:external-program)
+  (:documentation "Creates the fancy labels that dot may use. I hope to make this obsolete at some point, and create the labels on the fly."))
 
 
 (defpackage jeffrey.main
@@ -104,5 +106,8 @@
 
 To produce a diagram, open an SBCL Common Lisp REPL (I haven't tested it yet in other Common-Lisp implementations, please let me know if it works!). Then type in `(ql:quickload \"jeffrey\")` and then type in `(in-package :jeffrey.main)`. Now, to draw the diagram between the forms with Howard-Rubin numbers (HR) a b c d ... use the command `(main \"a b c d ...\")`."))
 
-
+(defpackage jeffrey.website
+  (:use :cl :cl-who :hunchentoot :parenscript
+	:jeffrey.main)
+  (:documentation "The website of choiceless grapher, following Adam Tornhill's \"Lisp for the Web\" www.adamtornhill.com/articles/lispweb.htm"))
 
