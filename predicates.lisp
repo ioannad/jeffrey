@@ -8,28 +8,31 @@ code 3 implications from book1, can decide whether an arbitrary
 form A implies another B, or not implies B, or that it is unknown 
 whether it implies B.
 
-## (implies-p A B)
+## (graph-implies-p A B)
 
-The easiest way to decide whether A implies B is to check if there is
-a path from A to B, i.e., to check whether A is B's ancestor.
+if there is a path of `:relation T` edges from A to B, i.e., if A 
+is an ancestor of B.
 
-## (implies-not-p A B)
+## (graph-implies-not-p A B)
 
-The easiest way to decide whether A does not imply B is to check 
-if there is an edge, with (edge-relation edge) = NIL, from an 
-ancestor-or-equal A-anc of A to a descendant-or-equal B-desc of B. 
-Otherwise, if A did imply B, then 
-A-anc implies A implies B implies B-desc,
-therefore A-anc implies B-anc, which is a contradiction to the edge 
-with relation NIL between A-anc and B-desc.
+if there is a `:relation NIL` edge (a nil-edge) from B or from an 
+ancestor of B to A or to a descendant of A. This is because 
+otherwise, if A did imply B, then A-ancestor implies A implies B 
+implies B-descendant, therefore A-ancestor implies B-ancestor, 
+which is a contradiction to the nil-edge.
 
 ### Implementation
 
-To collect so many ancestors and descendants, every time one asks 
-these predicates is simple but inefficient, especially for 
-implies-not-p. I use the matrix `*jeff-matrix*` to store the answers
-of the simple and overseeable but slow predicates graph-implies-p 
-and graph-implies-not-p.
+The easiest way to implement `(graph-implies-p A B)` is to check if
+A is a member of the set of ancestors of B. The easiest way to 
+implement `(graph-implies-not-p B A) is to check if there is a 
+nil-edge from an ancestor-or-equal of A to a descendant-or-equal to
+B. The latter is actually a double loop, which is inefficient. For
+this reason I use the matrix `*jeff-matrix*` to store the answers 
+of `graph-implies-p` and `graph-implies-not-p`. 
+
+A small improvement (about 7.1% in SBCL and 26.5% in CCL) was achieved by changing `(graph-implies-not-p B A)` to first collect the destinations of all nil-edges from ancestors of B, and checking 
+whether this intesects the descendants of A. 
 |#
 
 (defvar *jeff-matrix* (make-array '(430 430) :initial-element NIL)
@@ -78,12 +81,15 @@ and :relation NIL."
 	(node-edges Y)))
 
 (defun graph-implies-not-p (Y X)
-  "Returns T if there is a (relation NIL) from Y to X, or if there is
-an ancestor Y-anc of Y, with a NIL-edge to a descendant X-desc of X."
-  (some (lambda (X-desc) 
-	  (some (lambda (Y-anc) (nil-edge-P Y-anc X-desc))
-		(cons Y (ancestors Y))))
-	(cons X (descendants X))))
+  "Returns T if there is a nil-edge from Y to X, or if there
+is an ancestor Y-anc of Y, with a nil-edge to a descendant X-desc 
+of X."
+  (let ((nil-dests (loop for anc in (cons Y (ancestors Y))
+		      append (loop for edge in (node-edges anc)
+				if (not (edge-relation edge))
+				collect (edge-destination edge)))))
+    (intersection nil-dests (cons X (descendants X)))))
+
 
 ;;; 0 - unknown
 ;;; 1 - direct implication
