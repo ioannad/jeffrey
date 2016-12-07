@@ -27,9 +27,21 @@ Then you can choose a package you'd like to use, for example to run all tests an
 
 ## Usage
 
-You can draw diagrams with this program by loading its main package :jeffrey.main, with quicklisp in a Common-Lisp REPL as follows: 
+### Website
 
-`(ql:quickload "jeffrey")` and `(in-package :jeffrey.main)`. 
+The easiest way is to use the webserver by loading its website package :jeffrey.main, with quicklisp in a Common-Lisp REPL as follows: 
+
+`(ql:quickload "jeffrey")`
+
+ `(in-package :jeffrey.website)`
+
+`(start-website)`
+
+And then, in your browser, visit the url (127.0.0.1:8080/choiceless-grapher.htm)[127.0.0.1:8080/choiceless-grapher.htm]
+
+I plan on making this package's installation obsolete, and set up an app for you to graph implications between consequences of AC online.
+
+
 
 ### Drawing the diagram between a given list of form HR numbers
 
@@ -83,10 +95,16 @@ This program requires package "maxpc", "split-sequence", and "external-program".
   B-anc implies B implies A implies A-desc, 
 therefore B-anc implies A-desc, contradiction to the NIL-edge from B-desc to A-desc. 
 
-**draw.lisp** draws diagrams with the command `(draw '(a b c d ...) "filename" "style")` where `'(a b c d ...)` is a list of natural numbers up to 430, excluding 360, and 423 and 374 for the moment. Requires the database, i.e., `*graph*` to be loaded and `*jeff-matrix*` initiated. Normal users please use the `:jeffrey.main` package.")
-
 **test.lisp** contains test data and testing functions, which should be run after every and any change in the above files.
 Run all tests while `(in-package :jeffrey-test)` with the command `(test-all)`, which prints a report to your REPL.
+
+**draw.lisp** draws diagrams with the command `(draw '(a b c d ...) "filename" "style")` where `'(a b c d ...)` is a list of natural numbers up to 430, excluding 360, and 423 and 374 for the moment. Requires the database, i.e., `*graph*` to be loaded and `*jeff-matrix*` initiated. Normal users please use the `:jeffrey.main` package.")
+
+**labelmaker.lisp** creates the fancy labels that dot may use. I hope to make this obsolete at some point, and create the labels on the fly.
+
+**main.lisp** the main package is explained above.
+
+**website.lisp** "The currently unfinished website of choiceless grapher, learning sources included at the top of the file. Uses hunchentoot as a webserver, cl-who, maxpc, parenscript, and a local css file, to serve you freshly made diagrams of your *choice*."
 
 **/diagrams/** contains diagrams with sets of forms that make sense, e.g., between forms about alephs and their properties, as well as diagrams with random sets of forms. A boldfaced arrow from A to B means that the implication is non-reversible, i.e., there exists a model of ZF set theory in which B holds and A doesn't. *Just imagine the endless possibilities for random research projects, theses, and papers, filling or boldfacing those arrows! :)*  The `full-diagram.pdf` is also included, only for standard "number names" (not full statements). Its size is 3,41m x 1,72 m. 
 
