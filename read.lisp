@@ -1,10 +1,8 @@
 (in-package :jeffrey.read)
 
 (defvar *local-directory* 
-  (concatenate 'string 
-	       (directory-namestring (USER-HOMEDIR-PATHNAME))
-	       "quicklisp/local-projects/jeffrey/"))
-
+  (namestring (asdf:system-source-directory :jeffrey)))
+  
 (defvar *bad-forms* '(423 374 383 360)
   "These four forms are removed until I figure out how to deal with
 them. Form 423 is equivalent to form 374. For 383, FORMSNUM.TEX says:
