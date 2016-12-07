@@ -37,7 +37,7 @@ The easiest way is to use the webserver by loading its website package :jeffrey.
 
 `(start-website)`
 
-And then, in your browser, visit the url (127.0.0.1:8080/choiceless-grapher.htm)[127.0.0.1:8080/choiceless-grapher.htm]
+And then, in your browser, visit the url [127.0.0.1:8080/choiceless-grapher.htm](127.0.0.1:8080/choiceless-grapher.htm)
 
 I plan on making this package's installation obsolete, and set up an app for you to graph implications between consequences of AC online.
 
