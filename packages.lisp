@@ -21,6 +21,8 @@
 	   :maxpc :maxpc.digit :maxpc.char)
   (:export :=formsnum.tex
 	   :=book1
+	   :=names
+	   :=word
 	   :test-formsnum-parsers)
   (:documentation "parse.lisp contains parsing functions for reading in node (form) information, and for reading book1, the original matrix with all the implication codes. Form information, i.e., name, LaTeX-statement, and references are parsed from in a machete-style chopping of the TeX-file Howard-Rubin-data/FORMSNUM.TEX . Implication information is parsed from the file Howard-Rubin-data/book1 ."))
 
@@ -60,7 +62,7 @@
 	   :ancestors
 	   :implies-p
 	   :implies-not-p)
-  (:documentation "predicates.lisp enables the program to ask whether or not a node (form) implies another. The function implies-p only answers positive implication questions, and implies-not-p only answers negative implication questions. In particular, (implies-p A B) asks whether A is an ancestor of B and (implies-not-p B A) asks whether there is an ancestor B' of B and a descendant A' of A, such that the node B' has an edge with destination A' and relation NIL. Why is the predicate "implies-p" defined like this is clear. For (implies-not-p B A), assume that there is an ancestor B-anc of B and a descendant A-desc of A, such that B-anc does not imply A-desc (the meaning of a NIL-edge from B-anc to A-desc). Then (implies-not-p B A) must be T, i.e., B does not imply A, because otherwise we have the implication chain: B-anc implies B implies A implies A-desc, therefore B-anc implies A-desc, contradiction to the NIL-edge from B-desc to A-desc. "))
+  (:documentation "predicates.lisp enables the program to ask whether or not a node (form) implies another. The function implies-p only answers positive implication questions, and implies-not-p only answers negative implication questions. In particular, (implies-p A B) asks whether A is an ancestor of B and (implies-not-p B A) asks whether there is an ancestor B' of B and a descendant A' of A, such that the node B' has an edge with destination A' and relation NIL. Why is the predicate \"implies-p\" defined like this is clear. For (implies-not-p B A), assume that there is an ancestor B-anc of B and a descendant A-desc of A, such that B-anc does not imply A-desc (the meaning of a NIL-edge from B-anc to A-desc). Then (implies-not-p B A) must be T, i.e., B does not imply A, because otherwise we have the implication chain: B-anc implies B implies A implies A-desc, therefore B-anc implies A-desc, contradiction to the NIL-edge from B-desc to A-desc. "))
 
 (defpackage jeffrey.test
   (:use :common-lisp
@@ -98,16 +100,21 @@
 	:jeffrey.read
 	:jeffrey.predicates
 	:jeffrey.draw)
-  (:export :main)
+  (:export :graph
+	   :random-graph
+	   :graph-descendants
+	   :*local-directory*)
   (:documentation "Install this package using quicklisp (installation instructions for quicklisp can be found in https:////www.quicklisp.org//beta//#installation) and git (https:////git-scm.com//book//en//v2//Getting-Started-Installing-Git) as follows:
 
 * Create a folder called `jeffrey` in `quicklisp//local-projects//`,
 * Navigate to this folder in a terminal and type `git init` and `git clone git@github.com:ioannad//jeffrey.git`. Alternatively otherwise download the contents of this repository to this folder. 
 
-To produce a diagram, open an SBCL Common Lisp REPL (I haven't tested it yet in other Common-Lisp implementations, please let me know if it works!). Then type in `(ql:quickload \"jeffrey\")` and then type in `(in-package :jeffrey.main)`. Now, to draw the diagram between the forms with Howard-Rubin numbers (HR) a b c d ... use the command `(main \"a b c d ...\")`."))
+To produce a diagram, open a Common Lisp REPL (I have tested it only with SBCL and Clozure CL so far. Please let me know if you test it with other implementations). Then type in `(ql:quickload \"jeffrey\")` and then type in `(in-package :jeffrey.main)`. Now, to draw the diagram between the forms with Howard-Rubin numbers (HR) a b c d ... use the command `(main \"a b c d ...\")`."))
 
 (defpackage jeffrey.website
   (:use :cl :cl-who :hunchentoot :parenscript
+	:maxpc
+	:jeffrey.parse
 	:jeffrey.main)
-  (:documentation "The website of choiceless grapher, following Adam Tornhill's \"Lisp for the Web\" www.adamtornhill.com/articles/lispweb.htm"))
+  (:documentation "The currently unfinished website of choiceless grapher, following Adam Tornhill's \"Lisp for the Web\" www.adamtornhill.com/articles/lispweb.htm."))
 
