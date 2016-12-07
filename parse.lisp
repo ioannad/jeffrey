@@ -241,6 +241,26 @@ column respectively."
 	       '((1 2 3) (4 5 6) (7 8 9))))
 
 
+;;; ### Parse input for website
+
+(defun =word ()
+  (=subseq (%some (?not (?whitespace)))))
+
+(assert (equal "bla" (parse "bla bla" (=word))))
+
+(defun =names ()
+  (%some (=skip-whitespace (=natural-number))))
+
+(assert (equal '(1 2 33) (parse "1 2 33" (=names))))
+
+
+
+
+
+
+
+
+
 
 ;; ----------- Testing strings
 
