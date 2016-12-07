@@ -21,7 +21,7 @@
 					  "read"
 					  "predicates"
 					  "draw"))
-	       (:file "website" :depends-on ("main"))
+	       (:file "website" :depends-on ("parse" "main"))
 	       (:file "example-form-groups" :depends-on ("main"))
 	       (:file "test" :depends-on ("packages"
 					  "graph"
