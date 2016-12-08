@@ -32,7 +32,7 @@ For the moment I use png, which is the current default.
 
 This seems very complicated.
 
-# Add Windows and Macintosh support.
+### Add Windows and Macintosh support.
 
 The external-programs only work for Linux for the moment.
 
