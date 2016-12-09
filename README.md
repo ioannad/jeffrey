@@ -92,8 +92,10 @@ This program requires package "maxpc", "split-sequence", and "external-program".
 **read.lisp** contains the functions that read input, and it can be run in its whole with `(read-all-data)`. This function will first store the form data from `FORMSNUM.TEX` as nodes in `*graph*`, then add edges and parents to these nodes, following only the direct information from `book1`. That is, if book1 has code 1 in position (i,j), then it will add an edge to the node with name i (node i) with destination node j and relation T, and it will add node i to the set of parents of node j. If book1 has code 3 in position (i,j), then it will only add an edge to node i with destination node j and relation NIL. All other codes should be derivable from this information, using the predicates in the next module.
 
 **predicates.lisp** enables the program to ask whether or not a node (form) implies another. The function implies-p only answers positive implication questions, and implies-not-p only answers negative implication questions. In particular, `(implies-p A B)` asks whether A is an ancestor of B and `(implies-not-p B A)` asks whether there is an ancestor B' of B and a descendant A' of A, such that the node B' has an edge with destination A' and relation NIL. Why is the predicate "implies-p" defined like this is clear. For `(implies-not-p B A)`, assume that there is an ancestor B-anc of B and a descendant A-desc of A, such that B-anc does not imply A-desc (the meaning of a NIL-edge from B-anc to A-desc). Then `(implies-not-p B A)` must be T, i.e., B does not imply A, because otherwise we have the implication chain:
+
   B-anc implies B implies A implies A-desc, 
-therefore B-anc implies A-desc, contradiction to the NIL-edge from B-desc to A-desc. 
+
+therefore B-anc implies A-desc, contradiction to the NIL-edge from B-anc to A-desc. 
 
 **test.lisp** contains test data and testing functions, which should be run after every and any change in the above files.
 Run all tests while `(in-package :jeffrey-test)` with the command `(test-all)`, which prints a report to your REPL.
