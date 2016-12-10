@@ -5,6 +5,12 @@
 (defvar *server*)
 
 
+(defmacro static (uri rel-filepath)
+  `(hunchentoot:create-static-file-dispatcher-and-handler
+    ,uri
+    (concatenate 'string *local-directory* ,rel-filepath)))
+
+
 (setq hunchentoot:*dispatch-table*
       (list (static "/logo.jpg"    "www/logo.jpg")
 	    (static "/jeffrey.css" "www/jeffrey.css")
@@ -12,12 +18,6 @@
 	     "/choiceless-grapher.htm" 'generate-index-page)
 	    (hunchentoot:create-prefix-dispatcher
 	     "/diagram.htm" 'diagram)))
-
-
-(defmacro static (uri rel-filepath)
-  `(hunchentoot:create-static-file-dispatcher-and-handler
-    ,uri
-    (concatenate 'string *local-directory* ,rel-filepath)))
 
 (defun start-website (&key (address "localhost") (port 8080))
   (setq *server* (hunchentoot:start
