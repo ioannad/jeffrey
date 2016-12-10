@@ -48,17 +48,24 @@
 			       (equal #\Space x)
 			       (equal #\Tab x)))
 	       input-string)
-    (mapcar #'parse-integer (split-sequence #\Space input-string))))
+    (sort (mapcar #'parse-integer
+		  (split-sequence #\Space input-string))
+	  #'<)))
 
-(defun encoded-strings (input-string)
-  (list (parse-input input-string)
-	(concatenate 'string "diagram-" "x")
-	"/diagram-x.png" "diagrams/diagram-x.png"))
+(defun encode-names (input-names)
+  "This code is not a code, it's literal and too long."
+  (format nil "~{~a~^-~}" input-names))
+
+(defun encoded-string (input-string)
+  (list #1=(parse-input input-string)
+	#2=(encode-names #1#)
+	#3=(concatenate 'string "/" #2# ".png")
+	(concatenate 'string "diagrams" #3#)))
 
 (defun diagram ()
   (let ((input-string (parameter "names")))
     (destructuring-bind (input-names filename uri rel-path)
-	(encoded-strings input-string)
+	(encoded-string input-string)
       (progn (graph input-names filename "fancy" "png")
 	     (push (static uri rel-path)
 		   hunchentoot:*dispatch-table*)
