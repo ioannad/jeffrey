@@ -1,0 +1,21 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title> <!-- TMPL_VAR title --> </title>
+<link rel="stylesheet" href="/jeffrey.css">
+</head>
+
+<body>
+
+<p>
+<img src="/logo.jpg" alt="Choiceless Grapher" style="width:450px">
+</p>
+
+<!-- TMPL_IF index? --> <!-- TMPL_INCLUDE 'index.tmpl' -->
+<!-- TMPL_ELSE --> <!-- TMPL_INCLUDE 'diagram.tmpl' -->
+<!-- /TMPL_IF -->
+
+</body>
+</html>
