@@ -1,5 +1,5 @@
 body {
-    margin: 70px 150px 70px 80px;
+    margin: 50px 80px 50px 80px;
 }
 
 h2 {
@@ -18,3 +18,10 @@ img {
     width: auto\9; /* ie8 */
 }
 
+header, section, footer, aside, nav, main, article, figure {
+    display: block;  /* secure correct behaviour in older browsers (html5) */
+}
+
+footer {
+    font-size: 9px;
+}
