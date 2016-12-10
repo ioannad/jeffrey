@@ -21,8 +21,6 @@
 	   :maxpc :maxpc.digit :maxpc.char)
   (:export :=formsnum.tex
 	   :=book1
-	   :=names
-	   :=word
 	   :test-formsnum-parsers)
   (:documentation "parse.lisp contains parsing functions for reading in node (form) information, and for reading book1, the original matrix with all the implication codes. Form information, i.e., name, LaTeX-statement, and references are parsed from in a machete-style chopping of the TeX-file Howard-Rubin-data/FORMSNUM.TEX . Implication information is parsed from the file Howard-Rubin-data/book1 ."))
 
@@ -103,7 +101,9 @@
   (:export :graph
 	   :random-graph
 	   :graph-descendants
-	   :*local-directory*)
+	   :*local-directory*
+	   :*names*
+	   :*bad-forms*)
   (:documentation "Install this package using quicklisp (installation instructions for quicklisp can be found in https:////www.quicklisp.org//beta//#installation) and git (https:////git-scm.com//book//en//v2//Getting-Started-Installing-Git) as follows:
 
 * Create a folder called `jeffrey` in `quicklisp//local-projects//`,
@@ -112,9 +112,8 @@
 To produce a diagram, open a Common Lisp REPL (I have tested it only with SBCL and Clozure CL so far. Please let me know if you test it with other implementations). Then type in `(ql:quickload \"jeffrey\")` and then type in `(in-package :jeffrey.main)`. Now, to draw the diagram between the forms with Howard-Rubin numbers (HR) a b c d ... use the command `(main \"a b c d ...\")`."))
 
 (defpackage jeffrey.website
-  (:use :cl :cl-who :hunchentoot :parenscript
-	:maxpc
-	:jeffrey.parse
+  (:use :cl :hunchentoot :html-template
+	:split-sequence
 	:jeffrey.main)
   (:documentation "The currently unfinished website of choiceless grapher, following Adam Tornhill's \"Lisp for the Web\" www.adamtornhill.com/articles/lispweb.htm."))
 
