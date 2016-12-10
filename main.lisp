@@ -4,6 +4,9 @@
 
 (setup-jeff-matrix *graph*)
 
+(defvar *names* (loop for key being the hash-keys of *graph*
+		   collect key))
+
 (defun graph (names-list filename style &optional (ending "png"))
   (draw names-list filename style ending))
 
