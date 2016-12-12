@@ -3,7 +3,7 @@
 (defun fancy-dir ()
   (concatenate 'string 
 	       *local-directory*
-	       "diagrams/fancy-labels/"))
+	       "fancy-labels/"))
 
 (defun filename (name ending)  
   (concatenate 'string
