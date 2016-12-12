@@ -1,13 +1,29 @@
 
 
 <h1> Choiceless Grapher </h1>
-<h2> Diagram creator for consequences of the axiom of choice (AC). </h2>
-<p> Write content later... </p>
+<h2> Diagram creator for consequences of the axiom of choice (AC). Enter HR. form numbers:</h2>
 
-<form action="/diagram.htm" method="POST">
+<form action="/diagram" method="GET">
 
-<p> Please input space separated Howard Rubin numbers as integers: <br/>
-<input type="text" name="names"><br/>
-<input style="display: block" type="submit" value="Request diagram"/>
-
+<input type="text" name="names" required autofocus title="Input space separated HR numbers as integers" placeholder="Input space separated HR numbers as integers" required pattern="(\d{0,3}[ ]+)+\d{0,3}[ ]*" oninvalid="this.setCustomValidity('Enter space separated integers that represent HR. form numbers only.')" oninput="setCustomValidity('')" style="width:100%; max-width: 365px"><br/>
+<br/>
+<input type="submit" value="Request diagram"/> 
+Label style:
+<input type="radio" title="Full statements in LaTeX" name="label-style" value="fancy" required checked/> fancy  
+<input type="radio" title="HR. form numbers" name="label-style" value="numbers"/> numbers
+<br/>
+<input type="checkbox" title="Top node is HR.1, the axiom of choice. Bottom node is HR.0, 0=0. Without one of these, diagrams may be disconnected." name="add-top-bottom" checked="checked" value="T"/> Include top and bottom node
 </form>
+
+<p> The Choiceless Grapher can produce any* size of graph of the implication and non-implication relationships between consequences of the axiom of choice, as found in the <strong>Consequences of the Axiom of Choice Project</strong> (link tba), by Prof. Paul Howard and Prof. Jean E. Rubin.</p>
+
+<p> Accepted Howard-Rubin (HR) form numbers are between 0 and 430 (inclusive), except: <!-- TMPL_VAR bad-forms -->. All results visualised are relative to Zermelo-Fraenkel set theory (ZF).</p>
+
+<p> I thank Paul Howard for providing the original implication data and the full statements of the forms, which became the fancy labels.</p>
+
+<p> This project's <a href="https://github.com/ioannad/jeffrey">GitHub repository</a> contains more details.</p>
+
+<p> (*: The website version can only handle about 70-80 form names for now. -- 12.Dec.2016)</p>
+
+
+

@@ -2,26 +2,97 @@ body {
     margin: 50px 80px 50px 80px;
 }
 
-h2 {
-    font-size: 18px;
-    font-style: bold;
+h1{
+    font-family: helvetica, impact, verdana, sans;
 }
 
-p {
-    font-family: verdana;
-    font-size: 18px;
+h2{
+    font-family: helvetica, impact, verdana, sans;
+    font-size: 16px;
+    font-weight: bold;
 }
 
-img {
+p, form{
+    font-family: verdana, sans-serif;
+}
+
+p{
+    font-size: 16px;
+}
+
+img{
     max-width: 100%;
     height: auto;
-    width: auto\9; /* ie8 */
+    width: auto; /* ie8 */
 }
 
 header, section, footer, aside, nav, main, article, figure {
     display: block;  /* secure correct behaviour in older browsers (html5) */
 }
 
-footer {
-    font-size: 9px;
+form{
+    font-size: 0.7em;
+}
+
+input .text{
+    width: 100%;
+    max-width: 500px;
+}    
+
+slide {
+    position: absolute;
+    top: 0;
+    opacity: 0.5;
+    background:black;
+    height: 300px;
+    width: 800px;
+    display:block;
+    overflow: hidden;
+    background: black;
+}
+
+.examp {
+    opacity: 0.6;
+    position:relative;
+    height: 300px;
+}
+
+.caption{
+    opacity: 1;
+    position: absolute;
+    top: 230px;
+    width: auto;
+    height: 2em;
+    z-index: 1;
+    border-radius: 2px;
+    font-size: 0.8em;
+}
+
+.caption a{
+    color: black;
+    font-family: verdana, sans-serif;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+.logo {
+    font-family: verdana, sans-serif;
+    font-size: 2em;
+    top: 150px;
+    position: absolute;
+    z-index: 1;
+    opacity: 1;
+    font-weight: bolder;
+}
+
+.logo a {
+    text-decoration: none;
+    color: black;
+    opacity: 0.9;
+}
+
+.example {
+    width: 100%;
+    max-width: 500px;
+    position: float;	      
 }
