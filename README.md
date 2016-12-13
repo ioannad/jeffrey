@@ -4,11 +4,13 @@ The Choiceless Grapher can produce any size of graph of the implication relation
 
 This project is inspired by and based on the **Consequences of the Axiom of Choice Project**, the encyclopedia of set theory without the axiom of choice, by *Prof. Paul Howard and Prof. Jean E. Rubin*. I thank Paul Howard for providing me with the original implication matrix (book1), a tex document with the form statements in LaTeX form, and permision to use these files, which can be found in the folder "Howard-Rubin-data". 
 
-An overview of the program is given below. A paper with a full description and explanation of the code will appear. Until then, you can find posts about this in my ["Boole's ring"](https://boolesrings.org/ioanna/). A big **thank you** to my teammate Max Rottenkolber over at [interstellar ventures](http://inters.co) for showing me the light (Common Lisp), and for hosting this app:
+An overview of the program is given below. A paper with a full description and explanation of the code will appear. Until then, you can find posts about this in my ["Boole's ring"](https://boolesrings.org/ioanna/). A big **thank you** to my teammate [Max Rottenkolber](http://mr.gy) over at [interstellar ventures](http://inters.co) for showing me the light (Common Lisp), and for hosting this app:
 
 ## The Website, aka the CGraph app
 
 The easiest way to use this program is to use its online app here: [cgraph.inters.co](http://cgraph.inters.co). Just enter the HR. numbers of the axioms you want to draw, possibly change the options and hit "Request diagram".
+
+The website has only minimal information, but you can [read more here](https://boolesrings.org/ioanna/2016/12/13/choiceless-grapher-app/).
 
 If you want very large diagrams (more than 70 or 80 forms), or if you prefer to work in a CL REPL, do use the program as described below.
 
