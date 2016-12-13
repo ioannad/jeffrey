@@ -4,16 +4,26 @@ Active to-dos are on top.
 
 ### Create proper website and set up Choiceless Grapher to be used via a web form.
 
-**website.lisp created** and works in returning correct diagrams which resize to the browser window.
+cgraph.inters.co is up and running!
 
 Still to do:
 
-* The form still accepts junk, satinize input and handle errors
+* Fix view of form input and logo on smartphones (in firefoxphone and android they appear too small)
 
-* Add more user input options: "Add top and bottom nodes", "Random diagram" (takes No of nodes as input), "Descendants of given forms"
+* Add more user input options: "Random diagram" (takes No of nodes as input), "Descendants of given forms", "Ancestors of given forms", "Show negative implications" (only reasonable for small graphs I think).
 
-* Add some classic diagrams and examples: full diagram, old collection, 0-22, 1-10, 2-22, alephs and their properties
+* FIX CONCURRENCY
 
+* shorter filenames for the diagrams
+
+* Shorthand names (longer term), which can be used in a possible:
+
+* matrix or list of forms (click-and-add-to-graph sort of feature).
+
+
+### Add short names?
+
+This seems very complicated (manual work). See above.
 
 ### Create fancy labels on the fly
 
@@ -28,12 +38,8 @@ Reduced complexity of `graph-implies-not-p` by switching from a nested `(some ..
 PDF output does not render fancy labels properly. Why?
 For the moment I use png, which is the current default. 
 
-### Add short names?
-
-This seems very complicated.
-
 ### Add Windows and Macintosh support.
 
-The external-programs only work for Linux for the moment.
+The external-programs only work for Linux for the moment. I consider the website as a "fix enough for now" for this issue, but a desktop version should appear in the future.
 
 
