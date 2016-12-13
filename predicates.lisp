@@ -37,7 +37,8 @@ whether this intesects the descendants of A.
 
 (defvar *jeff-matrix* (make-array '(430 430) :initial-element NIL)
   "This matrix is meant to store the answers of the predicates 
-`implies-p` and `implies-not-p`.")
+`implies-p` and `implies-not-p`. Indexed as (row,column), coded
+as 'row implies column?'.")
 
 (defun setup-jeff-matrix (graph)
   "Prepares *jeff-matrix* with the information from `graph`, and some
