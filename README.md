@@ -4,7 +4,14 @@ The Choiceless Grapher can produce any size of graph of the implication relation
 
 This project is inspired by and based on the **Consequences of the Axiom of Choice Project**, the encyclopedia of set theory without the axiom of choice, by *Prof. Paul Howard and Prof. Jean E. Rubin*. I thank Paul Howard for providing me with the original implication matrix (book1), a tex document with the form statements in LaTeX form, and permision to use these files, which can be found in the folder "Howard-Rubin-data". 
 
-A quick overview is given below. A paper with a full description and explanation of the code will appear after I upload the diagram drawing part of this program. A big *thank you* to my teammate Max Rottenkolber over at [interstellar ventures](http://inters.co). 
+An overview of the program is given below. A paper with a full description and explanation of the code will appear. Until then, you can find posts about this in my ["Boole's ring"](https://boolesrings.org/ioanna/). A big **thank you** to my teammate Max Rottenkolber over at [interstellar ventures](http://inters.co) for showing me the light (Common Lisp), and for hosting this app:
+
+## The Website, aka the CGraph app
+
+The easiest way to use this program is to use its online app here: [cgraph.inters.co](http://cgraph.inters.co). Just enter the HR. numbers of the axioms you want to draw, possibly change the options and hit "Request diagram".
+
+If you want very large diagrams (more than 70 or 80 forms), or if you prefer to work in a CL REPL, do use the program as described below.
+
 
 **THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND WHATSOEVER.**
 
@@ -25,23 +32,7 @@ To load the **Choiceless Grapher**, open a Common Lisp REPL and type in `(ql:qui
 
 Then you can choose a package you'd like to use, for example to run all tests and read the report type in `(in-package :jeffrey.test)` and then type in `(test-all)`. For drawing diagrams see below.
 
-## Usage
-
-### Website
-
-The easiest way is to use the webserver by loading its website package :jeffrey.main, with quicklisp in a Common-Lisp REPL as follows: 
-
-`(ql:quickload "jeffrey")`
-
- `(in-package :jeffrey.website)`
-
-`(start-website)`
-
-And then, in your browser, visit the url [127.0.0.1:8080/choiceless-grapher.htm](127.0.0.1:8080/choiceless-grapher.htm)
-
-I plan on making this package's installation obsolete, and set up an app for you to graph implications between consequences of AC online.
-
-
+## Usage (non-web)
 
 ### Drawing the diagram between a given list of form HR numbers
 
