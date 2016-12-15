@@ -15,8 +15,8 @@
 	    (hunchentoot:create-folder-dispatcher-and-handler
 	     "/examples/" (local "examples/"))
 	    (hunchentoot:create-static-file-dispatcher-and-handler
-	     "/slideshow.js"
-	     (local "www/slideshow.js"))
+	     "/random-header.js"
+	     (local "www/random-header.js"))
 	    (hunchentoot:create-static-file-dispatcher-and-handler
 	     "/jeffrey.css" (local "www/jeffrey.css"))
 	    (hunchentoot:create-prefix-dispatcher
