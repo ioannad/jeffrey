@@ -4,6 +4,7 @@ body {
 
 h1{
     font-family: helvetica, impact, verdana, sans;
+    font-size: 30px;
 }
 
 h2{
@@ -31,7 +32,7 @@ header, section, footer, aside, nav, main, article, figure {
 }
 
 form{
-    font-size: 0.7em;
+    font-size: 12px;
 }
 
 input .text{
@@ -55,6 +56,7 @@ slide {
     opacity: 0.6;
     position:relative;
     height: 300px;
+    font-size: 16px;
 }
 
 .caption{
@@ -62,7 +64,7 @@ slide {
     position: absolute;
     top: 230px;
     width: auto;
-    height: 2em;
+    height: 16px;
     z-index: 1;
     border-radius: 2px;
     font-size: 0.8em;
@@ -77,12 +79,12 @@ slide {
 
 .logo {
     font-family: verdana, sans-serif;
-    font-size: 2em;
+    font-size: 30px;
     top: 150px;
     position: absolute;
     z-index: 1;
     opacity: 1;
-    font-weight: bolder;
+    font-weight: bold;
 }
 
 .logo a {
