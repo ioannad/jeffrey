@@ -1,11 +1,14 @@
 
 
 <h1> Choiceless Grapher </h1>
-<h2> Diagram creator for consequences of the axiom of choice (AC). Enter HR. form numbers:</h2>
+<h2> Diagram creator for consequences of the axiom of choice (AC). Enter space separated integers:</h2>
 
 <form action="/diagram" method="GET">
 
-<input type="text" name="names" required autofocus title="Input space separated HR numbers as integers" placeholder="Input space separated HR numbers as integers" required pattern="(\d{0,3}[ ]+)+\d{0,3}[ ]*" oninvalid="this.setCustomValidity('Enter space separated integers that represent HR. form numbers only.')" oninput="setCustomValidity('')" style="width:100%; max-width: 365px"><br/>
+<input type="text" name="names" required autofocus
+       title="Input space separated HR numbers as integers" placeholder="Enter space separated HR numbers as integers"
+       pattern="(\d{0,3}[ ]+)*\d{0,3}[ ]*"
+       oninvalid="this.setCustomValidity('Only enter space separated integers that represent HR. form numbers.')" oninput="setCustomValidity('')" style="width:100%; max-width: 365px"><br/>
 <br/>
 <input type="submit" value="Request diagram"/> 
 Label style:
@@ -17,7 +20,7 @@ Label style:
 
 <p> The Choiceless Grapher can produce any* size of graph of the implication and non-implication relationships between consequences of the axiom of choice, as found in the <strong>Consequences of the Axiom of Choice Project</strong> (link tba), by Prof. Paul Howard and Prof. Jean E. Rubin.</p>
 
-<p> Accepted Howard-Rubin (HR) form numbers are between 0 and 430 (inclusive), except: <!-- TMPL_VAR bad-forms -->. All results visualised are relative to Zermelo-Fraenkel set theory (ZF).</p>
+<p> Accepted Howard-Rubin (HR) form numbers are between 0 and 430 (inclusive), except: <!-- TMPL_VAR bad-forms -->. All results visualised are results in Zermelo-Fraenkel set theory (ZF).</p>
 
 <p> I thank Paul Howard for providing the original implication data and the full statements of the forms, which became the fancy labels.</p>
 
