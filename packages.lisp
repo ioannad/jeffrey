@@ -98,9 +98,9 @@
 	:jeffrey.read
 	:jeffrey.predicates
 	:jeffrey.draw)
-  (:export :graph
+  (:export :name-transformer
+	   :graph
 	   :random-graph
-	   :graph-descendants
 	   :*local-directory*
 	   :*names*
 	   :*bad-forms*)
