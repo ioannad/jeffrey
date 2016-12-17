@@ -67,48 +67,67 @@
 				  :remove-empty-subseqs T))
 	  #'<)))
 
+(defvar *temp-hack* 0
+  "Until I take care of concurrency, this ugly variable
+will allow up to 100 large diagrams to be created in 'parallel'.")
+
 (defun encode-names (input-names)
   "This code is not a code, it's literal and too long."
-  (format nil "~{~a~^-~}" input-names))
+  (if (< (length input-names) 50)
+      (format nil "~{~a~^-~}" input-names)
+      (progn (if (>= *temp-hack* 100)
+		 (setq *temp-hack* 0)
+		 (setq *temp-hack* (+ 1 *temp-hack*)))
+	     (eval (format nil "large-diagram-~a" *temp-hack*)))))
 
-(defun encoded-string (input-string label-style add-top-bottom)
-  (let ((input-names (remove-duplicates
-		      (if add-top-bottom
-			  (append '(0 1)
-				  #1=(parse-input input-string))
-			  #1#))))
+(defun encoded-string (key input-string label-style add-top-bottom)
+  ;=> '(names-list filename uri rel-path)
+  (let* ((input-names% (remove-duplicates
+			(if (and add-top-bottom
+				 (equal key :these))
+			    (append '(0 1)
+				    #1=(parse-input input-string))
+			    #1#)))
+	 (input-names (name-transformer key input-names%)))
     (list input-names
 	  #2=(concatenate 'string
 			  label-style "-"
 			  (encode-names input-names))
 	  #3=(concatenate 'string "/" #2# ".png")
 	  (concatenate 'string "diagrams" #3#))))
-  
+
+(defmacro make-diagram-page (input-names uri)
+  `(with-output-to-string (stream)
+     (html-template:fill-and-print-template
+      #P"jeffrey.tmpl"
+      (list :title "Implication diagram"
+	    :index? NIL
+	    :print-names (format nil "~{~a~^, ~}"
+				 ,input-names)
+	    :path-to-image ,uri)
+      :stream stream)))
+
 (defun diagram ()
   (let ((input-string   (parameter "names"))
 	(label-style    (parameter "label-style"))
-	(add-top-bottom (parameter "add-top-bottom")))
+	(add-top-bottom (parameter "add-top-bottom"))
+	(key            (cond ((parameter "these") :these)
+			      ((parameter "descendants") :descendants)
+			      ((parameter "ancestors") :ancestors)
+			      (T (error "Unknown key used in `diagram`"))))) 
     (destructuring-bind (input-names filename uri rel-path)
-	(encoded-string input-string label-style add-top-bottom)
+	(encoded-string key input-string label-style add-top-bottom)
       (progn
 	(unless (probe-file
 		 (concatenate 'string
 			      *local-directory*
 			      rel-path))
-	  (graph input-names filename label-style "png"))
+	  (graph input-names filename label-style))
 	(push
 	 (hunchentoot:create-static-file-dispatcher-and-handler
 	  uri (local rel-path))
 	 hunchentoot:*dispatch-table*)
-	(with-output-to-string (stream)
-	  (html-template:fill-and-print-template
-	   #P"jeffrey.tmpl"
-	   (list :title "Implication diagram"
-		 :index? NIL
-		 :print-names (format nil "~{~a~^, ~}"
-				      input-names)
-		 :path-to-image uri)
-	   :stream stream))))))
+	(make-diagram-page input-names uri)))))
 
 (defun examples ()
   (with-output-to-string (stream)
@@ -116,3 +135,14 @@
      #P"examples.tmpl" '()
      :stream stream)))
   
+
+
+;;; debugging
+
+(defun debug-mode-on ()
+  (setq *catch-errors-p* NIL)
+  (setq *show-lisp-errors-p* T))
+
+(defun debug-mode-off ()
+  (setq *catch-errors-p* T)
+  (setq *show-lisp-errors-p* NIL))
