@@ -75,10 +75,12 @@ will allow up to 100 large diagrams to be created in 'parallel'.")
   "This code is not a code, it's literal and too long."
   (if (< (length input-names) 50)
       (format nil "~{~a~^-~}" input-names)
-      (progn (if (>= *temp-hack* 100)
-		 (setq *temp-hack* 0)
-		 (setq *temp-hack* (+ 1 *temp-hack*)))
-	     (eval (format nil "large-diagram-~a" *temp-hack*)))))
+      (let ((temp-hack (write-to-string *temp-hack*)))
+	(prog1 (concatenate 'string
+			    "large-diagram-" temp-hack)
+	  (if (>= *temp-hack* 100)
+	      (setq *temp-hack* 0)
+	      (setq *temp-hack* (+ 1 *temp-hack*)))))))
 
 (defun encoded-string (key input-string label-style add-top-bottom)
   ;=> '(names-list filename uri rel-path)
@@ -88,13 +90,14 @@ will allow up to 100 large diagrams to be created in 'parallel'.")
 			    (append '(0 1)
 				    #1=(parse-input input-string))
 			    #1#)))
-	 (input-names (name-transformer key input-names%)))
-    (list input-names
-	  #2=(concatenate 'string
-			  label-style "-"
-			  (encode-names input-names))
-	  #3=(concatenate 'string "/" #2# ".png")
-	  (concatenate 'string "diagrams" #3#))))
+	 (input-names (name-transformer key input-names%))
+	 (filename (concatenate 'string
+				label-style "-"
+				(encode-names input-names)))
+	 (uri (concatenate 'string "/" filename ".png"))
+	 (rel-path (concatenate 'string "diagrams" uri)))	 
+    (list input-names filename uri rel-path)))
+
 
 (defmacro make-diagram-page (input-names uri)
   `(with-output-to-string (stream)
