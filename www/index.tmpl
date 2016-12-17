@@ -8,14 +8,24 @@
 <input type="text" name="names" required autofocus
        title="Input space separated HR numbers as integers" placeholder="Enter space separated HR numbers as integers"
        pattern="(\d{0,3}[ ]+)*\d{0,3}[ ]*"
-       oninvalid="this.setCustomValidity('Only enter space separated integers that represent HR. form numbers.')" oninput="setCustomValidity('')" style="width:100%; max-width: 365px"><br/>
+       oninvalid="this.setCustomValidity('Only enter space separated integers that represent HR. form numbers.')" oninput="setCustomValidity('')" style="width:100%"><br/>
 <br/>
-<input type="submit" value="Request diagram"/> 
+
 Label style:
 <input type="radio" title="Full statements in LaTeX" name="label-style" value="fancy" required checked/> fancy  
 <input type="radio" title="HR. form numbers" name="label-style" value="numbers"/> numbers
 <br/>
-<input type="checkbox" title="Top node is HR.1, the axiom of choice. Bottom node is HR.0, 0=0. Without one of these, diagrams may be disconnected." name="add-top-bottom" checked="checked" value="T"/> Include top and bottom node
+
+<input type="submit" name="these"       value="Graph these"/>
+
+<input type="checkbox" title="Top node is HR.1, the axiom of choice. Bottom node is HR.0, 0=0. Without one of these, these diagrams may be disconnected." name="add-top-bottom" checked="checked" value="T"/> Include top and bottom node
+<br/>
+
+<input type="submit" name="descendants" value="Graph their descendants"/>
+<input type="submit" name="ancestors"   value="Graph their ancestors"/>
+<br/>
+Be prepared to wait more than a few minutes for diagrams with
+over 30 forms, or with forms with many ancestors/descendants.
 </form>
 
 <p> The Choiceless Grapher can produce any* size of graph of the implication and non-implication relationships between consequences of the axiom of choice, as found in the <strong>Consequences of the Axiom of Choice Project</strong> (link tba), by Prof. Paul Howard and Prof. Jean E. Rubin.</p>
