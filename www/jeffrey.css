@@ -27,12 +27,13 @@ img{
     width: auto; /* ie8 */
 }
 
-header, section, footer, aside, nav, main, article, figure {
-    display: block;  /* secure correct behaviour in older browsers (html5) */
+header, section, footer, aside, nav, main, article, figure {    display: block;  /* secure correct behaviour in older browsers (html5) */
 }
 
 form{
     font-size: 12px;
+    max-width: 400px;
+    width: 100%;
 }
 
 input .text{
