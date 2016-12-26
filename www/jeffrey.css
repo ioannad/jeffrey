@@ -5,19 +5,35 @@ body {
 h1{
     font-family: helvetica, impact, verdana, sans;
     font-size: 30px;
+    padding: 0px;
+    margin: 0px;
 }
 
 h2{
     font-family: helvetica, impact, verdana, sans;
     font-size: 16px;
     font-weight: bold;
+    padding: 0px;
+    margin: 0px;
 }
 
-p, form{
+form{
     font-family: verdana, sans-serif;
 }
 
+form .input{
+        height: 32px;
+}
+
+.formDiv {
+    float: none;
+    display: block;
+    padding: 5px;
+}
+
+
 p{
+    font-family: verdana, sans-serif;
     font-size: 16px;
 }
 
@@ -32,8 +48,13 @@ header, section, footer, aside, nav, main, article, figure {    display: block; 
 
 form{
     font-size: 12px;
-    max-width: 400px;
+    max-width: 460px;
     width: 100%;
+}
+
+
+.formp {
+    text-height: 130%;
 }
 
 input .text{
