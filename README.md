@@ -1,6 +1,6 @@
 # Choiceless grapher 
 
-The Choiceless Grapher can produce any size of graph of the implication relationships between the consequences of the axiom of choice (428 in total), with an option on the style of nodes: you can either have the Howard-Rubin (HR) numbering of the forms ("numbers"), or the full LaTeX-formatted statements ("fancy").
+The Choiceless Grapher can produce any size of graph of the implication relationships between the consequences of the axiom of choice, [as found here](http://consequences.emich.edu/conseq.htm), with an option on the style of nodes: you can either have the Howard-Rubin (HR) numbering of the forms ("numbers"), or the full LaTeX-formatted statements ("fancy"). It's online as an [app here](http://cgraph.inters.co).
 
 This project is inspired by and based on the **Consequences of the Axiom of Choice Project**, the encyclopedia of set theory without the axiom of choice, by *Prof. Paul Howard and Prof. Jean E. Rubin*. I thank Paul Howard for providing me with the original implication matrix (book1), a tex document with the form statements in LaTeX form, and permision to use these files, which can be found in the folder "Howard-Rubin-data". 
 
@@ -14,33 +14,37 @@ The website has only minimal information, but you can [read more here](https://b
 
 If you want very large diagrams (more than 70 or 80 forms), or if you prefer to work in a CL REPL, do use the program as described below.
 
+## DISCLAIMER
 
 **THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND WHATSOEVER.**
 
+## The program
+
 ### Requirements
+
 * Common-Lisp: I have only tested this with **SBCL** or **CCL**  but it should work in any implementation that [external-program](https://github.com/sellout/external-program) supports. Please let me know if you check this!
-* [Graphviz](www.graphviz.org/) (with dot and tred installed, `apt-get install graphviz`)
+* [Graphviz](www.graphviz.org/) (`apt-get install graphviz`)
 * [Quicklisp](www.quicklisp.org)
 * **Temporarily** it only works in Linux. Windows and Macintosh support are on the to-do list.
 * The package `labelmaker` also requires `/bin/bash`, `pdflatex`, and `convert`. 
 
-## Installation
+### Installation
 Install this package using quicklisp ([installation instructions](https://www.quicklisp.org/beta/#installation)) and git ([installation instructions](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)) as follows:
 
 * Create a folder called `jeffrey` in `quicklisp/local-projects/`,
 * Navigate to this folder in a terminal and type `git init` and `git clone git@github.com:ioannad/jeffrey.git`. Alternatively otherwise download the cohntents of this repository to this folder. 
 
-To load the **Choiceless Grapher**, open a Common Lisp REPL and type in `(ql:quickload "jeffrey")`.
+### Load the Choiceless Grapher
 
-Then you can choose a package you'd like to use, for example to run all tests and read the report type in `(in-package :jeffrey.test)` and then type in `(test-all)`. For drawing diagrams see below.
+Open a Common Lisp REPL and type in (evaluate)
 
-## Usage (non-web)
+`(ql:quickload "jeffrey")`.
 
 ### Drawing the diagram between a given list of form HR numbers
 
-If '(a b c ..) is the list of form numbers (only numbers, without parameters or equivalent form letters), whose relationships you wish to graph, and if you want to save the diagram in the file "filename", then do:
+If '(a b c ..) is the list of form numbers (only numbers, without parameters or equivalent form letters), whose relationships you wish to graph, and if you want to save the diagram in the file "filename", then evaluate:
 
-`(graph '(a b c ...) "filename" "style")`,
+`(graph '(a b c ...) "filename" "style")`
 
 where "style" should be either "numbers" to get the numbers of the nodes in the diagram, or "fancy" to get the full LaTeX-formatted statements of the nodes in the diagram. "fancy" is still experimental and doesn't work well for very large diagrams, in the magnitude of the full one (goes over 13 meters in width). 
 
@@ -52,7 +56,7 @@ You can also draw the implication diagram of a pseudo-random collection of forms
 
 where "style", as above, should be either "numbers" or "fancy". 
 
-### Drawing the consequences of a list of forms
+### Drawing the consequences or  of a list of forms
 
 Similarly, you can draw the implication diagram of a list of forms (e.g. of `'(8 85)`) as follows:
 
