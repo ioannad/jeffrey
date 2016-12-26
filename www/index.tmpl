@@ -1,11 +1,17 @@
 
 
 <h1> Choiceless Grapher </h1>
-<h2> Diagram creator for consequences of the axiom of choice (AC). Enter space separated integers:</h2>
+<h2> Diagram creator for consequences of the axiom of choice (AC). </h2>
+<p>
+Hover over forms and buttons for more details.<br/>
+<strong>Enter space separated integers:</strong>
+</p>
 
+<div class="formBox">
+<div class="formDiv">
 <form action="/diagram" method="GET">
 
-<input type="text" name="names" required autofocus
+<input class="input" type="text" name="names" required autofocus
        title="Input space separated HR numbers as integers" placeholder="Enter space separated HR numbers as integers"
        pattern="(\d{0,3}[ ]+)*\d{0,3}[ ]*"
        oninvalid="this.setCustomValidity('Only enter space separated integers that represent HR. form numbers.')" oninput="setCustomValidity('')" style="width:100%"><br/>
@@ -14,29 +20,38 @@
 Label style:
 <input type="radio" title="Full statements in LaTeX" name="label-style" value="fancy" required checked/> fancy  
 <input type="radio" title="HR. form numbers" name="label-style" value="numbers"/> numbers
+
 <br/>
+<input type="submit" name="these" value="Graph these"/>
 
-<input type="submit" name="these"       value="Graph these"/>
+<input type="checkbox" title="Top node is HR.1, the axiom of choice. Bottom node is HR.0, 0=0. Without a top or bottom node, these diagrams may be disconnected." name="add-top-bottom" checked="checked" value="T"/> Include top and bottom node
 
-<input type="checkbox" title="Top node is HR.1, the axiom of choice. Bottom node is HR.0, 0=0. Without one of these, these diagrams may be disconnected." name="add-top-bottom" checked="checked" value="T"/> Include top and bottom node
 <br/>
 
 <input type="submit" name="descendants" value="Graph their descendants"/>
 <input type="submit" name="ancestors"   value="Graph their ancestors"/>
 <br/>
-Be prepared to wait more than a few minutes for diagrams with
-over 30 forms, or with forms with many ancestors/descendants.
+<br/>
+Be prepared to wait a few minutes for diagrams with over 50 forms, or with forms with many ancestors/descendants. <br/>
 </form>
+</div>
+<div class="formDiv">
+<form action="/random-diagram" method="GET">
+<strong>Get a (pseudo) random diagram</strong><br/>
+of size:
+<input type="text" name="n" title="Please enter a number up to 99. Top and bottom nodes will be included." required
+       pattern="([ ]*)\d{0,2}([ ]*)" oninvalid="Please enter a positive integer up to 99." oninput="setCustomValidity('')"
+       style="width: 23px"/> 
+<input type="submit" value="Get random graph"/>
+</form>
+</div>
+</div>
 
-<p> The Choiceless Grapher can produce any* size of graph of the implication and non-implication relationships between consequences of the axiom of choice, as found in the <strong>Consequences of the Axiom of Choice Project</strong> (link tba), by Prof. Paul Howard and Prof. Jean E. Rubin.</p>
+<p> The Choiceless Grapher can produce any size of graph of the implication and non-implication relationships between consequences of the axiom of choice, as found in the <a href="http://consequences.emich.edu/"><strong>Consequences of the Axiom of Choice Project</strong></a>, by Prof. Paul Howard and Prof. Jean E. Rubin.</p>
 
 <p> Accepted Howard-Rubin (HR) form numbers are between 0 and 430 (inclusive), except: <!-- TMPL_VAR bad-forms -->. All results visualised are results in Zermelo-Fraenkel set theory (ZF).</p>
 
 <p> I thank Paul Howard for providing the original implication data and the full statements of the forms, which became the fancy labels.</p>
 
 <p> This project's <a href="https://github.com/ioannad/jeffrey">GitHub repository</a> contains more details.</p>
-
-<p> (*: The website version can only handle about 70-80 form names for now. -- 12.Dec.2016)</p>
-
-
 

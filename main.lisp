@@ -60,14 +60,13 @@
 (assert (= 10 (length (remove-duplicates
 		       (random-numbers
 			10 '(0 1 2 3 4 5 6 7 8 9 10 11) '())))))
-	    
+
+(defun random-HR-numbers (n)
+  (append '(0 1)
+	  (random-numbers n
+			  (node-names *graph*)
+			  (append *bad-forms*
+				  '(0 1)))))
+
 (defun random-graph (amount-of-nodes filename style &optional (ending "png"))
-  (graph 
-   (append (random-numbers amount-of-nodes 
-			   (node-names *graph*)
-			   (append *bad-forms*
-				   '(0 1)))
-	   '(1 0))
-   filename
-   style
-   ending))
+  (graph (random-HR-numbers amount-of-nodes) filename style ending))

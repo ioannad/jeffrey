@@ -87,7 +87,6 @@
   (:use :common-lisp
 	:jeffrey.graph
 	:jeffrey.read
-	:split-sequence
 	:external-program)
   (:documentation "Creates the fancy labels that dot may use. I hope to make this obsolete at some point, and create the labels on the fly."))
 
@@ -100,7 +99,7 @@
 	:jeffrey.draw)
   (:export :name-transformer
 	   :graph
-	   :random-graph
+	   :random-HR-numbers
 	   :*local-directory*
 	   :*names*
 	   :*bad-forms*)
@@ -111,9 +110,15 @@
 
 To produce a diagram, open a Common Lisp REPL (I have tested it only with SBCL and Clozure CL so far. Please let me know if you test it with other implementations). Then type in `(ql:quickload \"jeffrey\")` and then type in `(in-package :jeffrey.main)`. Now, to draw the diagram between the forms with Howard-Rubin numbers (HR) a b c d ... use the command `(main \"a b c d ...\")`."))
 
+(defpackage jeffrey.parse-web-input
+  (:use :cl :hunchentoot :split-sequence
+	:jeffrey.main)
+  (:export :process-input)
+  (:documentation "Parses the user input and accordingly transforms the input names to be used by `:jeffrey.website`."))
+
 (defpackage jeffrey.website
   (:use :cl :hunchentoot :html-template
-	:split-sequence
+	:jeffrey.parse-web-input
 	:jeffrey.main)
-  (:documentation "The currently unfinished website of choiceless grapher, following Adam Tornhill's \"Lisp for the Web\" www.adamtornhill.com/articles/lispweb.htm."))
+  (:documentation "Creates the websites using `html_template` and feeds them to a `hunchentoot` server."))
 

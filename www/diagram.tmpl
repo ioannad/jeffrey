@@ -1,9 +1,11 @@
 
 
-<h2> The diagram of implications you requested, between the forms with HR numbers <!-- TMPL_VAR print-names -->: </h2>
+<h2> The diagram of implications you requested, between <!-- TMPL_VAR print-names -->: </h2>
 
 <img src="<!-- TMPL_VAR path-to-image -->" :alt "Your diagram">
 
+<!-- TMPL_IF bad-input --> <!-- TMPL_INCLUDE 'bad-input.tmpl' -->
+<!-- /TMPL_IF -->
 <p> An arrow from A to B means that A implies B. <br/>
 A boldfaced arrow from A to B moreover means that B does not imply A in ZF, so the arrow is provably not reversible in ZF. </p>
 
