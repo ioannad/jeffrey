@@ -8,18 +8,12 @@ cgraph.inters.co is up and running!
 
 Still to do:
 
-* Fix view of form input and logo on smartphones (in firefoxphone and android they appear too small)
-
-* Add more user input options: "Random diagram" (takes No of nodes as input), "Descendants of given forms", "Ancestors of given forms", "Show negative implications" (only reasonable for small graphs I think).
-
-* FIX CONCURRENCY
-
-* shorter filenames for the diagrams
+* Add intervals feature
+* Remove features that produce huge graphs: descendants/ancestors, and "Show negative implications" only for graphs with under 10 nodes.
 
 * Shorthand names (longer term), which can be used in a possible:
 
 * matrix or list of forms (click-and-add-to-graph sort of feature).
-
 
 ### Add short names?
 
