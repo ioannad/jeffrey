@@ -169,6 +169,11 @@ subforms"
 	  forms))
 
 (defun =formsnum.tex ()
+  "*Description:*
+
+   A MaxPC parser, which parses the form information, i.e., name, 
+   LaTeX-statement, and references from the TeX-file 
+   {Howard-Rubin-data/FORMSNUM.TEX}."
   (=destructure (_ forms)
       (=list (=text-until (?form-delimiter))
 	     (%some (=form)))
@@ -188,6 +193,9 @@ subforms"
 	   (formsnum-test-result))))
 
 (defun test-formsnum-parsers ()
+  "*Description:*
+
+   Tests all the parsers, including the non-exported ones."
   (test-delimiters)
 ;  (test-parameter)
   (test-name)
@@ -232,7 +240,12 @@ column respectively."
 (assert (equal '(1 2 3) (parse "1 2 3 -1" (=row))))
 
 (defun =book1 ()
-  "Book1 is a list of one or more rows."
+  "*Description:* 
+
+   A MaxPC parser, which parses the implication information from 
+   the file {Howard-Rubin-data/book1}. Note that a lot of this 
+   information is later dropped (codes 2, 4, 5, and 6), to be
+   recalculated using the package {:jeffrey.predicates}."
   (%some (=row)))
 
 (assert (equal (parse "1 2 3 -1 
