@@ -19,13 +19,19 @@ h2{
 
 form{
     font-family: verdana, sans-serif;
+    font-size: 1em;
 }
 
 form .input{
-        height: 32px;
+        height: 1em;
 }
 
-.formDiv {
+form img {
+    height: 1.5em;
+    vertical-align: -6px;
+}
+
+.formDiv { 
     float: none;
     display: block;
     padding: 5px;
@@ -47,8 +53,7 @@ header, section, footer, aside, nav, main, article, figure {    display: block; 
 }
 
 form{
-    font-size: 12px;
-    max-width: 460px;
+    font-size: 1em;
     width: 100%;
 }
 
@@ -119,4 +124,21 @@ slide {
     width: 100%;
     max-width: 500px;
     position: float;	      
+}
+
+
+.checkform {
+    border-style: none;
+    position: relative;
+    font-family: serif;
+    text-align: justify;
+    width: 100%;
+}
+
+.checkbox {
+    vertical-align: top;
+}
+
+td {
+    vertical-align: top;
 }
