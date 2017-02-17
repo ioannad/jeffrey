@@ -22,8 +22,11 @@
 					  "predicates"
 					  "draw"))
 	       (:file "parse-web-input" :depends-on ("packages"))
+	       (:file "latex-in-html"   :depends-on ("packages"
+						     "graph"))
 	       (:file "website" :depends-on ("main"
-					     "parse-web-input"))
+					     "parse-web-input"
+					     "latex-in-html"))
 	       (:file "example-form-groups" :depends-on ("main"))
 	       (:file "test" :depends-on ("packages"
 					  "graph"
