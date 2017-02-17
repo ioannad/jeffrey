@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title> <!-- TMPL_VAR title --> </title>
+<link rel="stylesheet" href="/jeffrey.css">
+</head>
+
+<body>
+
+<!-- TMPL_INCLUDE 'slider.tmpl' -->
+
+<h1>
+Names and statements of the forms.
+</h1>
+
+<p>
+Check a form to include it in a diagram. Create this diagram
+using the button in the <a href="#page_bottom">bottom of the page</a>.
+</p>
+
+<form action="/selection-diagram"
+      method="get"
+      id="selection-diagram"
+      width="100%">
+
+  <table class="checkform">
+    <!-- TMPL_LOOP checkforms -->
+    <tr>
+      <td class="checkbox">
+	<input type="checkbox"
+	       title="Include this form in a diagram."
+	       name="<!--TMPL_VAR name -->">
+      </td>
+      <td>
+	<!-- TMPL_VAR statement -->
+      </td>
+      <!-- /TMPL_LOOP -->
+    </tr>
+  </table>
+
+  <span id="page_bottom">
+    <input type="submit" value="Graph selection"/>
+  </span>
+</form>
+
+
+
+</body>
+</html>
+
+
+
+
