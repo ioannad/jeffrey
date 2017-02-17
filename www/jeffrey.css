@@ -28,7 +28,7 @@ form .input{
 
 form img {
     height: 1.5em;
-    vertical-align: -6px;
+    vertical-align: middle;
 }
 
 .formDiv { 
