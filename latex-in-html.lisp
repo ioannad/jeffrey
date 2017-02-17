@@ -56,16 +56,23 @@
 	       "nodes-html.db"))
 
 (defun save-nodes-html () ;=> saves database in file
-  (with-open-file (out *database-filename*
-		       :direction :output
-		       :if-exists :supersede)
-    (with-standard-io-syntax
-      (print *nodes-html* out))))
+  (let ((list (loop for name being the hash-keys of *nodes-html*
+		 using (hash-value statement)
+		 collect (list name statement))))
+    (with-open-file (out *database-filename*
+			 :direction :output
+			 :if-exists :supersede)
+      (with-standard-io-syntax
+	(print list out)))))
 
 (defun load-nodes-html () ;=> loads database from file
-  (with-open-file (in *database-filename*)
-    (with-standard-io-syntax
-      (setf *nodes-html* (read in)))))
+  (let ((list '()))
+    (with-open-file (in *database-filename*)
+      (with-standard-io-syntax
+	(setf list (read in))))
+    (setf *nodes-html (make-hash-table))
+    (loop for (name statement) in list
+       do (setf (gethash name *nodes-html*) statement))))
 
 (defun get-by-name (name)
   (list :name name :statement (gethash name *nodes-html*)))
