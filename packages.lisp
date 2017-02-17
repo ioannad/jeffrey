@@ -7,22 +7,34 @@
 	   :node-parents
 	   :node-LaTeX
 	   :node-references
-	   :node-attributes
 	   :add-edge
 	   :add-parent
 	   :make-edge
 	   :edge-destination
-	   :edge-relation
-	   :edge-attributes)
-  (:documentation "graph.lisp contains the graph structure where the information is stored (the types), and the related functions, which are the basic language of the system. There are two types, one type node, which is a name of type natural number, a list of edges of type edge described below, a list of parents of type node, a LaTeX statement of type string, references of type string, and a placeholder for attributes. The other type is edge, which is a destination of type node, a relation (T or NIL), which corresponds to positive and negative implication arrow respectively, and a placeholder for attributes. The nodes are to be stored in the exported hash-table graph."))
+	   :edge-relation)
+  (:documentation
+   "Here the graph related common lisp structures are defined. These are the _nodes_ and _edges_ of the graph. The graph itself is stored in a hash table, which in turn is stored in the universal variable `*graph*`. 
+
+A `node` stores the axiom information (name, edges, parents, LaTeX formatted full statement, and possible references (of where this axiom was first found in the literature).
+
+An `edge` stores an implication (A implies B) or a non-implication (A does not imply B). Only the destination (B) and implication status (T for 'implies', NIL for 'does not imply') are stored in the edge, which in turn is stored in the `node-edges` of A.
+
+Apart from the functions described below: {make-node}, {make-edge}, {add-parent}, and {add-edge}, all other exported functions are the standard ones accessing the structures: {node-name}, {node-edges}, {node-parents}, {node-LaTeX}, {node-references}, {edge-destination}, and {edge-relation}."))
 
 (defpackage jeffrey.parse
   (:use    :common-lisp
 	   :maxpc :maxpc.digit :maxpc.char)
-  (:export :=formsnum.tex
+  (:export :=text-until
+	   :=formsnum.tex
 	   :=book1
 	   :test-formsnum-parsers)
-  (:documentation "parse.lisp contains parsing functions for reading in node (form) information, and for reading book1, the original matrix with all the implication codes. Form information, i.e., name, LaTeX-statement, and references are parsed from in a machete-style chopping of the TeX-file Howard-Rubin-data/FORMSNUM.TEX . Implication information is parsed from the file Howard-Rubin-data/book1 ."))
+  (:documentation
+   "Contains parsing functions for reading {node} (form) 
+    information, and for reading book1, the original matrix with 
+    all the implication codes.
+
+    The parsers are based on Max's Parser Combinators: 
+    [{maxpc}](https://github.com/eugenia/maxpc)"))
 
 (defpackage jeffrey.process-strings
   (:use    :common-lisp
@@ -30,7 +42,10 @@
   (:export :process-forms
 	   :search-replace
 	   :*comments*)
-  (:documentation "process-strings.lisp contains functions which make the text in any LaTeX-statement LaTeX compatible (the origin is TeX). It's a crude search and replace routine."))
+  (:documentation
+   "Contains functions which make the text in any LaTeX-statement 
+    LaTeX compatible (the origin is TeX). It's a crude search and 
+    replace routine."))
 
 (defpackage jeffrey.read
   (:use :common-lisp
@@ -116,9 +131,18 @@ To produce a diagram, open a Common Lisp REPL (I have tested it only with SBCL a
   (:export :process-input)
   (:documentation "Parses the user input and accordingly transforms the input names to be used by `:jeffrey.website`."))
 
+(defpackage jeffrey.latex-in-html
+  (:use :cl :external-program :html-template
+	:jeffrey.graph
+	:jeffrey.main)
+  (:export :load-nodes-html
+	   :get-by-name
+	   :select-by-content))
+
 (defpackage jeffrey.website
   (:use :cl :hunchentoot :html-template
 	:jeffrey.parse-web-input
+	:jeffrey.latex-in-html
 	:jeffrey.main)
   (:documentation "Creates the websites using `html_template` and feeds them to a `hunchentoot` server."))
 
