@@ -9,7 +9,9 @@
 (defun local (rel-path)
   (concatenate 'string *local-directory* rel-path))
 
-(setq hunchentoot:*dispatch-table*
+(load-nodes-html)
+
+(setq hunchentoot:*dispatch-table*  ; dispatches folders, files, and pages
       (list (hunchentoot:create-static-file-dispatcher-and-handler
 	     "/logo.jpg" (local "www/logo.jpg"))
 	    (hunchentoot:create-folder-dispatcher-and-handler
@@ -26,7 +28,15 @@
 	    (hunchentoot:create-prefix-dispatcher
 	     "/random-diagram" 'random-diagram)
 	    (hunchentoot:create-prefix-dispatcher
+	     "/selection-diagram" 'selection-diagram)
+	    (hunchentoot:create-prefix-dispatcher
 	     "/examples" 'examples)
+	    (hunchentoot:create-folder-dispatcher-and-handler
+	     "/math-snippets/" (local "math-snippets/"))
+	    (hunchentoot:create-prefix-dispatcher
+	     "/names-and-statements" 'names-and-statements)
+	    (hunchentoot:create-prefix-dispatcher
+	     "/selected-diagram" 'selected-diagram)
 	    (hunchentoot:create-prefix-dispatcher
 	     "/" 'generate-index-page)))
 
@@ -40,7 +50,7 @@
 ;; but the below does transmit the website fine at
 ;; http://127.0.0.1:8080/
 
-(defun start-website??  (&key (port "8080"))
+(defun start-website??  (&key (port 8080))
   (setq *server* (hunchentoot:start
 		  (make-instance 'easy-acceptor
 				 :port port))))
@@ -69,6 +79,14 @@
   (with-output-to-string (stream)
     (html-template:fill-and-print-template
      #P"examples.tmpl" '()
+     :stream stream)))
+
+;; ## names-and-statements page
+
+(defun names-and-statements ()
+  (with-output-to-string (stream)
+    (html-template:fill-and-print-template
+     #P"forms-statements.tmpl" '()
      :stream stream)))
 
 ;; ## Diagrams pages
@@ -126,7 +144,7 @@
 		       :direction :output
 		       :if-exists :error
 		       :if-does-not-exist :create)
-    (declare (ignore out))))
+    (format out "")))
 
 (defun delete-temp (names label-style)
   (delete-file (local (names->temp names label-style))))
@@ -179,6 +197,16 @@
     (web-graph names "fancy")
     (get-graph names "fancy")
     (fill-template names "fancy" nil :kind "random")))
+
+(defun selection-diagram ()
+  (let ((names (loop for name being the hash-keys of jeffrey.graph:*graph*
+		  for string-name = (format nil "~a" name)
+		  when (parameter string-name)
+		  collect name)))
+    (web-graph names "fancy")
+    (get-graph names "fancy")
+    (fill-template names "fancy" nil :kind "standard")))
+
 
 ;;; debugging
 
