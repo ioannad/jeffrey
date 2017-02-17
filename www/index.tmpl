@@ -7,9 +7,8 @@ Diagram creator for consequences of the axiom of choice (AC).
 </h2>
 
 <p>
-Hover over forms and buttons for more details.<br/>
 <strong>Enter space separated integers</strong> to get the
-implication diagram between the statement with these names.
+implication diagram between the statement with these names.<br/>
 You can find a list of names and statements
 <a href="/names-and-statements">here</a>.
 </p>
@@ -39,12 +38,13 @@ Label style:
 <input type="checkbox" title="Top node is HR.1, the axiom of choice. Bottom node is HR.0, 0=0. Without a top or bottom node, these diagrams may be disconnected." name="add-top-bottom" checked="checked" value="T"/> Include top and bottom node
 
 <br/>
-Be prepared to wait a few minutes for diagrams with over 50 forms, or with forms with many ancestors/descendants. <br/>
+Hover over forms and buttons for more details.<br/>
+Be prepared to wait a few minutes for diagrams with over 50 forms. <br/>
 </form>
 </div>
 <div class="formDiv">
 <form action="/random-diagram" method="GET">
-<strong>Get a (pseudo) random diagram</strong><br/>
+<strong>Get a (pseudo) random diagram</strong>
 of size:
 <input type="text" name="n" title="Please enter a number up to 99. Top and bottom nodes will be included." required
        pattern="([ ]*)\d{0,2}([ ]*)" oninvalid="Please enter a positive integer up to 99." oninput="setCustomValidity('')"
