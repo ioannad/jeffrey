@@ -9,10 +9,21 @@ This package is specifically targeted for the strings in the
 full-name an references of the subforms (main-form or its 
 equivalents).
 
-It should only be references from read.lisp.
+It should only be used from read.lisp.
 |#
 
 (defun search-replace (this with in-string)
+  "*Arguments and values:*
+
+   _this_-a string
+ 
+   _with_-a string
+
+   _in-string_-a string
+
+   *Description:*
+
+   Replaces _this_ with _with_ in string _in-string_."
   (let ((start-pos  (search this in-string)))
     (if start-pos
 	(let* ((end-pos    (+ start-pos (length this)))
@@ -32,7 +43,9 @@ It should only be references from read.lisp.
 
 (defvar *comments* ""
   "To collect any comments in {FORMSNUM.TEX}, as this may involve 
-information about forms being equivalent.")
+   information about forms being equivalent. Used only for testing
+   and checking if any extra information was lost in the parsing 
+   process.")
 
 (defun extract-comments (string)
   "Removes a comment from `string` and concatenates it to
@@ -67,6 +80,17 @@ process-string."
 	     ("\\tag"          " "))))
 
 (defun process-string (string this-with-pairs%)
+  "*Arguments and values:*
+
+   _string_-a string
+  
+   _this-with-pairs_-a list of two element lists containing 
+   strings.
+
+   *Description:*
+
+   For each two-element list in _this-with-pairs_, {process-string}
+   replaces the first string with the second string in _string_."
   (if (null string)
       ""
       (if this-with-pairs%
