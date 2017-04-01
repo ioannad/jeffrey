@@ -1,20 +1,20 @@
 body {
-    margin: 50px 80px 50px 80px;
+    margin: 3em 4em 3em 4em;
 }
 
 h1{
     font-family: helvetica, impact, verdana, sans;
-    font-size: 30px;
-    padding: 0px;
-    margin: 0px;
+    font-size: 2em;
+    padding: 0em;
+    margin: 0em;
 }
 
 h2{
     font-family: helvetica, impact, verdana, sans;
-    font-size: 16px;
+    font-size: 1em;
     font-weight: bold;
-    padding: 0px;
-    margin: 0px;
+    padding: 0em;
+    margin: 0em;
 }
 
 form{
@@ -34,13 +34,13 @@ form img {
 .formDiv { 
     float: none;
     display: block;
-    padding: 5px;
+    padding: 0.3em;
 }
 
 
 p{
     font-family: verdana, sans-serif;
-    font-size: 16px;
+    font-size: 1em;
 }
 
 img{
@@ -64,7 +64,7 @@ form{
 
 input .text{
     width: 100%;
-    max-width: 500px;
+    max-width: 30em;
 }    
 
 slide {
@@ -72,8 +72,8 @@ slide {
     top: 0;
     opacity: 0.5;
     background:black;
-    height: 300px;
-    width: 800px;
+    height: 17em;
+    width: 30em;
     display:block;
     overflow: hidden;
     background: black;
@@ -82,18 +82,17 @@ slide {
 .examp {
     opacity: 0.6;
     position:relative;
-    height: 300px;
-    font-size: 16px;
+    height: 17em;
+    font-size: 1em;
 }
 
-.caption{
+.caption form {
     opacity: 1;
     position: absolute;
-    top: 230px;
+    top: 15em;
     width: auto;
-    height: 16px;
+    height: 1em;
     z-index: 1;
-    border-radius: 2px;
     font-size: 0.8em;
 }
 
@@ -106,8 +105,8 @@ slide {
 
 .logo {
     font-family: verdana, sans-serif;
-    font-size: 30px;
-    top: 150px;
+    font-size: 2em;
+    top: 3.5em;
     position: absolute;
     z-index: 1;
     opacity: 1;
@@ -117,12 +116,12 @@ slide {
 .logo a {
     text-decoration: none;
     color: black;
-    opacity: 0.9;
+    opacity: 0.75;
 }
 
 .example {
     width: 100%;
-    max-width: 500px;
+    max-width: 17em;
     position: float;	      
 }
 
@@ -141,4 +140,8 @@ slide {
 
 td {
     vertical-align: top;
+}
+
+.searchbar {
+    width: 25em;
 }

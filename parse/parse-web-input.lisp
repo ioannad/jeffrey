@@ -28,6 +28,11 @@
 	    #'<)
       '(1))) ; If all input forms are bad, fine, just show AC.
 
+(defun input->keywords (string)
+  (split-sequence:split-sequence #\Space string
+				 :test 'equal
+				 :remove-empty-subseqs T))
+
 (defmacro process-input ()
   `(let ((input-string (parameter "names"))
 	 (label-style  (parameter "label-style"))
@@ -41,3 +46,6 @@
      (list (input->names input-string key add-top-bot)
 	   (get-bad-names (input-parse input-string))
 	   label-style)))
+
+
+				     

@@ -1,0 +1,7 @@
+digraph diagram { 
+
+          ratio=0.5;
+
+	  node [shape=ellipse,width=0.5,height=1];
+
+}

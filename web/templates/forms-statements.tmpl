@@ -18,7 +18,10 @@
 <img class="examp" name="slider" src="/examples/preview/preview-000.png">
 
 <div class="caption">
-<a href="/examples.htm">Example diagrams</a>
+<form action="/examples.htm" method="POST">
+<input type="submit"
+       value="Example diagrams"></input>
+</form>
 </div>
 
 </div>
@@ -31,14 +34,28 @@ Names and statements of the forms.
 </h1>
 
 <p>
-Check a form to include it in a diagram. Create this diagram
-using the button in the <a href="#page_bottom">bottom of the page</a>.
+  Search keywords in statements, and check them to include them in a diagram.
 </p>
+
+<form action="/search-keyword"
+      method="post"
+      id="search"
+      width="100%">
+  <input type="submit"
+	 value="Search by keyword(s):"> </input>
+  <input class="searchbar"
+	 type="text"
+	 width="70%"> </input>
+</form>
 
 <form action="/selection-diagram"
       method="get"
       id="selection-diagram"
       width="100%">
+
+  <span>
+    <input type="submit" value="Graph selection"/>
+  </span>
 
   <table class="checkform">
     
@@ -139,7 +156,7 @@ using the button in the <a href="#page_bottom">bottom of the page</a>.
 	       name="9">
       </td>
       <td>
-	<strong> 9.</strong>  Finite <img src="math-snippets/snip-662.png"> Dedekind finite: <img src="math-snippets/snip-663.png"> (see <font class="author">Jech</font> <font class="year">1973b</font>): <img src="math-snippets/snip-664.png"> (\ac{Howard/Yorke} \cite{1989}): Every Dedekind finite set is finite.
+	<strong> 9.</strong>  Finite <img src="math-snippets/snip-662.png"> Dedekind finite: <img src="math-snippets/snip-663.png"> (see <font class="author">Jech</font> <font class="year">1973b</font>): <img src="math-snippets/snip-664.png"> (see <font class="author">Howard/Yorke</font> <font class="year">1989</font>): Every Dedekind finite set is finite.
       </td>
       
     <tr>
@@ -789,7 +806,7 @@ using the button in the <a href="#page_bottom">bottom of the page</a>.
 	       name="74">
       </td>
       <td>
-	<strong> 74.</strong>  For every <img src="math-snippets/snip-460.png"> the following are equivalent: <font class="enum">(1)</font>  <img src="math-snippets/snip-3.png"> is closed and bounded. \itemitem{(2)}  Every sequence <img src="math-snippets/snip-461.png"> has a convergent subsequence with limit in A. 
+	<strong> 74.</strong>  For every <img src="math-snippets/snip-460.png"> the following are equivalent: <font class="enum">(1)</font>  <img src="math-snippets/snip-3.png"> is closed and bounded. <font class="enum">(2)</font>  Every sequence <img src="math-snippets/snip-461.png"> has a convergent subsequence with limit in A. 
       </td>
       
     <tr>
@@ -1189,7 +1206,7 @@ using the button in the <a href="#page_bottom">bottom of the page</a>.
 	       name="114">
       </td>
       <td>
-	<strong> 114.</strong>  Every A-bounded <img src="math-snippets/snip-61.png"> topological space is weakly Loeb. (<i> A-bounded</i> means amorphous subsets are relatively compact. {\it Weakly Loeb} means the set of non-empty closed subsets has a multiple choice function.)
+	<strong> 114.</strong>  Every A-bounded <img src="math-snippets/snip-61.png"> topological space is weakly Loeb. (<i> A-bounded</i> means amorphous subsets are relatively compact. <i> Weakly Loeb</i> means the set of non-empty closed subsets has a multiple choice function.)
       </td>
       
     <tr>
@@ -1399,7 +1416,7 @@ using the button in the <a href="#page_bottom">bottom of the page</a>.
 	       name="135">
       </td>
       <td>
-	<strong> 135.</strong>  If <img src="math-snippets/snip-13.png"> is a <img src="math-snippets/snip-61.png"> space with at least two points and <img src="math-snippets/snip-301.png"> is hereditarily metacompact then <img src="math-snippets/snip-65.png"> is  countable. (A space is <i> metacompact</i> if every open cover has an open point finite refinement. If <img src="math-snippets/snip-32.png"> and <img src="math-snippets/snip-385.png"> are covers of a space <img src="math-snippets/snip-13.png">, then <img src="math-snippets/snip-385.png"> is a {\it refinement} of <img src="math-snippets/snip-32.png"> if <img src="math-snippets/snip-670.png">. <img src="math-snippets/snip-32.png"> is {\it point finite} if <img src="math-snippets/snip-671.png"> there are only finitely many <img src="math-snippets/snip-672.png"> such that <img src="math-snippets/snip-673.png">.) 
+	<strong> 135.</strong>  If <img src="math-snippets/snip-13.png"> is a <img src="math-snippets/snip-61.png"> space with at least two points and <img src="math-snippets/snip-301.png"> is hereditarily metacompact then <img src="math-snippets/snip-65.png"> is  countable. (A space is <i> metacompact</i> if every open cover has an open point finite refinement. If <img src="math-snippets/snip-32.png"> and <img src="math-snippets/snip-385.png"> are covers of a space <img src="math-snippets/snip-13.png">, then <img src="math-snippets/snip-385.png"> is a <i> refinement</i> of <img src="math-snippets/snip-32.png"> if <img src="math-snippets/snip-670.png">. <img src="math-snippets/snip-32.png"> is {\it point finite} if <img src="math-snippets/snip-671.png"> there are only finitely many <img src="math-snippets/snip-672.png"> such that <img src="math-snippets/snip-673.png">.) 
       </td>
       
     <tr>
@@ -1599,7 +1616,7 @@ using the button in the <a href="#page_bottom">bottom of the page</a>.
 	       name="155">
       </td>
       <td>
-	<strong> 155.</strong>  <img src="math-snippets/snip-599.png">: There are no non-trivial L&auml;uchli continua. (A <i> L&auml;uchli continuum</i> is a strongly connected continuum. {\it Continuum} <img src="math-snippets/snip-600.png"> compact, connected, Hausdorff space; and {\it strongly connected} <img src="math-snippets/snip-600.png"> every continuous real valued function is constant.)
+	<strong> 155.</strong>  <img src="math-snippets/snip-599.png">: There are no non-trivial L&auml;uchli continua. (A <i> L&auml;uchli continuum</i> is a strongly connected continuum. <i> Continuum</i> <img src="math-snippets/snip-600.png"> compact, connected, Hausdorff space; and {\it strongly connected} <img src="math-snippets/snip-600.png"> every continuous real valued function is constant.)
       </td>
       
     <tr>
@@ -1879,7 +1896,7 @@ using the button in the <a href="#page_bottom">bottom of the page</a>.
 	       name="183">
       </td>
       <td>
-	<strong> 183<img src="math-snippets/snip-19.png">.</strong>   There are no <img src="math-snippets/snip-20.png"> minimal  sets.  That is, there are no sets <img src="math-snippets/snip-13.png"> such that <font class="enum">(1)</font> <img src="math-snippets/snip-21.png"> is incomparable with <img src="math-snippets/snip-20.png"> \itemitem{(2)} <img src="math-snippets/snip-22.png"> for every <img src="math-snippets/snip-23.png"> and \itemitem{(3)} <img src="math-snippets/snip-24.png"> or <img src="math-snippets/snip-25.png">.  
+	<strong> 183<img src="math-snippets/snip-19.png">.</strong>   There are no <img src="math-snippets/snip-20.png"> minimal  sets.  That is, there are no sets <img src="math-snippets/snip-13.png"> such that <font class="enum">(1)</font> <img src="math-snippets/snip-21.png"> is incomparable with <img src="math-snippets/snip-20.png"> <font class="enum">(2)</font> <img src="math-snippets/snip-22.png"> for every <img src="math-snippets/snip-23.png"> and \itemitem{(3)} <img src="math-snippets/snip-24.png"> or <img src="math-snippets/snip-25.png">.  
       </td>
       
     <tr>
@@ -1889,7 +1906,7 @@ using the button in the <a href="#page_bottom">bottom of the page</a>.
 	       name="184">
       </td>
       <td>
-	<strong> 184.</strong>   Existence of a double uniformization: For all <img src="math-snippets/snip-13.png"> and <img src="math-snippets/snip-65.png">, for all <img src="math-snippets/snip-561.png">, if there is an infinite cardinal <img src="math-snippets/snip-81.png"> satisfying: <font class="enum">(1)</font> <img src="math-snippets/snip-562.png">, <img src="math-snippets/snip-563.png"> and \itemitem{(2)} <img src="math-snippets/snip-564.png">, <img src="math-snippets/snip-565.png">,   then <img src="math-snippets/snip-566.png"> such that for all <img src="math-snippets/snip-567.png"> such that <img src="math-snippets/snip-568.png"> and <img src="math-snippets/snip-569.png"> such that <img src="math-snippets/snip-570.png">. (<img src="math-snippets/snip-571.png"> is called a <i> double uniformization</i> of <img src="math-snippets/snip-218.png">.)
+	<strong> 184.</strong>   Existence of a double uniformization: For all <img src="math-snippets/snip-13.png"> and <img src="math-snippets/snip-65.png">, for all <img src="math-snippets/snip-561.png">, if there is an infinite cardinal <img src="math-snippets/snip-81.png"> satisfying: <font class="enum">(1)</font> <img src="math-snippets/snip-562.png">, <img src="math-snippets/snip-563.png"> and <font class="enum">(2)</font> <img src="math-snippets/snip-564.png">, <img src="math-snippets/snip-565.png">,   then <img src="math-snippets/snip-566.png"> such that for all <img src="math-snippets/snip-567.png"> such that <img src="math-snippets/snip-568.png"> and <img src="math-snippets/snip-569.png"> such that <img src="math-snippets/snip-570.png">. (<img src="math-snippets/snip-571.png"> is called a <i> double uniformization</i> of <img src="math-snippets/snip-218.png">.)
       </td>
       
     <tr>
@@ -3209,7 +3226,7 @@ using the button in the <a href="#page_bottom">bottom of the page</a>.
 	       name="316">
       </td>
       <td>
-	<strong> 316.</strong>  If a linearly ordered set <img src="math-snippets/snip-574.png"> has the fixed point property then <img src="math-snippets/snip-574.png"> is complete. (<img src="math-snippets/snip-574.png">  has the <i> fixed point property</i> if every function <img src="math-snippets/snip-575.png"> satisfying <img src="math-snippets/snip-576.png"> has a fixed point, and (<img src="math-snippets/snip-574.png"> is {\it complete} if every subset of <img src="math-snippets/snip-3.png"> has a least upper bound.)
+	<strong> 316.</strong>  If a linearly ordered set <img src="math-snippets/snip-574.png"> has the fixed point property then <img src="math-snippets/snip-574.png"> is complete. (<img src="math-snippets/snip-574.png">  has the <i> fixed point property</i> if every function <img src="math-snippets/snip-575.png"> satisfying <img src="math-snippets/snip-576.png"> has a fixed point, and (<img src="math-snippets/snip-574.png"> is <i> complete</i> if every subset of <img src="math-snippets/snip-3.png"> has a least upper bound.)
       </td>
       
     <tr>
@@ -4099,7 +4116,7 @@ using the button in the <a href="#page_bottom">bottom of the page</a>.
 	       name="408">
       </td>
       <td>
-	<strong> 408.</strong>  If <img src="math-snippets/snip-527.png"> is a family of functions such that for each <img src="math-snippets/snip-528.png">, <img src="math-snippets/snip-529.png">, where <img src="math-snippets/snip-218.png"> and <img src="math-snippets/snip-170.png"> are non-empty sets, and <img src="math-snippets/snip-530.png"> is a filter base on <img src="math-snippets/snip-224.png"> such that <font class="enum">1.</font> For all <img src="math-snippets/snip-531.png"> and all finite <img src="math-snippets/snip-532.png"> there is an <img src="math-snippets/snip-528.png"> such that <img src="math-snippets/snip-533.png"> is defined on <img src="math-snippets/snip-50.png">, and \itemitem{2.} For all <img src="math-snippets/snip-534.png"> and all finite <img src="math-snippets/snip-532.png"> there exist at most finitely many functions on <img src="math-snippets/snip-50.png"> which are restrictions of the functions <img src="math-snippets/snip-533.png"> with <img src="math-snippets/snip-528.png">,  \noindent then there is a function <img src="math-snippets/snip-14.png"> with domain <img src="math-snippets/snip-218.png"> such that for each finite <img src="math-snippets/snip-532.png"> and each <img src="math-snippets/snip-531.png"> there is an <img src="math-snippets/snip-528.png"> such that <img src="math-snippets/snip-535.png">.
+	<strong> 408.</strong>  If <img src="math-snippets/snip-527.png"> is a family of functions such that for each <img src="math-snippets/snip-528.png">, <img src="math-snippets/snip-529.png">, where <img src="math-snippets/snip-218.png"> and <img src="math-snippets/snip-170.png"> are non-empty sets, and <img src="math-snippets/snip-530.png"> is a filter base on <img src="math-snippets/snip-224.png"> such that <font class="enum">1.</font> For all <img src="math-snippets/snip-531.png"> and all finite <img src="math-snippets/snip-532.png"> there is an <img src="math-snippets/snip-528.png"> such that <img src="math-snippets/snip-533.png"> is defined on <img src="math-snippets/snip-50.png">, and <font class="enum">2.</font> For all <img src="math-snippets/snip-534.png"> and all finite <img src="math-snippets/snip-532.png"> there exist at most finitely many functions on <img src="math-snippets/snip-50.png"> which are restrictions of the functions <img src="math-snippets/snip-533.png"> with <img src="math-snippets/snip-528.png">,  \noindent then there is a function <img src="math-snippets/snip-14.png"> with domain <img src="math-snippets/snip-218.png"> such that for each finite <img src="math-snippets/snip-532.png"> and each <img src="math-snippets/snip-531.png"> there is an <img src="math-snippets/snip-528.png"> such that <img src="math-snippets/snip-535.png">.
       </td>
       
     <tr>
@@ -4315,10 +4332,7 @@ using the button in the <a href="#page_bottom">bottom of the page</a>.
     </tr>
   </table>
 
-  <span id="page_bottom">
-    <input type="submit" value="Graph selection"/>
-  </span>
-</form>
+  </form>
 
 
 

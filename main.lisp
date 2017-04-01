@@ -1,72 +1,76 @@
 (in-package :jeffrey.main)
 
-(read-all-data)
+(defvar *welcome*  ; ascii art made with `figlet cgraph`.
+  "~%
+~%
+  ___ __ _ _ __ __ _ _ __ | |__  ~%
+ / __/ _` | '__/ _` | '_ \| '_ \ ~%
+| (_| (_| | | | (_| | |_) | | | |~%
+ \___\__, |_|  \__,_| .__/|_| |_|~%
+     |___/          |_|          ~%
+~%
+Welcome to the cgraph, the interactive implication diagram maker.~%
+~%")
 
-(setup-jeff-matrix *graph*)
+(defvar *first-options*
+  "~%
+Press ENTER⏎ to load 'Consequences of the Axiom of Choice' project (default data).~%
+Press ESC    to load a different project or to start a new project.~%
+~%")
 
-(defvar *names* (loop for key being the hash-keys of *graph*
-		   collect key))
+(defvar *menu-text*
+  "Menu~%----~%
+Press 1 to draw a diagram from a list of form numbers.~%
+Press 2 to see a list of the form numbers and their statements.~%
+Press 3 to show the current project name.~%
+Press 4 to change project.~%
+Press 5 to show examples (requires web-browser).~%
+Press 6 to run a website locally.~%
+Press 7 for more information.")
 
-(defun name-transformer (key names)
-  (let ((funct (case key
-		 (:these       (lambda (node)
-				 (list node)))
-		 (:descendants #'descendants)
-		 (:ancestors   #'ancestors))))
-    (remove-duplicates
-     (append
-      names
-      (loop for name in names
-	 append (map 'list 
-		     #'node-name
-		     (funcall funct (gethash name *graph*))))))))
-  
-(assert (equal '(0 1 2 3 4 5)
-	       (name-transformer :these '(0 1 2 3 4 5))))
-(assert (equal '(0 18 64 80 127 300 301 389 390)
-	       (sort (name-transformer :descendants '(80 301 64))
-		     #'<)))
-(assert (equal '(1 188 193 255 256 258 261 262)
-	       (sort (name-transformer :ancestors '(255 188))
-		     #'<)))
+(defun process-project-input (input)
+  (if (equal input "N")
+      (format *standard-output* "This option will be available in the next commit. Check github.com/ioannad/jeffrey.")
+      (let ((project-number (handle-non-integer-input input choose-project)))
+	(if #1=(member *projects* :test 'first)
+	    (setf *current-project* (second #1#))
+	    (progn (format *standard-output* "Project number not recognised.~%")
+		   (choose-project))))))
 
-(defun graph (names-list filename style &optional (ending "png"))
-  (draw names-list filename style ending))
+(defun choose-project ()
+  (format *standard-output*
+	  "Available databases:~%~{~{~a. ~a~}~%~}"
+	  *projects*)
+  (format *standard-output*
+	  "Enter the number of the project you wish to change to, or enter N to begin a new project.~%")
+  (let ((input (read *standard-input* nil nil)))
+    (process-project-input input)))
+    
+(defun change-project ()
+  (when (file-exists-p *projects-file*)
+    (setf *projects* (with-open-file (in *projects-file*
+					 :direction :input)
+		       (with-standard-io-syntax (read in)))))
+  (choose-project))
 
-(defun graph-descendants (names-list filename style &optional (ending "png"))
-  (draw (name-transformer :descendants names-list)
-	filename style ending))
+(defun choose-project ()
+  (format *standard-output* *first-options*)
+  (let ((action (read-char)))
+    (if (equal action #\escape)
+	(change-project)
+	(unless (equal action #\return)
+	  (first-action)))))
 
-(defun graph-ancestors (names-list filename style &optional (ending "png"))
-  (draw (name-transformer :ancestors names-list)
-	filename style ending))
+(defun load-data ()
+  (read-data *current-project*)
+  (setup-jeff-matrix *graph*)
+  (setf *names* (loop for key being the hash-keys of *graph*
+		   collect key)))
 
-;;; Random graph functions
+;; ## The main program
 
-(defun node-names (graph)
-  (loop for name being the hash-keys of graph
-     collect name))
+(defun main ()
+  (format *standard-output* *welcome*)
+  (choose-project)
+  (load-data))
 
-(defun random-number (list except-these)
-  (let ((l (length #1=(set-difference list except-these))))
-    (nth (random l) #1#)))
-
-(defun random-numbers (n list except-these)    
-  (loop for i from 1 to n
-     collecting (random-number list (append except-these numbers))
-     into numbers
-     finally (return numbers)))
-
-(assert (= 10 (length (remove-duplicates
-		       (random-numbers
-			10 '(0 1 2 3 4 5 6 7 8 9 10 11) '())))))
-
-(defun random-HR-numbers (n)
-  (append '(0 1)
-	  (random-numbers n
-			  (node-names *graph*)
-			  (append *bad-forms*
-				  '(0 1)))))
-
-(defun random-graph (amount-of-nodes filename style &optional (ending "png"))
-  (graph (random-HR-numbers amount-of-nodes) filename style ending))

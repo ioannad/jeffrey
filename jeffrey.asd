@@ -1,37 +1,40 @@
 (defsystem jeffrey
-  :components ((:file "packages")
-	       (:file "graph" :depends-on ("packages"))
-	       (:file "parse" :depends-on ("packages"))
-	       (:file "process-strings" :depends-on ("packages"))
-	       (:file "read" :depends-on ("packages"
-					  "graph"
-					  "parse"
-					  "process-strings"))
-	       (:file "predicates" :depends-on ("packages"
-						"graph"
-						"read"))
-	       (:file "draw" :depends-on ("packages"
-					  "graph"
-					  "read"
-					  "predicates"))
-	       (:file "labelmaker" :depends-on ("packages"
-						"graph"
-						"read"))
-	       (:file "main" :depends-on ("graph"
-					  "read"
-					  "predicates"
-					  "draw"))
-	       (:file "parse-web-input" :depends-on ("packages"))
-	       (:file "latex-in-html"   :depends-on ("packages"
-						     "graph"))
-	       (:file "website" :depends-on ("main"
-					     "parse-web-input"
-					     "latex-in-html"))
-	       (:file "example-form-groups" :depends-on ("main"))
-	       (:file "test" :depends-on ("packages"
-					  "graph"
-					  "read"
-					  "predicates")))
-  :depends-on ("maxpc" "split-sequence"
-	       "external-program"
-	       "hunchentoot" "html-template"))
+    :components ((:file "packages")
+		 (:file "core/graph" :depends-on ("packages"))
+		 (:file "parse/parse" :depends-on ("packages"))
+		 (:file "parse/process-strings" :depends-on ("packages"))
+		 (:file "core/read" :depends-on ("packages"
+						 "core/graph"
+						 "parse/parse"
+						 "parse/process-strings"))
+		 (:file "core/predicates" :depends-on ("packages"
+						       "core/graph"
+						       "core/read"))
+		 (:file "core/draw" :depends-on ("packages"
+						 "core/graph"
+						 "core/read"
+						 "core/predicates"))
+		 (:file "util/labelmaker" :depends-on ("packages"
+						       "core/graph"
+						       "core/read"))
+		 (:file "main" :depends-on ("core/graph"
+					    "core/read"
+					    "core/predicates"
+					    "core/draw"))
+		 (:file "parse/parse-web-input" :depends-on ("packages"))
+		 (:file "parse/latex-in-html"   :depends-on ("packages"
+							     "core/graph"))
+		 (:file "web/web-draw" :depends-on ("packages"))
+		 (:file "web/website" :depends-on ("packages"
+						   "main"
+						   "web/web-draw"
+						   "parse/parse-web-input"
+						   "parse/latex-in-html"))
+		 (:file "util/example-form-groups" :depends-on ("main"))
+		 (:file "test/test" :depends-on ("packages"
+						 "core/graph"
+						 "core/read"
+						 "core/predicates")))
+    :depends-on ("maxpc" "split-sequence"
+			 "external-program"
+			 "hunchentoot" "html-template"))

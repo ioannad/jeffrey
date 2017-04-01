@@ -184,3 +184,31 @@ in {*badends*}."
 			  (("1" "e" NIL) ("[1 FG]" "h" "i"))))
 	 '(((0 "{HR 0} a" "b") ("C" "{HR [0 C]} d" ""))
 	   ((1 "{HR 1} e" "") ("FG" "{HR [1 FG]} h" "i")))))
+
+
+
+(defun unicode-parameters (string-list)
+  "Formats the parameters, which may appear in the number labels,
+in unicode instead of LaTeX."
+  (let ((left (first string-list))
+	(parameter (second string-list))
+	(right (third string-list)))
+    (if parameter
+	(format nil "~a~a~a"
+		left
+		(cond ((equal parameter "\\alpha")
+		       "α")
+		      ((equal parameter "\\epsilon")
+		       "ε")
+		      (T parameter))
+		right)
+	left)))
+
+
+(defun number-label (node)
+  "Takes the node `name` and returns a string with a simple `HR name`
+of the node with this `name`. Name parameters are shown."
+  (let* ((latex  (node-LaTeX node))
+	 (n      (search ".}" latex))
+	 (label% (subseq latex 1 n)))
+    (unicode-parameters (split-sequence #\$ label%))))

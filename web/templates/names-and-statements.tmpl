@@ -15,14 +15,29 @@ Names and statements of the forms.
 </h1>
 
 <p>
-Check a form to include it in a diagram. Create this diagram
-using the button in the <a href="#page_bottom">bottom of the page</a>.
+  Search keywords in statements, and check them to include them in a diagram.
 </p>
+
+<form action="/filter-keywords"
+      method="post"
+      id="search"
+      width="100%">
+  <input type="submit"
+	 value="Filter by keyword(s):"> </input>
+  <input class="searchbar"
+	 type="text"
+	 name="keywords"
+	 width="70%"> </input>
+</form>
 
 <form action="/selection-diagram"
       method="get"
       id="selection-diagram"
       width="100%">
+
+  <span>
+    <input type="submit" value="Graph selection"/>
+  </span>
 
   <table class="checkform">
     <!-- TMPL_LOOP checkforms -->
@@ -39,10 +54,7 @@ using the button in the <a href="#page_bottom">bottom of the page</a>.
     </tr>
   </table>
 
-  <span id="page_bottom">
-    <input type="submit" value="Graph selection"/>
-  </span>
-</form>
+  </form>
 
 
 

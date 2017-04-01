@@ -125,10 +125,16 @@ Apart from the functions described below: {make-node}, {make-edge}, {add-parent}
 
 To produce a diagram, open a Common Lisp REPL (I have tested it only with SBCL and Clozure CL so far. Please let me know if you test it with other implementations). Then type in `(ql:quickload \"jeffrey\")` and then type in `(in-package :jeffrey.main)`. Now, to draw the diagram between the forms with Howard-Rubin numbers (HR) a b c d ... use the command `(main \"a b c d ...\")`."))
 
+(defpackage jeffrey.web-draw
+  (:use :cl :jeffrey.main)
+  (:export :web-draw)
+  (:documentation "Encodes subsets of nodes in short strings and takes care of concurrency"))
+
 (defpackage jeffrey.parse-web-input
   (:use :cl :hunchentoot :split-sequence
 	:jeffrey.main)
-  (:export :process-input)
+  (:export :process-input
+	   :input->keywords)
   (:documentation "Parses the user input and accordingly transforms the input names to be used by `:jeffrey.website`."))
 
 (defpackage jeffrey.latex-in-html

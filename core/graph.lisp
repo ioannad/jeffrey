@@ -39,19 +39,24 @@
 (defstruct (edge (:constructor make-edge%))
   (destination nil :type node)
   (relation    T   :type symbol)
+  (references  ""  :type string)
   (attributes))
 
-(defun make-edge (destination relation)
+(defun make-edge (destination relation &optional (references ""))
   "*Arguments and values:*
 
    _destination_-a {node}
    
-   _relation_-{T} for 'implies', or {NIL} for 'does not imply'.
+   _relation_-{T} for 'implies', or {NIL} for 'does not imply'
+
+   _references_-an optional string, defaults to the empty string.
   
    *Description:*
 
-   {make-edge} creates an {edge} structure with the slots ({destination} 
-   and {relation}) filled, after type checking the content of the slots. 
+   {make-edge} creates an {edge} structure with the slots ({destination}, 
+   {relation}, and possibly {references}) filled, after type checking the 
+   content of the slots. 
+   
    These edges are stored in the origin node as follows.
    
    If we know that a node A implies a node B, then we add an edge E in its 
