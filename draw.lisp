@@ -30,43 +30,8 @@ that makes Graphviz-dot use the pdf file in the folder
 statement." 
   (format *standard-output*
 	  "~a [image=\"~afancy-labels/~a.png\", label=\" \"];~%"
-	  name *local-directory* name))
-
-(defun special-join-string-list (string-list)
-  "Formats the parameters, which may appear in the number labels,
-in unicode instead of LaTeX."
-  (let ((left (first string-list))
-	(parameter (second string-list))
-	(right (third string-list)))
-    (if parameter
-	(format nil "~a~a~a"
-		left
-		(cond ((equal parameter "\\alpha")
-		       "α")
-		      ((equal parameter "\\epsilon")
-		       "ε")
-		      (T parameter))
-		right)
-	left)))
+	  name *local-directory* name))	
 	
-		  
-
-  
-(defun number-label (node)
-  "Takes the node `name` and returns a string with a simple `HR name`
-of the node with this `name`. Name parameters are shown."
-  (let* ((latex  (node-LaTeX node))
-	 (n      (search ".}" latex))
-	 (label% (subseq latex 1 n)))
-    (special-join-string-list (split-sequence #\$ label%))))
-	 
-(defun print-number-label (name node)
-  "Takes the node `name` and returns a string in dot-syntax, with
-the `(number-label name)`."
-  (format *standard-output* 
-	  "~a [label=\"~a.\"];~%"
-	  name (number-label node)))
-
 (defun print-node-label (name node style)
   "Writes the labels for the nodes in the style `style`, depending on
 the user input. The user as two choices for a style: 
@@ -78,10 +43,9 @@ forms, which are stored as pictures in png format, in the folder
 nodes."
   (if(equal style "fancy")
      (print-fancy-label name)
-     (if (equal style "numbers")
-	 (print-number-label name node)
-	 (error "Wrong style given in print-dot-file: ~a .~%" 
-		style))))
+     (unless (equal style "numbers")
+       (error "Wrong style given in print-dot-file: ~a .~%" 
+	      style))))
 
 (defun print-bold-arrow (name-i name-j)
   "Prints a boldfaced arrow in dot-syntax from `name-i` to `name-j` 
