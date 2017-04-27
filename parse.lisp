@@ -86,21 +86,24 @@ Keremedis "))
   (=destructure (ref-start ref)
       (=list (=reference-start)
 	     (=text-until (?delimiter)))
-    (concatenate 'string ref-start ref)))
+    (string-trim *whitespace* 
+		 (concatenate 'string ref-start ref))))
 
 (defun test-references ()
-  (assert (reference-start-p "\\ac"))
+  (assert (reference-start-p " \\ac"))
   (assert (equal "Note" (parse "Note" (=reference-start))))
   (assert (equal (test-string 3)
 		 (parse (test-string 2)
 			(=references)))))
 
 (defun =full-name ()
-  (=text-until (%or (?delimiter)
-		    (=reference-start))))
+  (=transform
+   (=text-until (%or (?delimiter)
+		     (=reference-start)))
+   (lambda (str) (string-trim *whitespace* str))))
 
 (defun test-full-name ()
-  (assert (equal "relatively prime. "
+  (assert (equal "relatively prime."
 		 (parse "relatively prime. See form"
 			(=full-name))))
   (assert (equal (test-string 4)
@@ -117,7 +120,7 @@ Keremedis "))
 
 (defun test-main-form ()
   (assert (equal
-	   '("6." "a$: b. "
+	   '("6." "a$: b."
 	     "G\\. \\ac{Moore} \\cite{1982} and note 3.")
 	   (parse (test-string 6)
 		  (=main-form)))))
@@ -132,7 +135,7 @@ Keremedis "))
 
 (defun test-eq-form ()
   (assert (equal
-	   (list "[14 M]" "  R. Cowen's ... T.  "
+	   (list "[14 M]" "R. Cowen's ... T."
 		 (test-string 8))
 	   (parse (test-string 7) (=eq-form)))))
   
@@ -145,11 +148,11 @@ Keremedis "))
 
 (defun test-form ()
   (assert (equal
-	   '(("430($p$)."  " A " "\\ac{B}")
-	     ("[430 A($p$)]." " C " "See V"))
+	   '(("430($p$)."  "A" "\\ac{B}")
+	     ("[430 A($p$)]." "C" "See V"))
 	   (parse (test-string 9) (=form))))
   (assert (equal
-	   '(("0." " $0 = 0$." NIL))
+	   '(("0." "$0 = 0$." NIL))
 	   (parse (test-string 10) (=form)))))
 
 (defun no-newlines-subform (subform)
@@ -182,11 +185,11 @@ subforms"
   
 (defun test-formsnum.tex ()
   (assert (equal (parse (test-string 11) (=formsnum.tex))
-		 '((("0."     " A "     NIL)
-		    ("[0 B]"  " C "     "\\ac{ D ")
-		    ("[0 EF]" " G "     NIL))
-		   (("1."     " H$: I " NIL)
-		    ("[1 A]"  " J "     "See K ")))))
+		 '((("0."     "A"     NIL)
+		    ("[0 B]"  "C"     "\\ac{ D")
+		    ("[0 EF]" "G"     NIL))
+		   (("1."     "H$: I" NIL)
+		    ("[1 A]"  "J"     "See K")))))
   (assert (equal
 	   (parse (test-string 12)
 		  (=formsnum.tex))
@@ -295,12 +298,10 @@ column respectively."
 \\item{}{\\bf [")
 
      (3
-      "See form 218 and \\ac{Bleicher} \\cite{1964}. 
-")
+      "See form 218 and \\ac{Bleicher} \\cite{1964}.")
 
      (4
-      "relatively prime$.
-")
+      "relatively prime$.")
 
      (5
       "relatively prime$.
@@ -321,8 +322,7 @@ column respectively."
 
      (8
       "\\ac{Cowen} ...
-21. \\iput{Konig's lemma}
-")
+21. \\iput{Konig's lemma}")
 
      (9
       "\\medskip
@@ -368,18 +368,18 @@ contains a basis.  \\ac{Halpern} \\cite{1966}.
 ")))
 
 (defun formsnum-test-result ()
-  '((("0." " $0 = 0$. " NIL)
+  '((("0." "$0 = 0$." NIL)
      ("[0 A]"
-      "  Cardinal successors 2:  For n)$. "
-      "\\ac{Tarski} \\cite{1954a} and \\ac{Jech} \\cite{1966a}. ")
+      "Cardinal successors 2:  For n)$."
+      "\\ac{Tarski} \\cite{1954a} and \\ac{Jech} \\cite{1966a}.")
      ("[0 AK]"
-      " Every separable metric space is second countable. "
+      "Every separable metric space is second countable."
       NIL))
     (("1."
-      " $C(\\infty,\\infty)$:  The Axiom of Choice: Every  set  of  non-empty sets has a choice function. \\rightheadtext{Form 1: The Axiom of Choice} \\iput{axiom of choice} "
+      "$C(\\infty,\\infty)$:  The Axiom of Choice: Every  set  of  non-empty sets has a choice function. \\rightheadtext{Form 1: The Axiom of Choice} \\iput{axiom of choice}"
       NIL)
      ("[1 A]"
-      " In every vector space, every generating set contains a basis.  "
-      "\\ac{Halpern} \\cite{1966}. "))))
+      "In every vector space, every generating set contains a basis."
+      "\\ac{Halpern} \\cite{1966}."))))
 
    
