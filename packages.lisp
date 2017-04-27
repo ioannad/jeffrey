@@ -11,7 +11,8 @@
 	   :add-parent
 	   :make-edge
 	   :edge-destination
-	   :edge-relation)
+	   :edge-relation
+	   :edge-attributes)
   (:documentation
    "Here the graph related common lisp structures are defined. These are the _nodes_ and _edges_ of the graph. The graph itself is stored in a hash table, which in turn is stored in the universal variable `*graph*`. 
 
