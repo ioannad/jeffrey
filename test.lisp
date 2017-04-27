@@ -137,6 +137,14 @@
 (defun checkout-423-374 ()
   (compare-equivalents? t 423 374 (read-book1 *book-file*)))
 
+(defun test-book1-equivalence ()
+  (let ((book1-matrix (read-all-data)))
+    (setup-jeff-matrix *graph*)
+    (fill-missing-positions-using-predicates *graph*)
+    (test-matrix-equivalency *jeff-matrix* book1-matrix))
+  (format t "~%Still to do, take care of the equivalency between 374 and 423. Checking book1 for the codes in row 423 vs row 374, and column 423 vs column 374 gives the following places where these are not equal:~%")
+  (checkout-423-374))
+
 
 (defun test-all ()
   ;; test data
@@ -150,11 +158,7 @@
   (test-predicates)
   (format t "~%Testing the reading module...~%")
   (test-read)
+
+  (format t "~%All simple tests passed.~%")
   ;; book1
-  (format t "~%Testing equivalence of the filled out *jeff-matrix* with book1...~%")
-  (let ((book1-matrix (read-all-data)))
-    (setup-jeff-matrix *graph*)
-    (fill-missing-positions-using-predicates *graph*)
-    (test-matrix-equivalency *jeff-matrix* book1-matrix))
-  (format t "~%Still to do, take care of the equivalency between 374 and 423. Checking book1 for the codes in row 423 vs row 374, and column 423 vs column 374 gives the following places where these are not equal:~%")
-  (checkout-423-374))
+  (format t "~%Test equivalence of the filled out *jeff-matrix* with book1 by evaluating (test-book1-equivalence).~%Do run this test if you made changes to the predicates.~%"))
