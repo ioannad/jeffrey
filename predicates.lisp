@@ -41,12 +41,8 @@ whether this intesects the descendants of A.
 as 'row implies column?'.")
 
 (defun setup-jeff-matrix (graph)
-  "Prepares *jeff-matrix* with the information from `graph`, and some
-obvious predicate answers."
-  (setf *jeff-matrix* (graph-to-matrix graph))
-  (loop for name being the hash-keys of graph
-     do (setf (aref *jeff-matrix* name 0) 1)
-       (setf (aref *jeff-matrix* 1 name) 1)))	
+  "Prepares *jeff-matrix* with the information from `graph`"
+  (setf *jeff-matrix* (graph-to-matrix graph)))
 
 (defun ancestors (node) ;; => list
   "Returns the list of strict ancestors of NODE."
