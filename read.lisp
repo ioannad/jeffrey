@@ -14,7 +14,6 @@ form name." )
 (defvar *forms-file* (concatenate 'string
 				  *local-directory*
 				  "Howard-Rubin-data/FORMSNUM.TEX"))
-
 (defvar *book-file* (concatenate 'string
 				 *local-directory*
 				 "Howard-Rubin-data/book1"))
@@ -48,7 +47,7 @@ node information."
 (defun book1-to-matrix (book1-list) ;=> book1-matrix
   "Takes the result of `read-book1`. Returns a matrix version of 
 book1."
-  (let* ((n           (length book1-list))
+  (let* ((n (length book1-list))
 	 (book1-matrix (make-array (list n n) :initial-element NIL)))
     (loop for row in book1-list
        for i from 0 to (- n 1)
@@ -93,7 +92,9 @@ respectively."
 
 (defun graph-to-matrix (graph) ;=> matrix
   "Returns a matrix with the NODES information."
-  (let ((matrix (make-array '(431 431) :initial-element NIL)))
+  (let* ((n (hash-table-size graph))
+	 (matrix (make-array (list n n) 
+			     :initial-element NIL)))
     (loop for name-1 being the hash-keys of graph
        using (hash-value node-1)
        unless (member name-1 *bad-forms*)
@@ -135,9 +136,11 @@ having added node 1 as top node and node 0 as bottom node."
   "Saves all data from `*forms-file*` and `*book-file*` into 
 `*graph*`, and returns `book1-matrix` for testing."
   (let ((graph        (read-forms-to-graph *forms-file*))
-	(book1-matrix (book1-to-matrix (read-book1 *book-file*))))
-    (setf *graph* (matrix-to-graph book1-matrix graph))
-    book1-matrix))  
+	(book1-matrix (book1-to-matrix
+		       (read-book1 *book-file*))))
+    (setf *graph* (add-top-bottom
+		   (matrix-to-graph book1-matrix graph)))
+    book1-matrix))
 
 
 
