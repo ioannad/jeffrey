@@ -12,7 +12,9 @@ The easiest way to use this program is to use its online app here: [cgraph.inter
 
 The website has only minimal information, but you can [read more here](https://boolesrings.org/ioanna/2016/12/13/choiceless-grapher-app/).
 
-If you want very large diagrams (more than 70 or 80 forms), or if you prefer to work in a CL REPL, do use the program as described below.
+If you want very large diagrams (more than 70 or 80 forms)*, or if you prefer to work in a CL REPL, do use the program as described below.
+
+(*) The web app can indeed create very large diagrams (even the full diagram) but it takes some time, and if you need more than one, it's probably faster to use jeffrey in a CL REPL.
 
 ## DISCLAIMER
 
