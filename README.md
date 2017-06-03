@@ -25,7 +25,7 @@ If you want very large diagrams (more than 70 or 80 forms), or if you prefer to 
 * Common-Lisp: I have only tested this with **SBCL** or **CCL**  but it should work in any implementation that [external-program](https://github.com/sellout/external-program) supports. Please let me know if you check this!
 * [Graphviz](www.graphviz.org/) (`apt-get install graphviz`)
 * [Quicklisp](www.quicklisp.org)
-* It only works in Linux. Windows and Macintosh support are no longer on the to-do list, since the program is accessible via its web-interface. *If you are interested in having this support please send me a message or leave a comment.*
+* It only works in Linux. Windows and Macintosh support are no longer on the to-do list, since the program is accessible via its web-interface. *If you are interested in having these OS supported please send me a message or leave a comment.*
 * The package `labelmaker` also requires `/bin/bash`, `pdflatex`, and `convert`. 
 
 ### Installation
