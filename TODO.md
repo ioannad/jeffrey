@@ -2,28 +2,27 @@
 
 Active to-dos are on top.
 
-### Create proper website and set up Choiceless Grapher to be used via a web form.
+## Currently in my scope
 
-cgraph.inters.co is up and running!
-
-Still to do:
+* Create build process - perhaps even resulting in an executable? (Though I personally prefer to use this in a REPL).
 
 * Add intervals feature
-* Remove features that produce huge graphs: descendants/ancestors, and "Show negative implications" only for graphs with under 10 nodes.
 
-* Shorthand names (longer term), which can be used in a possible:
+* "Show negative implications" (only for graphs with under 10 nodes.)
 
-* matrix or list of forms (click-and-add-to-graph sort of feature).
+* Generalise jeffrey to any database (with area for own databases on the web interface)
+
+## More to-do ideas with comments
 
 ### Add short names?
 
-This seems very complicated (manual work). See above.
+This seems very complicated (i.e., manual work).
 
 ### Create fancy labels on the fly
 
-Instead of using the labelmaker in bulk.
+Instead of using the labelmaker in bulk. *Not sure if this is a good idea.*
 
-### Improve predicate algorithms
+### Further improve predicate algorithms
 
 Reduced complexity of `graph-implies-not-p` by switching from a nested `(some ... (some ...))` to two separate loops. Measured improvement of about 7% on SBCL and 25% on CCL (notes available).
 
@@ -32,8 +31,8 @@ Reduced complexity of `graph-implies-not-p` by switching from a nested `(some ..
 PDF output does not render fancy labels properly. Why?
 For the moment I use png, which is the current default. 
 
-### Add Windows and Macintosh support.
+### ~~Add Windows and Macintosh support.~~
 
-The external-programs only work for Linux for the moment. I consider the website as a "fix enough for now" for this issue, but a desktop version should appear in the future.
+The external-programs (bash scripts, calls to the CL-library `external-program`) only work with Linux. I am withdrawing claims to future MS/iOS support, as there are no interested users, as far as I know. The occassional MS/iOS users seem happy with the web interface. If you are an MS/iOS user and want to use this program in a CL REPL please let me know.
 
 
