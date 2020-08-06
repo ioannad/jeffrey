@@ -41,7 +41,7 @@ Install this package using quicklisp ([installation instructions](https://www.qu
 
 ### Load the Choiceless Grapher
 
-In a Common Lisp REPL, evaluate `(ql:quickload \"jeffrey\")` and `(in-package :jeffrey)`.
+In a Common Lisp REPL, evaluate `(ql:quickload "jeffrey")` and `(in-package :jeffrey)`.
 
 ### Draw the diagram between a given list of form HR numbers
 
