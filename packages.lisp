@@ -74,6 +74,7 @@ Apart from the functions described below: {make-node}, {make-edge}, {add-parent}
 	   :setup-jeff-matrix
 	   :descendants
 	   :ancestors
+           :interval
 	   :implies-p
 	   :implies-not-p)
   (:documentation "predicates.lisp enables the program to ask whether or not a node (form) implies another. The function implies-p only answers positive implication questions, and implies-not-p only answers negative implication questions. In particular, (implies-p A B) asks whether A is an ancestor of B and (implies-not-p B A) asks whether there is an ancestor B' of B and a descendant A' of A, such that the node B' has an edge with destination A' and relation NIL. Why is the predicate \"implies-p\" defined like this is clear. For (implies-not-p B A), assume that there is an ancestor B-anc of B and a descendant A-desc of A, such that B-anc does not imply A-desc (the meaning of a NIL-edge from B-anc to A-desc). Then (implies-not-p B A) must be T, i.e., B does not imply A, because otherwise we have the implication chain: B-anc implies B implies A implies A-desc, therefore B-anc implies A-desc, contradiction to the NIL-edge from B-desc to A-desc. "))
@@ -108,6 +109,7 @@ Apart from the functions described below: {make-node}, {make-edge}, {add-parent}
 
 
 (defpackage jeffrey.main
+  (:nicknames :jeffrey)
   (:use :common-lisp
 	:jeffrey.graph
 	:jeffrey.read
@@ -115,16 +117,41 @@ Apart from the functions described below: {make-node}, {make-edge}, {add-parent}
 	:jeffrey.draw)
   (:export :name-transformer
 	   :graph
+           :graph-ancestors
+           :graph-descendants
+           :graph-interval
+           :random-graph
 	   :random-HR-numbers
 	   :*local-directory*
 	   :*names*
 	   :*bad-forms*)
-  (:documentation "Install this package using quicklisp (installation instructions for quicklisp can be found in https:////www.quicklisp.org//beta//#installation) and git (https:////git-scm.com//book//en//v2//Getting-Started-Installing-Git) as follows:
+  (:documentation "Install this system and load it using [quicklisp](https:////www.quicklisp.org//beta//#installation) and [git](https:////git-scm.com//book//en//v2//Getting-Started-Installing-Git) as follows:
 
-* Create a folder called `jeffrey` in `quicklisp//local-projects//`,
-* Navigate to this folder in a terminal and type `git init` and `git clone git@github.com:ioannad//jeffrey.git`. Alternatively otherwise download the contents of this repository to this folder. 
+- Install the system dependency Graphviz, for example with aptitude (Debian, Ubuntu, et.al.) using `sudo apt install graphviz`.
+- In a terminal, navigate to a directory that ASDF or quicklisp can find (e.g. `quicklisp/local-projects/`) and `git clone https://gitlab.common-lisp.net/idimitriou/jeffrey.git`. Alternatively otherwise download the contents of this repository to such a directory.
+- In a Common Lisp REPL, evaluate `(ql:quickload \"jeffrey\")` and `(in-package :jeffrey)`.
 
-To produce a diagram, open a Common Lisp REPL (I have tested it only with SBCL and Clozure CL so far. Please let me know if you test it with other implementations). Then type in `(ql:quickload \"jeffrey\")` and then type in `(in-package :jeffrey.main)`. Now, to draw the diagram between the forms with Howard-Rubin numbers (HR) a b c d ... use the command `(main \"a b c d ...\")`."))
+**To draw the diagram between forms** with Howard-Rubin numbers (HR) `a b c d ...` in the file `\"filename.png\"`, evaluate
+
+```
+(graph a b c d ... \"filename.png\")
+```
+
+The png format is the default so this is equivalent to `(graph a b c d ... \"filename\"). Other supported formats are: `.svg`, `.ps`, `.jpg`. See ` $ man dot`
+
+To draw the diagram of a pseudo-random set of forms, of size N, evaluate `(random-graph n \"filename.png\")`.
+Other variations: `(graph-ancestors number \"filename.png\")`, `(graph-descendants number \"filename.png\")`, but be aware that such diagrams might be quite large.
+
+**NEW** `(graph-interval 261 260 \"interval-261-to-260\")` draws all the consequences of form 261 which imply form 260.
+
+All the above graphing functions take an optional extra parameter `STYLE`, where STYLE can be:
+
+- either the string \"numbers\" (the default), using the form numbers as labels in the graph image,
+- or the string \"fancy\" which uses LaTeX formatted labels with the full statements of the forms.
+  To enable this style, execute `./make-fancy-labels`. Requires `pdflatex`, the latex package `standalone`, and `imagemagick`.
+  Currently there are some issues with imagemagick's `convert` from PDF files, so wait for the next update to use fancy labels.
+
+I have tested `:jeffrey` only with SBCL and CCL (Clozure CL) so far. Please let me know if you test it with other implementations."))
 
 (defpackage jeffrey.parse-web-input
   (:use :cl :hunchentoot :split-sequence

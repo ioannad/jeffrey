@@ -69,6 +69,9 @@ as 'row implies column?'.")
 	    (node-children node) 
 	    (map 'list #'descendants (node-children node))))))
 
+(defun interval (X Y)
+  (intersection (descendants X) (ancestors Y)))
+
 (defun nil-edge-p (Y X)  ;; => NIL or nonempty list
   "Returns T if there is an edge in (node-edges Y) with :destination X
 and :relation NIL."

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p fancy-labels
+
 for i in fancy-labels/*.tex
 do 
     pdflatex -output-directory fancy-labels "$i"

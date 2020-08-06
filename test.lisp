@@ -1,5 +1,17 @@
 (in-package :jeffrey.test)
 
+;; Test functions in :jeffrey.main
+
+(defun test-name-transformer ()
+  (assert (equal '(0 1 2 3 4 5)
+                 (jeffrey::name-transformer :these '(0 1 2 3 4 5))))
+  (assert (equal '(0 18 64 80 127 300 301 389 390)
+                 (sort (jeffrey::name-transformer :descendants '(80 301 64))
+                       #'<)))
+  (assert (equal '(1 188 193 255 256 258 261 262)
+                 (sort (jeffrey::name-transformer :ancestors '(255 188))
+                       #'<))))
+
 ;; Disclaimer: The test data below has no connection with the real data
 ;; whatsoever. 
 (defparameter *simple-test-matrix*
@@ -147,6 +159,8 @@
 
 
 (defun test-all ()
+  ;; test :jeffrey.main functions
+  (test-name-transformer)
   ;; test data
   (format t "Setting up test...~%")
   (setup-test)

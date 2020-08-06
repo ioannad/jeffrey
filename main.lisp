@@ -8,38 +8,52 @@
 		   collect key))
 
 (defun name-transformer (key names)
-  (let ((funct (case key
-		 (:these       (lambda (node)
-				 (list node)))
-		 (:descendants #'descendants)
-		 (:ancestors   #'ancestors))))
+  (let ((transformer (case key
+                       (:these       (lambda (node)
+                                       (list node)))
+                       (:descendants #'descendants)
+                       (:ancestors   #'ancestors)
+                       (:interval    #'interval)))
+        ;; the transformers require nodes input so we get the nodes
+        (nodes (loop for name in names collect (gethash name *graph*))))
     (remove-duplicates
-     (append
-      names
-      (loop for name in names
-	 append (map 'list 
-		     #'node-name
-		     (funcall funct (gethash name *graph*))))))))
-  
-(assert (equal '(0 1 2 3 4 5)
-	       (name-transformer :these '(0 1 2 3 4 5))))
-(assert (equal '(0 18 64 80 127 300 301 389 390)
-	       (sort (name-transformer :descendants '(80 301 64))
-		     #'<)))
-(assert (equal '(1 188 193 255 256 258 261 262)
-	       (sort (name-transformer :ancestors '(255 188))
-		     #'<)))
+     (mapcar
+      #'node-name ; the transformers return nodes, so we get the names
+      (append nodes ; add the input nodes to the graph
+              (if (eq key :interval)
+                  ;; interval takes exactly the two given nodes as input
+                  (apply transformer nodes)
+                  ;; ancestors or descendants of all the NAMES will be included
+                  (reduce 'append (mapcar transformer nodes))))))))
 
-(defun graph (names-list filename style &optional (ending "png"))
-  (draw names-list filename style ending))
+(defun graph (names-list filename
+              &optional style ending
+              &aux (filename% filename))
+  (let ((pathname (pathname filename)))
+    (when (null style)
+      (setq style "numbers"))
+    (when (null (or ending
+                    (pathname-type pathname)))
+      (setq ending "png"))
+    (when (null ending)
+      (setq ending (pathname-type pathname))
+      (setq filename% (pathname-name pathname)))
+    (when (pathname-directory pathname)
+      (warn "The parent directory of your output file is ignored.
+Output files will be placed in ..jeffrey/diagrams/"))
+    (draw names-list filename% style ending)))
 
-(defun graph-descendants (names-list filename style &optional (ending "png"))
-  (draw (name-transformer :descendants names-list)
-	filename style ending))
+(defun graph-descendants (names-list filename &optional style ending)
+  (graph (name-transformer :descendants names-list)
+         filename style ending))
 
-(defun graph-ancestors (names-list filename style &optional (ending "png"))
-  (draw (name-transformer :ancestors names-list)
-	filename style ending))
+(defun graph-ancestors (names-list filename &optional style ending)
+  (graph (name-transformer :ancestors names-list)
+         filename style ending))
+
+(defun graph-interval (name-1 name-2 filename &optional style ending)
+  (graph (name-transformer :interval (list name-1 name-2))
+         filename style ending))
 
 ;;; Random graph functions
 
@@ -51,7 +65,7 @@
   (let ((l (length #1=(set-difference list except-these))))
     (nth (random l) #1#)))
 
-(defun random-numbers (n list except-these)    
+(defun random-numbers (n list except-these)
   (loop for i from 1 to n
      collecting (random-number list (append except-these numbers))
      into numbers
@@ -68,5 +82,5 @@
 			  (append *bad-forms*
 				  '(0 1)))))
 
-(defun random-graph (amount-of-nodes filename style &optional (ending "png"))
+(defun random-graph (amount-of-nodes filename &optional style ending)
   (graph (random-HR-numbers amount-of-nodes) filename style ending))
