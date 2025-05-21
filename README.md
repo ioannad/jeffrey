@@ -27,7 +27,7 @@ If you want very large diagrams (more than 70 or 80 forms)*, or if you prefer to
 ### Requirements
 
 * Common-Lisp: I have only tested this with **SBCL** or **CCL**  but it should work in any implementation that [external-program](https://github.com/sellout/external-program) supports. Please let me know if you check this!
-* [Graphviz](www.graphviz.org/) (`apt-get install graphviz`)
+* [Graphviz](www.graphviz.org/)
 * [Quicklisp](www.quicklisp.org)
 * It only works in Linux. Windows and Macintosh support are no longer on the to-do list, since the program is accessible via its web-interface. *If you are interested in having these OS supported please send me a message.* Having said that, do try it in a Mac, as any unix system which understands `which` should work in theory. Please let me know!
 * The package `labelmaker` (so to use "fancy" labels) also requires `/bin/bash`, `pdflatex`, the latex package `standalone`, and `imagemagick` for `convert`. Currently there are some issues with `convert`ing from `pdf` files, please wait for the next update to use fancy labels.
@@ -119,7 +119,7 @@ Run all tests while `(in-package :jeffrey-test)` with the command `(test-all)`, 
 
 **fancy-labels/** is not included here, but you can produce it from package `:jeffrey.labelmaker` with the command `(make-fancy-labels`). Please wait for the next update to use this.
 
-**Howard-Rubin-data/** contains the files from the Consequences of the Axiom of Choice Project, which were kindly provided by Prof. Paul Howard. 
+**Howard-Rubin-data/** contains the files from the Consequences of the Axiom of Choice Project, which were kindly provided by Prof. Paul Howard. The file `FORMSNUM.TEX` is not meant to be compiled as a `tex` file, it is only there to be parsed by CGraph to create the fancy labels. You can see a list of the form numbers and their statements (aka the fancy labels) [on the CGraph website](https://cgraph.inters.co/names-and-statements).
 
 **complexity issues**
 I have made some small steps to improve the original brute force algorithm for calculating the predicates. The biggest difference was made by memoising with the addition of the `*jeff-matrix*`. A 7%-25% improvement (SBCL and CCL respectively, at the time of testing, on Debian in my thinkpad x201) was achieved by changing the double loop of `(graph-implies-not-p Y X)` to three single loops (finding destinations of nil edges of ancestors of Y, finding descendants of X, and intersecting these two lists).
